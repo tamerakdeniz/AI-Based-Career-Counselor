@@ -1,18 +1,18 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
-
+from typing import List
 from app.database import SessionLocal, engine, Base
 from app.models.user import User
+from app.core.security import get_password_hash, verify_password
+from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
-# DB session dependency
+# Dependency to get DB session
 def get_db():
     db = SessionLocal()
     try:
@@ -21,23 +21,98 @@ def get_db():
         db.close()
 
 
+# Pydantic Schemas
+class UserBase(BaseModel):
+    name: str
+    email: EmailStr
+    avatar: str | None = None
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class UserUpdate(BaseModel):
+    name: str | None = None
+    email: EmailStr | None = None
+    avatar: str | None = None
+    password: str | None = None
+
+
+class UserResponse(UserBase):
+    id: int
+    joined_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
 @app.get("/")
-def read_root():
+def root():
     return {"message": "AI Mentör SQLite veritabanı ile çalışıyor."}
 
 
-@app.post("/users/")
-def create_user(
-    name: str, email: str, password: str, role: str, db: Session = Depends(get_db)
-):
-    hashed = pwd_context.hash(password)  # Properly hash the password
-    user = User(name=name, email=email, hashed_password=hashed, role=role)
-    db.add(user)
+@app.post("/users/", response_model=UserResponse)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == user.email).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    hashed_password = get_password_hash(user.password)
+    new_user = User(
+        name=user.name,
+        email=user.email,
+        avatar=user.avatar,
+        hashed_password=hashed_password,
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+
+@app.get("/users/", response_model=List[UserResponse])
+def list_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
+
+
+@app.get("/users/{user_id}", response_model=UserResponse)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
+@app.put("/users/{user_id}", response_model=UserResponse)
+def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user_update.name is not None:
+        user.name = user_update.name
+    if user_update.email is not None:
+        # Check for duplicate email
+        if (
+            db.query(User)
+            .filter(User.email == user_update.email, User.id != user_id)
+            .first()
+        ):
+            raise HTTPException(status_code=400, detail="Email already registered")
+        user.email = user_update.email
+    if user_update.avatar is not None:
+        user.avatar = user_update.avatar
+    if user_update.password is not None:
+        user.hashed_password = get_password_hash(user_update.password)
     db.commit()
     db.refresh(user)
     return user
 
 
-@app.get("/users/")
-def list_users(db: Session = Depends(get_db)):
-    return db.query(User).all()
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return {"ok": True}
