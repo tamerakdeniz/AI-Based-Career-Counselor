@@ -2,7 +2,6 @@
      <img src="https://github.com/user-attachments/assets/90ead193-6d6d-4333-8237-4d10f5de5440" alt="logo" width="400"/>
 </p>
 
-
 ---
 
 # 🚀 Pathyvo - AI Tabanlı Kişisel Kariyer Mentörü
@@ -97,7 +96,15 @@ Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https:/
 ### 🖼️ Sprint Board Görseli
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/294b1f48-672f-4a9a-b2a0-ed24adebe3f0" alt="Sprint-1 Board Screenshot">
+  <img src="https://github.com/user-attachments/assets/294b1f48-672f-4a9a-b2a0-ed24adebe3f0" alt="Sprint-1 Dashboard"/><br>
+  <sub>🔎 Sprint 1 planlama ve görevlerin board görünümü</sub>
+</p>
+
+---
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a305e1c5-b413-45b0-afa1-863e876c92ec" alt="End of the Sprint-1"/><br>
+  <sub>✅ Sprint 1 tamamlandıktan sonraki son durum</sub>
 </p>
 
 </details>
