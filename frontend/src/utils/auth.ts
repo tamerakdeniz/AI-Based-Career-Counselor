@@ -1,5 +1,6 @@
+import axiosInstance from '../api/axiosInstance.ts';
+
 // Authentication utility functions
-// Replace these with your FastAPI integration
 
 export const isAuthenticated = (): boolean => {
   return localStorage.getItem('isAuthenticated') === 'true';
@@ -9,6 +10,7 @@ export const getCurrentUser = () => {
   if (!isAuthenticated()) return null;
   
   return {
+    id: localStorage.getItem('userId') || '',
     email: localStorage.getItem('userEmail') || '',
     name: localStorage.getItem('userName') || 'User'
   };
@@ -16,32 +18,58 @@ export const getCurrentUser = () => {
 
 export const logout = (): void => {
   localStorage.removeItem('isAuthenticated');
+  localStorage.removeItem('accessToken');
   localStorage.removeItem('userEmail');
   localStorage.removeItem('userName');
+  localStorage.removeItem('userId');
 };
 
-// Mock function to simulate API authentication
+// Real API authentication function
 export const authenticateUser = async (email: string, password: string): Promise<boolean> => {
-  // Replace this with your actual FastAPI authentication call
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Mock validation
-      resolve(email === 'tamer@example.com' && password === 'password');
-    }, 1000);
-  });
+  try {
+    const response = await axiosInstance.post('/auth/login', {
+      email,
+      password
+    });
+    
+    const { access_token, user_id, user_email, user_name } = response.data;
+    
+    // Store authentication data
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('accessToken', access_token);
+    localStorage.setItem('userEmail', user_email);
+    localStorage.setItem('userName', user_name);
+    localStorage.setItem('userId', user_id.toString());
+    
+    return true;
+  } catch (error) {
+    console.error('Authentication error:', error);
+    return false;
+  }
 };
 
-// Mock function to simulate user registration
+// Real API registration function
 export const registerUser = async (userData: {
   name: string;
   email: string;
   password: string;
 }): Promise<boolean> => {
-  // Replace this with your actual FastAPI registration call
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Mock successful registration
-      resolve(true);
-    }, 1500);
-  });
+  try {
+    await axiosInstance.post('/users/', userData);
+    return true;
+  } catch (error) {
+    console.error('Registration error:', error);
+    return false;
+  }
+};
+
+// Get current user from API
+export const getCurrentUserFromAPI = async () => {
+  try {
+    const response = await axiosInstance.get('/auth/me');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching current user:', error);
+    return null;
+  }
 };

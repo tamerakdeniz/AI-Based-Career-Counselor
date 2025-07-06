@@ -1,15 +1,30 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import SessionLocal, engine, Base
 from app.models.user import User
 from app.core.security import get_password_hash, verify_password
+from app.core.config import settings
+from app.api.routes_auth import router as auth_router
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include auth routes
+app.include_router(auth_router)
 
 
 # Dependency to get DB session
@@ -89,7 +104,7 @@ def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     if user_update.name is not None:
-        user.name = user_update.name
+        setattr(user, 'name', str(user_update.name))
     if user_update.email is not None:
         # Check for duplicate email
         if (
@@ -98,11 +113,11 @@ def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get
             .first()
         ):
             raise HTTPException(status_code=400, detail="Email already registered")
-        user.email = user_update.email
+        setattr(user, 'email', str(user_update.email))
     if user_update.avatar is not None:
-        user.avatar = user_update.avatar
+        setattr(user, 'avatar', str(user_update.avatar) if user_update.avatar else None)
     if user_update.password is not None:
-        user.hashed_password = get_password_hash(user_update.password)
+        setattr(user, 'hashed_password', get_password_hash(user_update.password))
     db.commit()
     db.refresh(user)
     return user

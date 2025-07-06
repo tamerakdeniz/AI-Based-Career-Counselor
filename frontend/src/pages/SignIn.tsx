@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { authenticateUser } from '../utils/auth';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -15,16 +16,10 @@ const SignIn: React.FC = () => {
     setIsLoading(true);
     setError('');
 
-    // Mock authentication - replace with your FastAPI integration
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const success = await authenticateUser(email, password);
       
-      // Mock validation
-      if (email === 'tamer@example.com' && password === 'password') {
-        // Store mock auth state
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userEmail', email);
+      if (success) {
         navigate('/dashboard');
       } else {
         setError('Invalid email or password');
