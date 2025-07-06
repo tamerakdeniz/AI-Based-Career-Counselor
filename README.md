@@ -54,4 +54,9 @@ Backlog düzeni ve story Seçimleri:
 Daily Scrum: Daily scrum toplantıları Google meet üzerinden her akşam 9 buçukta gerçekleştirilmiştir.
 Daily scrum toplantısı örneği jpeg veya Word olarak Read.me tarafımızdan paylaşılmaktadır.
 ![image](https://github.com/user-attachments/assets/76685bd4-2b87-417a-b713-9411b8266c53)
+![Uploading![Uploading Ekran Resmi 2025-06-23 21.15.13![Uploading C902423E-E436-4B36-8430-9E871F839C70.jpg…]()
+.png…]()![Uploading Ekran Resmi 2025-07-05 21.56.00.png…]()
+
+ Ekran Resmi 2025-06-25 21.41.45.png…]()
+![Uploading Ekran Resmi 2025-07-02 22.00.45.png…]()
 
