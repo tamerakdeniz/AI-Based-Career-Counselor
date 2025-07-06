@@ -22,7 +22,7 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 
 | İsim                   | Rol                                                 | Socials                                           |
 |------------------------|-----------------------------------------------------|--------------------------------------------------|
-| *Mustafa Tamer AKDENİZ*| Product Owner / AI-Prompt Engineer / Frontend Dev.  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/mustafatamerakdeniz/) |
+| *Mustafa Tamer AKDENİZ*| Product Owner / AI-Prompt Engineer / Frontend Dev.  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/tamerakdeniz/) |
 | *Yusuf Cemal KARATAŞ*  | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/yusuf-cem%C3%A2l-karata%C5%9F-b855a624b/) |
 | *Öyküm İlayda DEMİR*   | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/öyküm-ilayda-demir-5a7aba2a0/) |
 | *İkra Selma KENESARI*  | Scrum Master / Frontend Developer                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1) |
