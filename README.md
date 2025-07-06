@@ -35,8 +35,6 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 - Adım adım izlenebilir kariyer planları sunmak
 - Kişiye özel chatbot ile yolculuk boyunca destek olmak
 
----
-
 ## 👨‍💻 Teknolojik Altyapı
 
 | Katman        | Teknoloji / Araç                              |
