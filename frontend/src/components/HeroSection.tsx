@@ -35,7 +35,7 @@ const HeroSection: React.FC = () => {
           {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
             <Link
-              to="/dashboard"
+              to="/signup"
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 flex items-center space-x-3 hover:shadow-xl hover:scale-105 group"
             >
               <span>Start Your Journey</span>

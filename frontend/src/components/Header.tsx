@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, Settings, LogOut, Menu, X } from 'lucide-react';
-import { mockUser } from '../data/mockData';
+import { getCurrentUser, logout } from '../utils/auth';
 
 interface HeaderProps {
   showBackButton?: boolean;
@@ -13,8 +13,14 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  
+  const currentUser = getCurrentUser();
 
-  const isChat = location.pathname.includes('/chat');
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -33,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
             )}
             
             {!showBackButton && (
-              <Link to="/" className="flex items-center space-x-3">
+              <Link to="/dashboard" className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-lg">P</span>
                 </div>
@@ -70,18 +76,18 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                 className="flex items-center space-x-3 text-gray-700 hover:text-gray-900 transition-colors"
               >
                 <img
-                  src={mockUser.avatar}
-                  alt={mockUser.name}
+                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
+                  alt={currentUser?.name || 'User'}
                   className="h-8 w-8 rounded-full object-cover"
                 />
-                <span className="font-medium">{mockUser.name}</span>
+                <span className="font-medium">{currentUser?.name || 'User'}</span>
               </button>
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">{mockUser.name}</p>
-                    <p className="text-xs text-gray-500">{mockUser.email}</p>
+                    <p className="text-sm font-medium text-gray-900">{currentUser?.name || 'User'}</p>
+                    <p className="text-xs text-gray-500">{currentUser?.email || ''}</p>
                   </div>
                   <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     <User className="h-4 w-4" />
@@ -91,7 +97,10 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                     <Settings className="h-4 w-4" />
                     <span>Settings</span>
                   </button>
-                  <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
                     <LogOut className="h-4 w-4" />
                     <span>Sign Out</span>
                   </button>
@@ -107,13 +116,13 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
             <div className="px-4 py-3 space-y-1">
               <div className="flex items-center space-x-3 mb-3">
                 <img
-                  src={mockUser.avatar}
-                  alt={mockUser.name}
+                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
+                  alt={currentUser?.name || 'User'}
                   className="h-8 w-8 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-medium text-gray-900">{mockUser.name}</p>
-                  <p className="text-xs text-gray-500">{mockUser.email}</p>
+                  <p className="font-medium text-gray-900">{currentUser?.name || 'User'}</p>
+                  <p className="text-xs text-gray-500">{currentUser?.email || ''}</p>
                 </div>
               </div>
               <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
@@ -124,7 +133,10 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </button>
-              <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
+              <button 
+                onClick={handleLogout}
+                className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              >
                 <LogOut className="h-4 w-4" />
                 <span>Sign Out</span>
               </button>

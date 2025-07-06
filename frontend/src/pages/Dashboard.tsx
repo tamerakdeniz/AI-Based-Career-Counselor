@@ -2,9 +2,11 @@ import React from 'react';
 import { Plus, TrendingUp, Award, Clock } from 'lucide-react';
 import Header from '../components/Header';
 import RoadmapCard from '../components/RoadmapCard';
-import { mockRoadmaps, mockUser } from '../data/mockData';
+import { mockRoadmaps } from '../data/mockData';
+import { getCurrentUser } from '../utils/auth';
 
 const Dashboard: React.FC = () => {
+  const currentUser = getCurrentUser();
   const totalMilestones = mockRoadmaps.reduce((sum, roadmap) => sum + roadmap.totalMilestones, 0);
   const completedMilestones = mockRoadmaps.reduce((sum, roadmap) => sum + roadmap.completedMilestones, 0);
   const averageProgress = Math.round(mockRoadmaps.reduce((sum, roadmap) => sum + roadmap.progress, 0) / mockRoadmaps.length);
@@ -20,7 +22,7 @@ const Dashboard: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-4 sm:mb-0">
                 <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-                  Welcome back, {mockUser.name}! 🚀
+                  Welcome back, {currentUser?.name || 'User'}! 🚀
                 </h1>
                 <p className="text-blue-100 text-sm sm:text-base">
                   Ready to continue your learning journey? Your mentors are here to guide you.
@@ -28,8 +30,8 @@ const Dashboard: React.FC = () => {
               </div>
               <div className="flex-shrink-0">
                 <img
-                  src={mockUser.avatar}
-                  alt={mockUser.name}
+                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
+                  alt={currentUser?.name || 'User'}
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white/20 object-cover"
                 />
               </div>

@@ -126,7 +126,7 @@ const PricingSection: React.FC = () => {
 
                 {/* CTA button */}
                 <Link
-                  to="/dashboard"
+                  to="/signup"
                   className={`w-full py-3 px-6 rounded-xl font-semibold text-center transition-all duration-200 block ${
                     plan.popular
                       ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-lg hover:scale-105'

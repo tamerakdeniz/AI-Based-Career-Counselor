@@ -37,11 +37,14 @@ const LandingHeader: React.FC = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
-            <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-              Sign In
-            </button>
             <Link
-              to="/dashboard"
+              to="/signin"
+              className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/signup"
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center space-x-2 hover:shadow-lg hover:scale-105"
             >
               <span>Get Started</span>
@@ -81,11 +84,14 @@ const LandingHeader: React.FC = () => {
                 Testimonials
               </a>
               <div className="pt-4 border-t border-gray-100">
-                <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium mb-3 block">
-                  Sign In
-                </button>
                 <Link
-                  to="/dashboard"
+                  to="/signin"
+                  className="text-gray-600 hover:text-blue-600 transition-colors font-medium mb-3 block"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to="/signup"
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors inline-flex items-center space-x-2"
                 >
                   <span>Get Started</span>
