@@ -120,11 +120,6 @@ Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https:/
 - Önerilen kaynaklar (kurslar, makaleler) bölümü
 - API çağrılarının tamamlanması ve testleri
 
-### Çıktılar
-- AI destekli sohbet akışı
-- Kullanıcıya özel roadmap ekranı
-- Güncellenebilir profil ve roadmap tercihleri
-
 </details>
 
 ---
@@ -144,11 +139,6 @@ Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https:/
 - Yol haritası final düzenlemeleri
 - Kullanıcı başarı rozetleri ve mini motivasyon mesajları
 - Son demo sunumu ve review
-
-### Çıktılar
-- Yayına hazır stabil sürüm
-- Tamamlanmış demo ve dökümantasyon
-- Kullanıcı dostu final ekranlar
 
 </details>
 
