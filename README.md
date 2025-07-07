@@ -89,11 +89,10 @@ Proje backlog'u ve sprint planlaması **Miro** üzerinden yönetilmektedir.
 - Örnek roadmap görüntüleme
 
 ### 🤝🏻 Daily Scrum
-
 Daily Scrum toplantıları Google Meet üzerinden yapılmaktadır.  
-Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/1Owg14139fcCrq8VjDjp0u50jFioauFm0?usp=sharing)’da toplanmaktadır.  
+Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/1Owg14139fcCrq8VjDjp0u50jFioauFm0?usp=sharing)’da toplanmaktadır.
 
-### 🖼️ Sprint Board Görseli
+### 🖼️ Sprint Board Görselleri
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/294b1f48-672f-4a9a-b2a0-ed24adebe3f0" alt="Sprint-1 Dashboard"/><br>
@@ -106,6 +105,12 @@ Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https:/
   <img src="https://github.com/user-attachments/assets/a305e1c5-b413-45b0-afa1-863e876c92ec" alt="End of the Sprint-1"/><br>
   <sub>✅ Sprint 1 tamamlandıktan sonraki son durum</sub>
 </p>
+
+### 🧐 Sprint Review
+Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı ve İrem Kılıç katılmıştır. Toplantıda, sprint çıktıları ve genel ilerleme değerlendirilmiştir. Güncel tasarım ve projenin gidişatı ekip ve paydaşlar tarafından beğenilmiş, mevcut yön üzerinde devam edilmesine karar verilmiştir. Tamamlanamayan görevler, öncelikli olarak 2. sprint’e devredilmiştir. Ayrıca, eklenmesi gereken yeni özellikler ve çıkarılması planlanan özellikler üzerine konuşulmuş ve bu konularda yeni task'lar tanımlanmıştır.
+
+### 🔄 Sprint Retrospective
+Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te öncelikli olarak ele alınacağını belirtmiştir. Özellikle frontend geliştirmelerinin hızlandırılması ve backend entegrasyonu test edilebilirliğinin artırılması için çalışmaya hazır bir yapı oluşturulması kararlaştırılmıştır. Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır. 2. sprint için tasarım ve genel planlama konuşulmuş, motivasyon yüksek şekilde yeni sprint'e geçilmesine karar verilmiştir.
 
 </details>
 
