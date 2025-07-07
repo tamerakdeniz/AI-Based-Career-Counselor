@@ -10,6 +10,7 @@ export interface Roadmap {
   estimatedTimeToComplete: string;
   createdAt: string;
   milestones: Milestone[];
+  roadmapNodes?: RoadmapNode[];
 }
 
 export interface Milestone {
@@ -19,6 +20,24 @@ export interface Milestone {
   completed: boolean;
   dueDate?: string;
   resources?: string[];
+}
+
+export interface RoadmapNode {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  completed: boolean;
+  current: boolean;
+  available: boolean;
+  skills?: string[];
+  estimatedDuration?: string;
+  prerequisites?: string[];
+  resources?: {
+    title: string;
+    type: 'article' | 'video' | 'course' | 'book' | 'practice';
+    url?: string;
+  }[];
 }
 
 export interface ChatMessage {
