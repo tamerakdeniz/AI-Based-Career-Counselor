@@ -83,19 +83,6 @@ Proje backlog'u ve sprint planlaması **Miro** üzerinden yönetilmektedir.
 - Roadmap placeholder yapısı
 - Chat sisteminin temel ekran tasarımı ve dummy veri entegrasyonu
 
-### 🎯 Sprint Tahmini Story Point
-- Toplam: **45 SP**
-
-### ✅ Sprint Tamamlama Mantığı
-Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
-Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
-Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
-
-### ✅ Çıktılar
-- Çalışan ilk versiyon dashboard
-- Bağlantılı dummy chat akışı
-- Örnek roadmap görüntüleme
-
 ### ✍🏻 Sprint Notları
 - Sprint başlangıcında kapsam ve öncelikler netleştirildi.
 - Backend ve frontend entegrasyonu için temel bağlantılar kuruldu.
@@ -109,6 +96,19 @@ Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test ed
 - Sprint planlama, roadmap ve task detaylandırma süreçlerinde **Miro** aktif şekilde kullanıldı.
 - Planlanan işlerin büyük çoğunluğu başarıyla tamamlandı, bazı küçük görevler ikinci sprint’e devredildi.
 - Ekip içi iletişim düzenli **Daily Scrum** toplantılarıyla (Google Meet) sürdürüldü, ayrıca anlık koordinasyon için WhatsApp grubu kullanıldı.
+
+### 🎯 Sprint Tahmini Story Point
+- Toplam: **45 SP**
+
+### ✅ Sprint Tamamlama Mantığı
+Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
+Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
+Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
+
+### ✅ Çıktılar
+- Çalışan ilk versiyon dashboard
+- Bağlantılı dummy chat akışı
+- Örnek roadmap görüntüleme
 
 ### 🤝🏻 Daily Scrum
 Daily Scrum toplantıları Google Meet üzerinden yapılmaktadır.  
