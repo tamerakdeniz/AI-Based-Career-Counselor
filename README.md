@@ -12,6 +12,7 @@
 
 ## 🧑‍🤝‍🧑 Takım Üyeleri
 
+<<<<<<< HEAD
 | İsim                    | Rol                                                | Socials                                                                                                                                                          |
 | ----------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | _Mustafa Tamer AKDENİZ_ | Product Owner / AI-Prompt Engineer / Frontend Dev. | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/tamerakdeniz/)                        |
@@ -19,6 +20,15 @@
 | _Öyküm İlayda DEMİR_    | Backend Developer                                  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/öyküm-ilayda-demir-5a7aba2a0/)        |
 | _İkra Selma KENESARI_   | Scrum Master / Frontend Developer                  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1)                           |
 | _İrem KILIÇ_            | Frontend Developer                                 | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
+=======
+| İsim                   | Rol                                                 | Socials                                           |
+|------------------------|-----------------------------------------------------|--------------------------------------------------|
+| *Mustafa Tamer AKDENİZ*| Product Owner / AI-Prompt Engineer / Frontend Dev.  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/tamerakdeniz/) |
+| *Yusuf Cemal KARATAŞ*  | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/yusuf-cemal-karatas/) |
+| *Öyküm İlayda DEMİR*   | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/öyküm-ilayda-demir-5a7aba2a0/) |
+| *İkra Selma KENESARI*  | Scrum Master / Frontend Developer                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1) |
+| *İrem KILIÇ*           | Frontend Developer                                  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
+>>>>>>> 09ae165ee24b563604984d7f009bf10f9517dd0a
 
 ---
 
@@ -61,6 +71,7 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 
 ## 👨‍💻 Teknolojik Altyapı
 
+<<<<<<< HEAD
 | Katman           | Teknoloji / Araç                             |
 | ---------------- | -------------------------------------------- |
 | **LLM**          | Gemini API, LangChain                        |
@@ -69,6 +80,16 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 | **Veritabanı**   | SQLite / Firebase                            |
 | **Veri Kaynağı** | O\*NET, LinkedIn API, kariyer.net scraping   |
 | **Analitik**     | Python (Pandas, Scikit-learn), Google Charts |
+=======
+| Katman        | Teknoloji / Araç                              |
+|---------------|-----------------------------------------------|
+| **LLM**       | Gemini API, LangChain                         |
+| **Backend**   | FastAPI / Node.js                             |
+| **Frontend**  | React (TypeScript & JSX), TailwindCSS         |
+| **Veritabanı**| SQLite / Firebase                             |
+| **Veri Kaynağı** | O\*NET, LinkedIn API, kariyer.net scraping |
+| **Analitik**  | Python (Pandas, Scikit-learn), Google Charts |
+>>>>>>> 09ae165ee24b563604984d7f009bf10f9517dd0a
 
 ---
 
@@ -109,7 +130,10 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 - Chat sisteminin temel ekran tasarımı ve dummy veri entegrasyonu
 
 ### ✍🏻 Sprint Notları
+<<<<<<< HEAD
 
+=======
+>>>>>>> 09ae165ee24b563604984d7f009bf10f9517dd0a
 - Sprint başlangıcında kapsam ve öncelikler netleştirildi.
 - Backend ve frontend entegrasyonu için temel bağlantılar kuruldu.
 - Kullanılan teknolojiler ve kullanım alanları:
@@ -124,11 +148,17 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 - Ekip içi iletişim düzenli **Daily Scrum** toplantılarıyla (Google Meet) sürdürüldü, ayrıca anlık koordinasyon için WhatsApp grubu kullanıldı.
 
 ### 🎯 Sprint Tahmini Story Point
+<<<<<<< HEAD
 
 - Toplam: **45 SP**
 
 ### ✅ Sprint Tamamlama Mantığı
 
+=======
+- Toplam: **45 SP**
+
+### ✅ Sprint Tamamlama Mantığı
+>>>>>>> 09ae165ee24b563604984d7f009bf10f9517dd0a
 Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
 Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
 Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
@@ -159,13 +189,19 @@ Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https:/
 </p>
 
 ### 🧐 Sprint Review
+<<<<<<< HEAD
 
+=======
+>>>>>>> 09ae165ee24b563604984d7f009bf10f9517dd0a
 Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı ve İrem Kılıç katılmıştır.  
 Toplantıda, sprint çıktıları ve genel ilerleme değerlendirilmiştir. Güncel tasarım ve projenin gidişatı ekip ve paydaşlar tarafından beğenilmiş, mevcut yön üzerinde devam edilmesine karar verilmiştir.  
 Tamamlanamayan görevler, öncelikli olarak 2. sprint’e devredilmiştir. Ayrıca, eklenmesi gereken yeni özellikler ve çıkarılması planlanan özellikler üzerine konuşulmuş ve bu konularda yeni task'lar tanımlanmıştır.
 
 ### 🔄 Sprint Retrospective
+<<<<<<< HEAD
 
+=======
+>>>>>>> 09ae165ee24b563604984d7f009bf10f9517dd0a
 Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te öncelikli olarak ele alınacağını belirtmiştir.  
 Özellikle frontend geliştirmelerinin hızlandırılması ve backend entegrasyonu test edilebilirliğinin artırılması için çalışmaya hazır bir yapı oluşturulması kararlaştırılmıştır.  
 Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır.  
@@ -260,7 +296,6 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 </p>
 
 ---
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/d326fd99-dd34-4f86-9ed6-0714596c63ed">
 </p>
@@ -270,7 +305,6 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 </p>
 
 ---
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7cf4e55d-af3f-4d25-8515-c8eb5f9700f8">
 </p>
@@ -280,7 +314,6 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 </p>
 
 ---
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/b5f3ca51-7850-4e86-bbba-a93d63a3a89f">
 </p>
