@@ -1,6 +1,6 @@
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -52,13 +52,13 @@ const SignUp: React.FC = () => {
     try {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Mock successful registration
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userEmail', formData.email);
       localStorage.setItem('userName', formData.name);
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       setError('An error occurred during registration. Please try again.');
     } finally {
       setIsLoading(false);
@@ -66,13 +66,13 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full blur-3xl opacity-10 transform translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-green-400 to-blue-500 rounded-full blur-3xl opacity-10 transform -translate-x-1/2 translate-y-1/2"></div>
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4 overflow-hidden relative">
+      {/* Background decoration - constrained to viewport */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full blur-3xl opacity-10 transform translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-green-400 to-blue-500 rounded-full blur-3xl opacity-10 transform -translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
 
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-md z-10">
         {/* Back to home button */}
         <Link
           to="/"
@@ -94,8 +94,12 @@ const SignUp: React.FC = () => {
                 Pathyvo
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Create Your Account</h1>
-            <p className="text-gray-600">Start your career transformation journey</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Create Your Account
+            </h1>
+            <p className="text-gray-600">
+              Start your career transformation journey
+            </p>
           </div>
 
           {/* Error message */}
@@ -108,7 +112,10 @@ const SignUp: React.FC = () => {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Full Name
               </label>
               <div className="relative">
@@ -129,7 +136,10 @@ const SignUp: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Email Address
               </label>
               <div className="relative">
@@ -150,7 +160,10 @@ const SignUp: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -182,7 +195,10 @@ const SignUp: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Confirm Password
               </label>
               <div className="relative">
@@ -219,18 +235,24 @@ const SignUp: React.FC = () => {
                   id="terms"
                   type="checkbox"
                   checked={acceptTerms}
-                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  onChange={e => setAcceptTerms(e.target.checked)}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
               </div>
               <div className="ml-3 text-sm">
                 <label htmlFor="terms" className="text-gray-700">
                   I agree to the{' '}
-                  <button type="button" className="text-blue-600 hover:text-blue-700">
+                  <button
+                    type="button"
+                    className="text-blue-600 hover:text-blue-700"
+                  >
                     Terms and Conditions
                   </button>{' '}
                   and{' '}
-                  <button type="button" className="text-blue-600 hover:text-blue-700">
+                  <button
+                    type="button"
+                    className="text-blue-600 hover:text-blue-700"
+                  >
                     Privacy Policy
                   </button>
                 </label>
@@ -250,7 +272,10 @@ const SignUp: React.FC = () => {
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Already have an account?{' '}
-              <Link to="/signin" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link
+                to="/signin"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Sign in
               </Link>
             </p>
