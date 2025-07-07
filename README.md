@@ -86,6 +86,11 @@ Proje backlog'u ve sprint planlaması **Miro** üzerinden yönetilmektedir.
 ### 🎯 Sprint Tahmini Story Point
 - Toplam: **45 SP**
 
+### ✅ Sprint Tamamlama Mantığı
+Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
+Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
+Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
+
 ### ✅ Çıktılar
 - Çalışan ilk versiyon dashboard
 - Bağlantılı dummy chat akışı
@@ -133,11 +138,6 @@ Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te �
 Özellikle frontend geliştirmelerinin hızlandırılması ve backend entegrasyonu test edilebilirliğinin artırılması için çalışmaya hazır bir yapı oluşturulması kararlaştırılmıştır.  
 Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır.  
 2. sprint için tasarım ve genel planlama konuşulmuş, motivasyon yüksek şekilde yeni sprint'e geçilmesine karar verilmiştir.
-
-### ✅ Sprint Tamamlama Mantığı
-Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
-Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
-Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
 
 </details>
 
