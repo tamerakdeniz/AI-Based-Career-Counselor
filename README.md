@@ -83,10 +83,27 @@ Proje backlog'u ve sprint planlaması **Miro** üzerinden yönetilmektedir.
 - Roadmap placeholder yapısı
 - Chat sisteminin temel ekran tasarımı ve dummy veri entegrasyonu
 
+### 🎯 Sprint Tahmini Story Point
+- Toplam: **45 SP**
+
 ### ✅ Çıktılar
 - Çalışan ilk versiyon dashboard
 - Bağlantılı dummy chat akışı
 - Örnek roadmap görüntüleme
+
+### ✍🏻 Sprint Notları
+- Sprint başlangıcında kapsam ve öncelikler netleştirildi.
+- Backend ve frontend entegrasyonu için temel bağlantılar kuruldu.
+- Kullanılan teknolojiler ve kullanım alanları:
+  - **Python (FastAPI)**: Backend API geliştirmesi ve iş mantığı
+  - **React (TypeScript)**: Kullanıcı arayüzü geliştirmesi
+  - **TailwindCSS**: Hızlı ve esnek arayüz tasarımı
+  - **SQLite**: Prototip veri saklama ve hızlı kurulum için hafif veritabanı
+  - **JWT Token Authentication**: Kullanıcı kimlik doğrulama ve oturum yönetimi
+- Proje yönetimi ve süreç takibi için **GitHub Projects** kullanılmasına karar verildi.
+- Sprint planlama, roadmap ve task detaylandırma süreçlerinde **Miro** aktif şekilde kullanıldı.
+- Planlanan işlerin büyük çoğunluğu başarıyla tamamlandı, bazı küçük görevler ikinci sprint’e devredildi.
+- Ekip içi iletişim düzenli **Daily Scrum** toplantılarıyla (Google Meet) sürdürüldü, ayrıca anlık koordinasyon için WhatsApp grubu kullanıldı.
 
 ### 🤝🏻 Daily Scrum
 Daily Scrum toplantıları Google Meet üzerinden yapılmaktadır.  
@@ -107,10 +124,20 @@ Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https:/
 </p>
 
 ### 🧐 Sprint Review
-Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı ve İrem Kılıç katılmıştır. Toplantıda, sprint çıktıları ve genel ilerleme değerlendirilmiştir. Güncel tasarım ve projenin gidişatı ekip ve paydaşlar tarafından beğenilmiş, mevcut yön üzerinde devam edilmesine karar verilmiştir. Tamamlanamayan görevler, öncelikli olarak 2. sprint’e devredilmiştir. Ayrıca, eklenmesi gereken yeni özellikler ve çıkarılması planlanan özellikler üzerine konuşulmuş ve bu konularda yeni task'lar tanımlanmıştır.
+Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı ve İrem Kılıç katılmıştır.  
+Toplantıda, sprint çıktıları ve genel ilerleme değerlendirilmiştir. Güncel tasarım ve projenin gidişatı ekip ve paydaşlar tarafından beğenilmiş, mevcut yön üzerinde devam edilmesine karar verilmiştir.  
+Tamamlanamayan görevler, öncelikli olarak 2. sprint’e devredilmiştir. Ayrıca, eklenmesi gereken yeni özellikler ve çıkarılması planlanan özellikler üzerine konuşulmuş ve bu konularda yeni task'lar tanımlanmıştır.
 
 ### 🔄 Sprint Retrospective
-Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te öncelikli olarak ele alınacağını belirtmiştir. Özellikle frontend geliştirmelerinin hızlandırılması ve backend entegrasyonu test edilebilirliğinin artırılması için çalışmaya hazır bir yapı oluşturulması kararlaştırılmıştır. Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır. 2. sprint için tasarım ve genel planlama konuşulmuş, motivasyon yüksek şekilde yeni sprint'e geçilmesine karar verilmiştir.
+Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te öncelikli olarak ele alınacağını belirtmiştir.  
+Özellikle frontend geliştirmelerinin hızlandırılması ve backend entegrasyonu test edilebilirliğinin artırılması için çalışmaya hazır bir yapı oluşturulması kararlaştırılmıştır.  
+Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır.  
+2. sprint için tasarım ve genel planlama konuşulmuş, motivasyon yüksek şekilde yeni sprint'e geçilmesine karar verilmiştir.
+
+### ✅ Sprint Tamamlama Mantığı
+Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
+Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
+Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
 
 </details>
 
