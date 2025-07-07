@@ -4,20 +4,13 @@
 
 ---
 
-# 🚀 Pathyvo - AI Tabanlı Kişisel Kariyer Mentörü
-
-Pathyvo, öğrencilere ve kariyer değiştirmek isteyen bireylere kişiselleştirilmiş kariyer yolları sunan, AI tabanlı bir kariyer ve kişisel gelişim platformudur.  
-Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelleştirilmiş roadmap'ler oluşturur ve AI destekli sohbet özelliğiyle birebir mentorluk sağlar.
-
----
-
-## 🏆 Takım İsmi
+# 🏆 Takım İsmi
 
 **Pathyvist**
 
 ---
 
-## 🧑‍🤝‍🧑 Takım
+## 🧑‍🤝‍🧑 Takım Üyeleri
 
 | İsim                   | Rol                                                 | Socials                                           |
 |------------------------|-----------------------------------------------------|--------------------------------------------------|
@@ -27,12 +20,44 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 | *İkra Selma KENESARI*  | Scrum Master / Frontend Developer                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1) |
 | *İrem KILIÇ*           | Frontend Developer                                  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
 
-## 🌟 Projenin Amacı
+---
+
+# 🚀 Ürün İsmi
+
+**Pathyvo - AI Tabanlı Kişisel Kariyer Mentörü**
+
+---
+
+## 💡 Ürün Açıklaması
+
+Pathyvo, öğrencilere ve kariyer değiştirmek isteyen bireylere kişiselleştirilmiş kariyer yolları sunan, AI tabanlı bir kariyer ve kişisel gelişim platformudur.  
+Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelleştirilmiş roadmap'ler oluşturur ve AI destekli sohbet özelliğiyle birebir mentorluk sağlar.
+
+---
+
+## ✨ Ürün Özellikleri
 
 - Öğrencilerin veya profesyonellerin kendi yeteneklerini keşfetmesini sağlamak
 - Kendi içsel potansiyellerine uygun roadmap'ler çıkarmak
 - Adım adım izlenebilir kariyer planları sunmak
 - Kişiye özel chatbot ile yolculuk boyunca destek olmak
+
+---
+
+## 🎯 Hedef Kitle
+
+- Üniversite öğrencileri
+- Yeni mezunlar
+- Kariyerini değiştirmek veya yönlendirmek isteyen profesyoneller
+- Kendi yol haritasını oluşturmak isteyen bireyler
+
+---
+
+## 🗺️ Product Backlog
+
+🔗 **[Product Backlog (Miro Board)](https://miro.com/app/live-embed/uXjVIkGKydQ=/?embedMode=view_only_without_ui&moveToViewport=-3790%2C-427%2C7123%2C3550&embedId=848849262162)**
+
+---
 
 ## 👨‍💻 Teknolojik Altyapı
 
@@ -50,9 +75,7 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 ## 💼 Scrum Süreci ve Sprint Planlaması
 
 Proje geliştirme süreci Scrum metodolojisine uygun şekilde 3 sprint olarak planlanmıştır.  
-Proje backlog'u ve sprint planlaması **Miro** üzerinden yönetilmektedir.
-
-🔗 **[Product Backlog (Miro Board)](https://miro.com/app/live-embed/uXjVIkGKydQ=/?embedMode=view_only_without_ui&moveToViewport=-3790%2C-427%2C7123%2C3550&embedId=848849262162)**
+Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/uXjVIkGKydQ=/?embedMode=view_only_without_ui&moveToViewport=-3790%2C-427%2C7123%2C3550&embedId=848849262162)** üzerinden yönetilmektedir.
 
 ---
 
@@ -210,7 +233,6 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
   <img src="https://github.com/user-attachments/assets/49b670ea-7b2a-491a-81c9-0da0153c753a">
 </p>
 
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/f394003f-4745-43b9-afad-1ef4aba304ba">
 </p>
@@ -219,13 +241,11 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
   <img src="https://github.com/user-attachments/assets/c0b02632-22d0-4e40-83cd-60b0ad9fbc56">
 </p>
 
-
 <p align="center">
   <h3 align="center">📄 Dashboard</h3>
 </p>
 
 ---
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/d326fd99-dd34-4f86-9ed6-0714596c63ed">
 </p>
@@ -235,7 +255,6 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 </p>
 
 ---
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7cf4e55d-af3f-4d25-8515-c8eb5f9700f8">
 </p>
@@ -245,7 +264,6 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 </p>
 
 ---
-
 <p align="center">
   <img src="https://github.com/user-attachments/assets/b5f3ca51-7850-4e86-bbba-a93d63a3a89f">
 </p>
@@ -255,5 +273,3 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 ## 📄 Lisans
 
 MIT License. Ayrıntılar için `LICENSE` dosyasına bakabilirsiniz.
-
----
