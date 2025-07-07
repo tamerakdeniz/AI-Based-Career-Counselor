@@ -65,7 +65,7 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 |---------------|-----------------------------------------------|
 | **LLM**       | Gemini API, LangChain                         |
 | **Backend**   | FastAPI / Node.js                             |
-| **Frontend**  | React.js, TailwindCSS                         |
+| **Frontend**  | React (TypeScript & JSX), TailwindCSS         |
 | **Veritabanı**| SQLite / Firebase                             |
 | **Veri Kaynağı** | O\*NET, LinkedIn API, kariyer.net scraping |
 | **Analitik**  | Python (Pandas, Scikit-learn), Google Charts |
