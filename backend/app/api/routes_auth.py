@@ -102,7 +102,7 @@ class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
 
-@auth_router.post("/register", status_code=201)
+@router.post("/register", status_code=201)
 def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
     # 1. Aynı e-posta ile kullanıcı var mı kontrol et
     existing_user = db.query(User).filter(User.email == register_data.email).first()
