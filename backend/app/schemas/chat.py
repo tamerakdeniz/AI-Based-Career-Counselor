@@ -8,6 +8,7 @@ class ChatMessageBase(BaseModel):
 
 class ChatMessageCreate(ChatMessageBase):
     roadmap_id: int
+    user_id: int
 
 class ChatMessage(ChatMessageBase):
     id: int

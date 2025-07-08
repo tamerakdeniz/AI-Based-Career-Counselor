@@ -7,6 +7,8 @@ from app.models.user import User
 from app.core.security import get_password_hash, verify_password
 from app.core.config import settings
 from app.api.routes_auth import router as auth_router
+from app.api.routes_roadmap import router as roadmap_router
+from app.api.routes_chat import router as chat_router
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
@@ -25,6 +27,8 @@ app.add_middleware(
 
 # Include auth routes
 app.include_router(auth_router)
+app.include_router(roadmap_router)
+app.include_router(chat_router)
 
 
 # Dependency to get DB session
