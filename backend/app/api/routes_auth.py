@@ -8,7 +8,7 @@ from pydantic import BaseModel, EmailStr
 
 from app.database import get_db
 from app.models.user import User
-from app.core.security import verify_password, hash_password
+from app.core.security import verify_password, get_password_hash
 from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
