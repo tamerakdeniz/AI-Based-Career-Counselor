@@ -126,7 +126,6 @@ def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    print("✅ Kullanıcı başarıyla kaydedildi:", new_user.email)  # <<< BU SATIRI EKLE
 
     # 5. Access token oluştur
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
