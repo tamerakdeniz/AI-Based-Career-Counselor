@@ -113,7 +113,7 @@ def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
         )
 
     # 2. Şifreyi hashle
-    hashed_pw = hash_password(register_data.password)
+    hashed_pw = get_password_hash(register_data.password)
 
     # 3. Yeni kullanıcı oluştur
     new_user = User(
