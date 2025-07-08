@@ -95,7 +95,7 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         "user_name": user.name
     }
 
---REGISTER--
+#--REGISTER--
 
 class RegisterRequest(BaseModel):
     name: str
