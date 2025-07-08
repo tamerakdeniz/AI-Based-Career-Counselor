@@ -1,20 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus, TrendingUp, Award, Clock } from 'lucide-react';
 import Header from '../components/Header';
 import RoadmapCard from '../components/RoadmapCard';
-import { mockRoadmaps } from '../data/mockData';
+import axiosInstance from '../api/axiosInstance';
 import { getCurrentUser } from '../utils/auth';
 
 const Dashboard: React.FC = () => {
-  const currentUser = getCurrentUser();
-  const totalMilestones = mockRoadmaps.reduce((sum, roadmap) => sum + roadmap.totalMilestones, 0);
-  const completedMilestones = mockRoadmaps.reduce((sum, roadmap) => sum + roadmap.completedMilestones, 0);
-  const averageProgress = Math.round(mockRoadmaps.reduce((sum, roadmap) => sum + roadmap.progress, 0) / mockRoadmaps.length);
+  const [user, setUser] = useState<any>(null);
+  const [roadmaps, setRoadmaps] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // Get current user (from localStorage or backend)
+        const userRes = await axiosInstance.get('/auth/me');
+        setUser(userRes.data);
+        // Get user's roadmaps
+        const roadmapsRes = await axiosInstance.get(`/roadmaps/user/${userRes.data.id}`);
+        setRoadmaps(roadmapsRes.data);
+      } catch (err: any) {
+        setError('Failed to load dashboard data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const totalMilestones = roadmaps.reduce((sum, roadmap) => sum + (roadmap.total_milestones || 0), 0);
+  const completedMilestones = roadmaps.reduce((sum, roadmap) => sum + (roadmap.completed_milestones || 0), 0);
+  const averageProgress = roadmaps.length > 0 ? Math.round(roadmaps.reduce((sum, roadmap) => sum + (roadmap.progress || 0), 0) / roadmaps.length) : 0;
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -22,7 +52,7 @@ const Dashboard: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-4 sm:mb-0">
                 <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-                  Welcome back, {currentUser?.name || 'User'}! 🚀
+                  Welcome back, {user?.name || 'User'}! 🚀
                 </h1>
                 <p className="text-blue-100 text-sm sm:text-base">
                   Ready to continue your learning journey? Your mentors are here to guide you.
@@ -30,8 +60,8 @@ const Dashboard: React.FC = () => {
               </div>
               <div className="flex-shrink-0">
                 <img
-                  src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop"
-                  alt={currentUser?.name || 'User'}
+                  src={user?.avatar || 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'}
+                  alt={user?.name || 'User'}
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white/20 object-cover"
                 />
               </div>
@@ -45,14 +75,13 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Active Roadmaps</p>
-                <p className="text-2xl font-bold text-gray-900">{mockRoadmaps.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{roadmaps.length}</p>
               </div>
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                 <TrendingUp className="h-5 w-5 text-blue-600" />
               </div>
             </div>
           </div>
-          
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
@@ -64,7 +93,6 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-          
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
@@ -76,7 +104,6 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-          
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
@@ -104,7 +131,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockRoadmaps.map((roadmap) => (
+            {roadmaps.map((roadmap) => (
               <RoadmapCard key={roadmap.id} roadmap={roadmap} />
             ))}
           </div>
@@ -125,7 +152,6 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </button>
-            
             <button className="p-4 text-left hover:bg-gray-50 rounded-lg transition-colors">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -137,7 +163,6 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </button>
-            
             <button className="p-4 text-left hover:bg-gray-50 rounded-lg transition-colors">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
