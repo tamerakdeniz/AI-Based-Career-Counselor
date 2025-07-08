@@ -8,7 +8,7 @@ from pydantic import BaseModel, EmailStr
 
 from app.database import get_db
 from app.models.user import User
-from app.core.security import verify_password, hash_password
+from app.core.security import verify_password, get_password_hash
 from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
@@ -113,7 +113,7 @@ def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
         )
 
     # 2. Şifreyi hashle
-    hashed_pw = hash_password(register_data.password)
+    hashed_pw = get_password_hash(register_data.password)
 
     # 3. Yeni kullanıcı oluştur
     new_user = User(
