@@ -10,6 +10,7 @@ from app.api.routes_auth import router as auth_router
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()

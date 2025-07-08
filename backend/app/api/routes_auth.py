@@ -8,7 +8,7 @@ from pydantic import BaseModel, EmailStr
 
 from app.database import get_db
 from app.models.user import User
-from app.core.security import verify_password
+from app.core.security import verify_password, get_password_hash
 from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
@@ -102,7 +102,7 @@ class RegisterRequest(BaseModel):
     email: EmailStr
     password: str
 
-@auth_router.post("/register", status_code=201)
+@router.post("/register", status_code=201)
 def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
     # 1. Aynı e-posta ile kullanıcı var mı kontrol et
     existing_user = db.query(User).filter(User.email == register_data.email).first()
@@ -113,7 +113,7 @@ def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
         )
 
     # 2. Şifreyi hashle
-    hashed_pw = hash_password(register_data.password)
+    hashed_pw = get_password_hash(register_data.password)
 
     # 3. Yeni kullanıcı oluştur
     new_user = User(
@@ -126,6 +126,7 @@ def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    print("✅ Kullanıcı başarıyla kaydedildi:", new_user.email)  # <<< BU SATIRI EKLE
 
     # 5. Access token oluştur
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
