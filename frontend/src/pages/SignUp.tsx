@@ -51,7 +51,6 @@ const SignUp: React.FC = () => {
 
       const data = response.data;
 
-      localStorage.setItem('token', data.access_token);
       localStorage.setItem('userEmail', data.email);
       localStorage.setItem('userName', data.name);
       navigate('/dashboard');
