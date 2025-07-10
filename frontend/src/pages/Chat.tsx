@@ -4,7 +4,8 @@ import { Send, Menu, X, MapPin } from 'lucide-react';
 import Header from '../components/Header';
 import ChatMessage from '../components/ChatMessage';
 import RoadmapSidebar from '../components/RoadmapSidebar';
-import { mockRoadmaps, mockChatMessages } from '../data/mockData';
+import axiosInstance from '../api/axiosInstance';
+import type { Roadmap } from '../types';
 import { ChatMessage as ChatMessageType } from '../types';
 
 const Chat: React.FC = () => {
@@ -14,15 +15,26 @@ const Chat: React.FC = () => {
   const [newMessage, setNewMessage] = useState('');
   const [isRoadmapOpen, setIsRoadmapOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const roadmap = mockRoadmaps.find(r => r.id === roadmapId);
-
   useEffect(() => {
-    if (roadmapId && mockChatMessages[roadmapId]) {
-      setMessages(mockChatMessages[roadmapId]);
-    }
+    const fetchRoadmap = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
+        setRoadmap(res.data);
+      } catch (err: any) {
+        setError('Failed to load roadmap.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (roadmapId) fetchRoadmap();
   }, [roadmapId]);
 
   useEffect(() => {
@@ -93,12 +105,15 @@ const Chat: React.FC = () => {
     navigate('/dashboard');
   };
 
-  if (!roadmap) {
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+  if (error || !roadmap) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Roadmap Not Found</h1>
-          <p className="text-gray-600 mb-4">The roadmap you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-4">{error || "The roadmap you're looking for doesn't exist."}</p>
           <button
             onClick={handleBack}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
