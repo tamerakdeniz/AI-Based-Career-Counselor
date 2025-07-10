@@ -17,8 +17,8 @@
 | *Mustafa Tamer AKDENİZ*| Product Owner / AI-Prompt Engineer / Frontend Dev.  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/tamerakdeniz/) |
 | *Yusuf Cemal KARATAŞ*  | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/yusuf-cemal-karatas/) |
 | *Öyküm İlayda DEMİR*   | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/öyküm-ilayda-demir-5a7aba2a0/) |
-| *İkra Selma KENESARI*  | Scrum Master / Frontend Developer                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1) |
-| *İrem KILIÇ*           | Frontend Developer                                  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
+| *İkra Selma KENESARI*  | Scrum Master                                        | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1) |
+| *İrem KILIÇ*           | ---                                                 | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
 
 ---
 
