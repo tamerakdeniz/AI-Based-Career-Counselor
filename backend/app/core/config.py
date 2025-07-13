@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     # CORS Settings
     cors_origins: list = ["http://localhost:3000", "http://localhost:5173"]
     
+    gemini_api_key: str
+    gemini_model: str = "gemini-2.5-flash"
+
     class Config:
         env_file = ".env"
 

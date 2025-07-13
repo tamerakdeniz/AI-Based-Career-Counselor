@@ -11,6 +11,7 @@ from app.api.routes_roadmap import router as roadmap_router
 from app.api.routes_chat import router as chat_router
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from app.api.routes_chat_flow import router as chat_flow_router
 
 Base.metadata.create_all(bind=engine)
 
@@ -29,6 +30,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(roadmap_router)
 app.include_router(chat_router)
+app.include_router(chat_flow_router)
 
 
 # Dependency to get DB session
