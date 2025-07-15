@@ -1,3 +1,4 @@
+# Key endpoints for test coverage: /chat/roadmap/{roadmap_id} (GET, POST)
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List

@@ -1,3 +1,4 @@
+# Key endpoints for test coverage: /roadmaps/user/{user_id}, /roadmaps/{roadmap_id}, /roadmaps/user/{user_id} (POST), /roadmaps/{roadmap_id}/milestones
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List

@@ -11,6 +11,7 @@ from app.api.routes_roadmap import router as roadmap_router
 from app.api.routes_chat import router as chat_router
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from fastapi.testclient import TestClient
 
 Base.metadata.create_all(bind=engine)
 
