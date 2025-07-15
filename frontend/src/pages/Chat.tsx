@@ -7,6 +7,7 @@ import RoadmapSidebar from '../components/RoadmapSidebar';
 import axiosInstance from '../api/axiosInstance';
 import type { Roadmap } from '../types';
 import { ChatMessage as ChatMessageType } from '../types';
+import { getCurrentUser } from '../utils/auth';
 
 const Chat: React.FC = () => {
   const { roadmapId } = useParams<{ roadmapId: string }>();
@@ -20,6 +21,7 @@ const Chat: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const currentUser = getCurrentUser();
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -38,6 +40,19 @@ const Chat: React.FC = () => {
   }, [roadmapId]);
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      if (!roadmapId) return;
+      try {
+        const res = await axiosInstance.get(`/chat/roadmap/${roadmapId}`);
+        setMessages(res.data);
+      } catch (err) {
+        // Optionally handle error
+      }
+    };
+    fetchMessages();
+  }, [roadmapId]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
@@ -47,32 +62,37 @@ const Chat: React.FC = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !currentUser) return;
 
-    const userMessage: ChatMessageType = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: newMessage,
-      timestamp: new Date().toISOString(),
-      roadmapId: roadmapId
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setNewMessage('');
     setIsTyping(true);
+    try {
+      // Save user message to backend
+      const userRes = await axiosInstance.post(`/chat/roadmap/${roadmapId}`, {
+        roadmap_id: Number(roadmapId),
+        user_id: currentUser.id,
+        type: 'user',
+        content: newMessage
+      });
+      setMessages(prev => [...prev, userRes.data]);
+      setNewMessage('');
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: ChatMessageType = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        content: getAIResponse(newMessage, roadmap?.field || ''),
-        timestamp: new Date().toISOString(),
-        roadmapId: roadmapId
-      };
-      setMessages(prev => [...prev, aiMessage]);
+      // Simulate AI response
+      setTimeout(async () => {
+        const aiContent = getAIResponse(newMessage, roadmap?.field || '');
+        // Save AI message to backend
+        const aiRes = await axiosInstance.post(`/chat/roadmap/${roadmapId}`, {
+          roadmap_id: Number(roadmapId),
+          user_id: 0, // or null, or a special AI user id if you have one
+          type: 'ai',
+          content: aiContent
+        });
+        setMessages(prev => [...prev, aiRes.data]);
+        setIsTyping(false);
+      }, 1000 + Math.random() * 2000);
+    } catch (err) {
       setIsTyping(false);
-    }, 1000 + Math.random() * 2000);
+      // Optionally handle error
+    }
   };
 
   const getAIResponse = (message: string, field: string) => {

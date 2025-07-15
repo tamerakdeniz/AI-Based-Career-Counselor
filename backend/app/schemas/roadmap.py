@@ -1,6 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from datetime import datetime
 from typing import Optional, List
+import json
 
 class MilestoneBase(BaseModel):
     title: str
@@ -8,6 +9,16 @@ class MilestoneBase(BaseModel):
     completed: bool = False
     due_date: Optional[datetime] = None
     resources: Optional[List[str]] = None
+
+    @field_validator('resources', mode='before')
+    @classmethod
+    def parse_resources(cls, v):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                return []
+        return v
 
 class MilestoneCreate(MilestoneBase):
     pass
