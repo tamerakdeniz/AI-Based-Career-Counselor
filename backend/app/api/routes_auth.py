@@ -8,7 +8,7 @@ from pydantic import BaseModel, EmailStr
 
 from app.database import get_db
 from app.models.user import User
-from app.core.security import verify_password
+from app.core.security import verify_password, get_password_hash
 from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
@@ -95,6 +95,55 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         "user_name": user.name
     }
 
+#--REGISTER--
+
+class RegisterRequest(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+
+@router.post("/register", status_code=201)
+def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
+    # 1. Aynı e-posta ile kullanıcı var mı kontrol et
+    existing_user = db.query(User).filter(User.email == register_data.email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+
+    # 2. Şifreyi hashle
+    hashed_pw = get_password_hash(register_data.password)
+
+    # 3. Yeni kullanıcı oluştur
+    new_user = User(
+        name=register_data.name,
+        email=register_data.email,
+        hashed_password=hashed_pw,
+    )
+
+    # 4. Veritabanına ekle
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    # 5. Access token oluştur
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token = create_access_token(
+        data={"sub": str(new_user.id)},
+        expires_delta=access_token_expires
+    )
+
+    # 6. Token + kullanıcı bilgisi ile geri dön
+    return {
+        "message": "User registered successfully",
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": new_user.id,
+        "email": new_user.email,
+        "name": new_user.name
+    }
+    
 @router.get("/me")
 def get_current_user(current_user: User = Depends(verify_token)):
     return {

@@ -1,6 +1,7 @@
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -29,15 +30,8 @@ const SignUp: React.FC = () => {
     setIsLoading(true);
     setError('');
 
-    // Basic validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
-      setIsLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
       setIsLoading(false);
       return;
     }
@@ -48,18 +42,25 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    // Mock registration - replace with your FastAPI integration
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await axios.post('http://127.0.0.1:8000/auth/register', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
 
-      // Mock successful registration
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userEmail', formData.email);
-      localStorage.setItem('userName', formData.name);
+      const data = response.data;
+
+      localStorage.setItem('userEmail', data.email);
+      localStorage.setItem('userName', data.name);
       navigate('/dashboard');
-    } catch {
-      setError('An error occurred during registration. Please try again.');
+
+    } catch (error: any) {
+      if (error.response?.data?.detail) {
+        setError(error.response.data.detail);
+      } else {
+        setError('An unexpected error occurred.');
+      }
     } finally {
       setIsLoading(false);
     }

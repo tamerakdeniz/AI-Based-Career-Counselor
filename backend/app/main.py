@@ -1,18 +1,26 @@
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from typing import List
-from app.database import SessionLocal, engine, Base
-from app.models.user import User
-from app.core.security import get_password_hash, verify_password
-from app.core.config import settings
-from app.api.routes_auth import router as auth_router
-from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import List
+
+from app.api.routes_ai import router as ai_router
+from app.api.routes_auth import router as auth_router
+from app.api.routes_chat import router as chat_router
+from app.api.routes_roadmap import router as roadmap_router
+from app.core.config import settings
+from app.core.security import get_password_hash, verify_password
+from app.database import Base, SessionLocal, engine
+from app.models.user import User
+from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
+from sqlalchemy.orm import Session
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(
+    title="Pathyvo - AI Career Counselor",
+    description="AI-powered career mentorship platform with personalized roadmaps",
+    version="1.0.0"
+)
 
 # Add CORS middleware
 app.add_middleware(
@@ -23,8 +31,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include auth routes
+# Include API routes
 app.include_router(auth_router)
+app.include_router(roadmap_router)
+app.include_router(chat_router)
+app.include_router(ai_router)
 
 
 # Dependency to get DB session

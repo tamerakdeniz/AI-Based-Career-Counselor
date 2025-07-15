@@ -6,24 +6,139 @@ import {
   ExternalLink,
   Star
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header';
-import { mockRoadmaps } from '../data/mockData';
-import { RoadmapNode } from '../types';
+import axiosInstance from '../api/axiosInstance';
+import type { RoadmapNode, Roadmap, Milestone } from '../types';
 
 const Roadmap: React.FC = () => {
   const { roadmapId } = useParams<{ roadmapId: string }>();
   const navigate = useNavigate();
+  const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
   const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const roadmap = mockRoadmaps.find(r => r.id === roadmapId);
+  useEffect(() => {
+    const fetchRoadmap = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
+        // Map backend milestones to roadmapNodes for UI compatibility
+        const backendRoadmap = res.data;
+        // If backend does not provide roadmapNodes, create them from milestones
+        let roadmapNodes: RoadmapNode[] = [];
+        if (backendRoadmap.milestones) {
+          roadmapNodes = backendRoadmap.milestones.map((milestone: Milestone, idx: number) => ({
+            id: milestone.id,
+            title: milestone.title,
+            description: milestone.description,
+            category: '', // No category in backend, leave blank or infer
+            completed: milestone.completed,
+            current: !milestone.completed &&
+              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
+            available: !milestone.completed &&
+              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
+            skills: [], // No skills in backend, leave empty
+            estimatedDuration: '', // No duration in backend, leave blank
+            prerequisites: [], // No prerequisites in backend, leave empty
+            resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
+          }));
+        }
+        setRoadmap({ ...backendRoadmap, roadmapNodes });
+      } catch (err: any) {
+        setError('Failed to load roadmap.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (roadmapId) fetchRoadmap();
+  }, [roadmapId]);
 
   const handleBack = () => {
     navigate('/dashboard');
   };
 
-  if (!roadmap) {
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this roadmap?")) {
+      try {
+        await axiosInstance.delete(`/roadmaps/${roadmapId}`);
+        navigate('/dashboard');
+      } catch (err) {
+        setError("Failed to delete roadmap.");
+      }
+    }
+  };
+
+  const handleRename = async () => {
+    const newTitle = prompt("Enter a new title for the roadmap:");
+    if (newTitle) {
+      try {
+        await axiosInstance.put(`/roadmaps/${roadmapId}/rename`, { new_title: newTitle });
+        // Refresh the roadmap data
+        const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
+        const backendRoadmap = res.data;
+        let roadmapNodes: RoadmapNode[] = [];
+        if (backendRoadmap.milestones) {
+          roadmapNodes = backendRoadmap.milestones.map((milestone: Milestone, idx: number) => ({
+            id: milestone.id,
+            title: milestone.title,
+            description: milestone.description,
+            category: '', // No category in backend, leave blank or infer
+            completed: milestone.completed,
+            current: !milestone.completed &&
+              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
+            available: !milestone.completed &&
+              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
+            skills: [], // No skills in backend, leave empty
+            estimatedDuration: '', // No duration in backend, leave blank
+            prerequisites: [], // No prerequisites in backend, leave empty
+            resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
+          }));
+        }
+        setRoadmap({ ...backendRoadmap, roadmapNodes });
+      } catch (err) {
+        setError("Failed to rename roadmap.");
+      }
+    }
+  };
+
+  const handleCompleteMilestone = async (milestoneId: number) => {
+    try {
+      await axiosInstance.put(`/roadmaps/milestones/${milestoneId}/complete`);
+      // Refresh the roadmap data
+      const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
+      const backendRoadmap = res.data;
+      let roadmapNodes: RoadmapNode[] = [];
+      if (backendRoadmap.milestones) {
+        roadmapNodes = backendRoadmap.milestones.map((milestone: Milestone, idx: number) => ({
+          id: milestone.id,
+          title: milestone.title,
+          description: milestone.description,
+          category: '', // No category in backend, leave blank or infer
+          completed: milestone.completed,
+          current: !milestone.completed &&
+            (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
+          available: !milestone.completed &&
+            (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
+          skills: [], // No skills in backend, leave empty
+          estimatedDuration: '', // No duration in backend, leave blank
+          prerequisites: [], // No prerequisites in backend, leave empty
+          resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
+        }));
+      }
+      setRoadmap({ ...backendRoadmap, roadmapNodes });
+    } catch (err) {
+      setError("Failed to complete milestone.");
+    }
+  };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+  if (error || !roadmap) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -31,7 +146,7 @@ const Roadmap: React.FC = () => {
             Roadmap Not Found
           </h1>
           <p className="text-gray-600 mb-4">
-            The roadmap you're looking for doesn't exist.
+            {error || "The roadmap you're looking for doesn't exist."}
           </p>
           <button
             onClick={handleBack}
@@ -98,7 +213,17 @@ const Roadmap: React.FC = () => {
               </div>
             </div>
             <div className="text-right">
-              <div className="text-3xl font-bold text-gray-900 mb-1">
+              import { Trash2, Pencil } from 'lucide-react';
+
+// ... (other imports)
+
+// ... (component code)
+
+              <div className="flex items-center space-x-2">
+                <button onClick={handleDelete} className="p-2 text-gray-500 hover:text-red-600 transition-colors"><Trash2 className="h-5 w-5" /></button>
+                <button onClick={handleRename} className="p-2 text-gray-500 hover:text-blue-600 transition-colors"><Pencil className="h-5 w-5" /></button>
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-1 mt-2">
                 {roadmap.progress}%
               </div>
               <div className="text-sm text-gray-500">Overall Progress</div>
@@ -346,7 +471,7 @@ const Roadmap: React.FC = () => {
                         ✓ Completed
                       </button>
                     ) : selectedNode.current ? (
-                      <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                      <button onClick={() => handleCompleteMilestone(selectedNode.id)} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
                         Continue Learning
                       </button>
                     ) : selectedNode.available ? (
