@@ -22,7 +22,7 @@ def user_and_roadmap():
 def test_post_and_get_chat_message(user_and_roadmap):
     headers, user_id, roadmap_id = user_and_roadmap
     # Post a chat message
-    message_data = {"user_id": user_id, "type": "user", "content": "Hello, this is a test message."}
+    message_data = {"user_id": user_id, "type": "user", "content": "Hello, this is a test message.", "roadmap_id": roadmap_id}
     post_resp = client.post(f"/chat/roadmap/{roadmap_id}", json=message_data, headers=headers)
     assert post_resp.status_code == 201
     chat_msg = post_resp.json()
