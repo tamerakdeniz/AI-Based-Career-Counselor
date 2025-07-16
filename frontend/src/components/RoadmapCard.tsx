@@ -40,7 +40,7 @@ const RoadmapCard: React.FC<RoadmapCardProps> = ({ roadmap }) => {
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            {roadmap.title}
+            {roadmap.short_title || roadmap.title}
           </h3>
           <span
             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getFieldColor(
@@ -78,7 +78,7 @@ const RoadmapCard: React.FC<RoadmapCardProps> = ({ roadmap }) => {
 
       {/* Description */}
       <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-        {roadmap.description}
+        {roadmap.short_description || roadmap.description}
       </p>
 
       {/* Next Milestone */}

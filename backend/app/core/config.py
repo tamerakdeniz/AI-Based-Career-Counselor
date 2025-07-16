@@ -33,14 +33,14 @@ class Settings(BaseSettings):
     
     # AI/LLM Settings - Primary Provider: Google Gemini
     google_ai_api_key: Optional[str] = None
-    gemini_model: str = "gemini-2.5-flash"
-    gemini_max_tokens: int = 1000
+    gemini_model: str = "gemini-2.0-flash"
+    gemini_max_tokens: int = 500
     gemini_temperature: float = 0.7
     
     # Alternative AI providers (for fallback)
     openai_api_key: Optional[str] = None
     openai_model: str = "gpt-3.5-turbo"
-    openai_max_tokens: int = 1000
+    openai_max_tokens: int = 500
     openai_temperature: float = 0.7
     
     anthropic_api_key: Optional[str] = None
@@ -69,7 +69,7 @@ class Settings(BaseSettings):
     
     # Prompt Engineering
     enable_conversation_memory: bool = True
-    conversation_context_limit: int = 10
+    conversation_context_limit: int = 5
     
 
 

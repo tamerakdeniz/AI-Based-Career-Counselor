@@ -380,7 +380,9 @@ class LLMService:
         Format the response as a JSON object with this structure:
         {{
             "title": "Career path title",
+            "short_title": "Short (2-3 word) title",
             "description": "Brief description of the career path",
+            "short_description": "A very short, one-sentence summary of the roadmap's main objective.",
             "field": "Primary field/industry",
             "milestones": [
                 {{
@@ -388,7 +390,10 @@ class LLMService:
                     "description": "Detailed description",
                     "estimated_duration": "Timeline estimate",
                     "skills": ["skill1", "skill2"],
-                    "resources": ["resource1", "resource2"],
+                    "resources": [
+                        {{"title": "Resource 1 Title", "url": "https://example.com/resource1"}},
+                        {{"title": "Resource 2 Title", "url": "https://example.com/resource2"}}
+                    ],
                     "prerequisites": ["prereq1", "prereq2"]
                 }}
             ]
@@ -401,12 +406,6 @@ class LLMService:
         try:
             # Parse JSON response
             roadmap_data = json.loads(response)
-            
-            # Generate a summarized title
-            title_prompt = f"Summarize the following career path title into two words: {roadmap_data['title']}"
-            summarized_title = await self._call_ai_service(title_prompt)
-            roadmap_data['summarized_title'] = summarized_title.strip()
-            
             return roadmap_data
         except json.JSONDecodeError:
             # Fallback if AI doesn't return valid JSON
@@ -513,11 +512,10 @@ class LLMService:
                 generation_config=generation_config
             )
             
-            try:
+            if response.parts:
                 return response.text
-            except (ValueError, IndexError):
-                # Handle cases where the response is empty or invalid
-                logger.warning("Gemini API returned an empty or invalid response.")
+            else:
+                logger.warning(f"Gemini API returned no content. Finish reason: {response.candidates[0].finish_reason.name}")
                 return ""
             
         except Exception as e:

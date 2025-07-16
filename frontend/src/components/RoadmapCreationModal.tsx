@@ -117,9 +117,18 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
       );
 
       if (response.data.success) {
-        onSuccess(response.data.roadmap_id);
-        onClose();
-        resetForm();
+        // Poll for roadmap creation
+        const pollRoadmap = async (roadmapId: string) => {
+          try {
+            await axiosInstance.get(`/roadmaps/${roadmapId}`);
+            onSuccess(roadmapId);
+            onClose();
+            resetForm();
+          } catch (error) {
+            setTimeout(() => pollRoadmap(roadmapId), 1000);
+          }
+        };
+        pollRoadmap(response.data.roadmap_id);
       } else {
         throw new Error('Failed to create roadmap');
       }

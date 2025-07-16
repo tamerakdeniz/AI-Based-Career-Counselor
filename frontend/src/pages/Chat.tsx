@@ -119,11 +119,11 @@ const Chat: React.FC = () => {
       setMessages(prev => [...prev, aiMessage]);
 
       // Update conversation stage
-      setConversationStage({
+      setConversationStage(prev => ({
         stage: response.data.stage,
         roadmap_ready: response.data.roadmap_ready,
-        message_count: conversationStage?.message_count || 0
-      });
+        message_count: (prev?.message_count || 0) + 1
+      }));
 
       // If roadmap is ready, refetch roadmap data to show updated milestones
       if (response.data.roadmap_ready && roadmap) {

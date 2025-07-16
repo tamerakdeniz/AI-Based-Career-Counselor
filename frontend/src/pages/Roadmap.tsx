@@ -4,7 +4,9 @@ import {
   Circle,
   Clock,
   ExternalLink,
-  Star
+  Pencil,
+  Star,
+  Trash2
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -26,24 +28,22 @@ const Roadmap: React.FC = () => {
       setError(null);
       try {
         const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
-        // Map backend milestones to roadmapNodes for UI compatibility
         const backendRoadmap = res.data;
-        // If backend does not provide roadmapNodes, create them from milestones
         let roadmapNodes: RoadmapNode[] = [];
         if (backendRoadmap.milestones) {
           roadmapNodes = backendRoadmap.milestones.map((milestone: Milestone, idx: number) => ({
             id: milestone.id,
             title: milestone.title,
             description: milestone.description,
-            category: '', // No category in backend, leave blank or infer
+            category: '',
             completed: milestone.completed,
             current: !milestone.completed &&
               (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
             available: !milestone.completed &&
               (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-            skills: [], // No skills in backend, leave empty
-            estimatedDuration: '', // No duration in backend, leave blank
-            prerequisites: [], // No prerequisites in backend, leave empty
+            skills: [],
+            estimatedDuration: '',
+            prerequisites: [],
             resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
           }));
         }
@@ -77,7 +77,6 @@ const Roadmap: React.FC = () => {
     if (newTitle) {
       try {
         await axiosInstance.put(`/roadmaps/${roadmapId}/rename`, { new_title: newTitle });
-        // Refresh the roadmap data
         const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
         const backendRoadmap = res.data;
         let roadmapNodes: RoadmapNode[] = [];
@@ -86,15 +85,15 @@ const Roadmap: React.FC = () => {
             id: milestone.id,
             title: milestone.title,
             description: milestone.description,
-            category: '', // No category in backend, leave blank or infer
+            category: '',
             completed: milestone.completed,
             current: !milestone.completed &&
               (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
             available: !milestone.completed &&
               (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-            skills: [], // No skills in backend, leave empty
-            estimatedDuration: '', // No duration in backend, leave blank
-            prerequisites: [], // No prerequisites in backend, leave empty
+            skills: [],
+            estimatedDuration: '',
+            prerequisites: [],
             resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
           }));
         }
@@ -108,7 +107,6 @@ const Roadmap: React.FC = () => {
   const handleCompleteMilestone = async (milestoneId: number) => {
     try {
       await axiosInstance.put(`/roadmaps/milestones/${milestoneId}/complete`);
-      // Refresh the roadmap data
       const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
       const backendRoadmap = res.data;
       let roadmapNodes: RoadmapNode[] = [];
@@ -117,15 +115,15 @@ const Roadmap: React.FC = () => {
           id: milestone.id,
           title: milestone.title,
           description: milestone.description,
-          category: '', // No category in backend, leave blank or infer
+          category: '',
           completed: milestone.completed,
           current: !milestone.completed &&
             (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
           available: !milestone.completed &&
             (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-          skills: [], // No skills in backend, leave empty
-          estimatedDuration: '', // No duration in backend, leave blank
-          prerequisites: [], // No prerequisites in backend, leave empty
+          skills: [],
+          estimatedDuration: '',
+          prerequisites: [],
           resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
         }));
       }
@@ -183,14 +181,13 @@ const Roadmap: React.FC = () => {
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Roadmap Header */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div className="mb-4 lg:mb-0">
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                {roadmap.title}
+                {roadmap.short_title || roadmap.title}
               </h1>
-              <p className="text-gray-600 mb-4">{roadmap.description}</p>
+              <p className="text-gray-600 mb-4">{roadmap.short_description || roadmap.description}</p>
               <div className="flex items-center space-x-6 text-sm">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -213,12 +210,6 @@ const Roadmap: React.FC = () => {
               </div>
             </div>
             <div className="text-right">
-              import { Trash2, Pencil } from 'lucide-react';
-
-// ... (other imports)
-
-// ... (component code)
-
               <div className="flex items-center space-x-2">
                 <button onClick={handleDelete} className="p-2 text-gray-500 hover:text-red-600 transition-colors"><Trash2 className="h-5 w-5" /></button>
                 <button onClick={handleRename} className="p-2 text-gray-500 hover:text-blue-600 transition-colors"><Pencil className="h-5 w-5" /></button>
@@ -238,22 +229,18 @@ const Roadmap: React.FC = () => {
         </div>
 
         <div className="flex flex-col xl:flex-row gap-8">
-          {/* Roadmap Visualization */}
           <div className="flex-1">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">
                 Learning Path
               </h2>
 
-              {/* Roadmap Nodes */}
               <div className="relative">
-                {/* Vertical connecting line */}
                 <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-gray-200"></div>
 
                 <div className="space-y-8">
                   {roadmap.roadmapNodes?.map((node, index) => (
                     <div key={node.id} className="relative flex items-start">
-                      {/* Node Circle */}
                       <button
                         onClick={() => setSelectedNode(node)}
                         className={`relative z-10 w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${getNodeStatusColor(
@@ -267,7 +254,6 @@ const Roadmap: React.FC = () => {
                         {getNodeIcon(node)}
                       </button>
 
-                      {/* Node Content */}
                       <div className="ml-6 flex-1">
                         <div
                           className={`p-4 rounded-lg border transition-all duration-200 ${
@@ -301,7 +287,6 @@ const Roadmap: React.FC = () => {
                                 {node.description}
                               </p>
 
-                              {/* Skills */}
                               {node.skills && node.skills.length > 0 && (
                                 <div className="flex flex-wrap gap-1 mb-2">
                                   {node.skills.map((skill, skillIndex) => (
@@ -323,7 +308,6 @@ const Roadmap: React.FC = () => {
                                 </div>
                               )}
 
-                              {/* Duration */}
                               {node.estimatedDuration && (
                                 <div className="flex items-center space-x-1 text-xs text-gray-500">
                                   <Clock className="h-3 w-3" />
@@ -332,7 +316,6 @@ const Roadmap: React.FC = () => {
                               )}
                             </div>
 
-                            {/* Status Badge */}
                             <div className="ml-4">
                               {node.completed && (
                                 <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
@@ -362,7 +345,6 @@ const Roadmap: React.FC = () => {
             </div>
           </div>
 
-          {/* Node Details Sidebar */}
           <div className="xl:w-80">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-8">
               {selectedNode ? (
@@ -389,7 +371,6 @@ const Roadmap: React.FC = () => {
                     {selectedNode.description}
                   </p>
 
-                  {/* Skills */}
                   {selectedNode.skills && selectedNode.skills.length > 0 && (
                     <div className="mb-4">
                       <h4 className="font-medium text-gray-900 mb-2">
@@ -408,7 +389,6 @@ const Roadmap: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Resources */}
                   {selectedNode.resources &&
                     selectedNode.resources.length > 0 && (
                       <div className="mb-4">
@@ -417,24 +397,24 @@ const Roadmap: React.FC = () => {
                         </h4>
                         <div className="space-y-2">
                           {selectedNode.resources.map((resource, index) => (
-                            <div
+                            <a
                               key={index}
-                              className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg"
+                              href={resource.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                             >
                               <BookOpen className="h-4 w-4 text-gray-500" />
                               <span className="text-sm text-gray-700 flex-1">
                                 {resource.title}
                               </span>
-                              <button className="text-blue-600 hover:text-blue-700">
-                                <ExternalLink className="h-4 w-4" />
-                              </button>
-                            </div>
+                              <ExternalLink className="h-4 w-4 text-blue-600" />
+                            </a>
                           ))}
                         </div>
                       </div>
                     )}
 
-                  {/* Duration and Prerequisites */}
                   <div className="space-y-3 text-sm">
                     {selectedNode.estimatedDuration && (
                       <div className="flex items-center justify-between">
@@ -464,7 +444,6 @@ const Roadmap: React.FC = () => {
                       )}
                   </div>
 
-                  {/* Action Button */}
                   <div className="mt-6">
                     {selectedNode.completed ? (
                       <button className="w-full bg-green-100 text-green-700 py-2 px-4 rounded-lg font-medium">

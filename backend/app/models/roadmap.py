@@ -14,6 +14,8 @@ class Roadmap(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
+    short_title = Column(String, nullable=True)
+    short_description = Column(String, nullable=True)
     field = Column(String, nullable=True)
     progress = Column(Integer, default=0)
     next_milestone = Column(String, nullable=True)

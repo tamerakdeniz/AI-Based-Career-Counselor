@@ -74,7 +74,7 @@ const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClos
                   <div className="text-gray-500">Completed</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="font-semibold text-gray-900">{roadmap.totalMilestones - roadmap.completedMilestones}</div>
+                  <div className="font-semibold text-gray-900">{roadmap.totalMilestones > 0 ? roadmap.totalMilestones - roadmap.completedMilestones : 0}</div>
                   <div className="text-gray-500">Remaining</div>
                 </div>
               </div>

@@ -57,7 +57,11 @@ const SignUp: React.FC = () => {
 
     } catch (error: any) {
       if (error.response?.data?.detail) {
-        setError(error.response.data.detail);
+        if (Array.isArray(error.response.data.detail)) {
+          setError(error.response.data.detail[0].msg);
+        } else {
+          setError(error.response.data.detail);
+        }
       } else {
         setError('An unexpected error occurred.');
       }
