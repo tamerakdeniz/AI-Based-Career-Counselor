@@ -162,6 +162,42 @@ Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te �
 Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır.  
 2. sprint için tasarım ve genel planlama konuşulmuş, motivasyon yüksek şekilde yeni sprint'e geçilmesine karar verilmiştir.
 
+---
+
+### 🚀 Ürüne Eklenen Özellikler (Sprint Sonu Ekran Görüntüleri)
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/84da9e0a-2d8d-41a8-b7ca-a626a3d7665b">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cfc603e9-348c-4468-a7a8-7d0a976e57c7">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/49b670ea-7b2a-491a-81c9-0da0153c753a">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f394003f-4745-43b9-afad-1ef4aba304ba">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c0b02632-22d0-4e40-83cd-60b0ad9fbc56">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d326fd99-dd34-4f86-9ed6-0714596c63ed">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7cf4e55d-af3f-4d25-8515-c8eb5f9700f8">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b5f3ca51-7850-4e86-bbba-a93d63a3a89f">
+</p>
+
 </details>
 
 ---
@@ -245,6 +281,20 @@ Sprint Retrospective oturumunda; test senaryoları, roadmap algoritması ve UI e
 İletişim ve görev yönetimi konusunda olumlu geri bildirimler alınmıştır.  
 Üçüncü sprint’te hata yönetimi, performans optimizasyonu ve kullanıcı deneyimini artıracak mikro animasyonlara odaklanılması planlanmıştır.  
 Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni sprint’e geçilmiştir.
+
+---
+
+### 🚀 Ürüne Eklenen Özellikler (Sprint Sonu Ekran Görüntüleri)
+
+<p align="center">
+  <img alt="Roadmap-Interest" src="https://github.com/user-attachments/assets/a9e8c24a-03fd-4d11-9986-f940ad3d1cfe" />
+  <br>
+  <img alt="Roadmap-Interest-2" src="https://github.com/user-attachments/assets/40f1cec7-b68d-4b20-9971-1f387c0078e7" />
+  <br>
+  <img alt="Roadmap" src="https://github.com/user-attachments/assets/72cacbaf-489b-475c-a459-956c0a55e994" />
+  <br>
+  <sub>💡 Bu görseller, sprint sonunda platforma entegre edilen yeni roadmap özelliklerini göstermektedir.</sub>
+</p>
 
 </details>
 
