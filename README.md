@@ -167,20 +167,86 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 ---
 
 <details>
-<summary><strong>⚡️ SPRINT 2 - Özellik Geliştirme & AI Entegrasyonu (35 SP)</strong></summary>
+<summary><strong>⚡️ SPRINT 2 - Özellik Geliştirme & AI Entegrasyonu (50 SP)</strong></summary>
 
-### Sprint Amacı
-- AI tabanlı öneri ve roadmap akışını devreye almak
-- Kullanıcı etkileşimini zenginleştirmek
+### 🎯 Sprint Amacı
+- AI tabanlı öneri ve roadmap akışını devreye almak  
+- Kullanıcı etkileşimini artıracak fonksiyonları aktif hale getirmek  
 
-### Ana Görevler
-- AI chat bot geliştirmesi (front & back)
-- Roadmap oluşturma algoritması
-- Kullanıcı bazlı roadmap detay ekranları
-- Chat ekranında roadmap side panel entegrasyonu
-- Kullanıcı profil güncelleme ve ilgi alanları yönetimi
-- Önerilen kaynaklar (kurslar, makaleler) bölümü
-- API çağrılarının tamamlanması ve testleri
+### 🛠️ Ana Görevler
+- AI chat bot geliştirmesi (frontend & backend)  
+- Roadmap oluşturma algoritması  
+- Kullanıcı bazlı roadmap detay ekranları  
+- Chat ekranında roadmap side panel entegrasyonu  
+- Kullanıcı kayıt ekranının backend'e bağlanması  
+- FastAPI endpoint sınırlandırması  
+- Konuşma geçmişinin veritabanına eklenmesi  
+- Test case’lerin hazırlanması  
+- Kullanıcı profiline özel test senaryoları  
+- LLM & Backend entegrasyonlarının tamamlanması  
+- Takım rolleri güncellemesi, aktif olmayan üyelerin belirlenmesi  
+
+### ✍🏻 Sprint Notları
+- Roadmap ekranında adımların tamamlanabilmesi için gerekli UI eklentileri yapıldı.  
+- Kullanıcı kayıt ekranı başarıyla backend’e bağlandı.  
+- Chat ve roadmap sayfaları üzerinde geliştirmeler sürdürüldü.  
+- FastAPI endpoint’lerine erişim sınırlandırması eklendi.  
+- Konuşma geçmişi veritabanına entegre edildi.  
+- İlgi alanı güncelleme ekranı kapsam dışına alındı.  
+- Kurs & kaynak öneri API’si de bu sprintten çıkarıldı.  
+- Test senaryoları ve test case'ler PyTest kütüphanesi kullanılarak hazırlandı.  
+- LLM (Gemini API) & backend entegrasyonu başarıyla tamamlandı.  
+- Takım rolleri yeniden düzenlendi ve aktif olmayan ekip üyeleri belirlendi.  
+- Proje yönetimi ve süreç takibi için **GitHub Repo** ve **Miro** aktif şekilde kullanılmaya devam etti.  
+- Ekip içi iletişim **Daily Scrum** toplantılarıyla sürdürüldü; anlık koordinasyon için WhatsApp grubu kullanıldı.
+
+#### Kullanılan teknolojiler ve kullanım alanları:
+- **Python (FastAPI)**: Backend API geliştirmesi ve iş mantığı  
+- **React (TypeScript)**: Kullanıcı arayüzü geliştirmesi  
+- **TailwindCSS**: Hızlı ve esnek arayüz tasarımı  
+- **SQLite**: Prototip veri saklama ve hızlı kurulum  
+- **JWT Token Authentication**: Kimlik doğrulama & oturum yönetimi  
+- **PyTest**: Test senaryoları geliştirme  
+- **Gemini API**: LLM bağlantısı ve öneri sistemleri
+
+### 🎯 Sprint Tahmini Story Point
+- Toplam: **50 SP**
+
+### ✅ Sprint Tamamlama Mantığı
+Sprint 2, planlanan 50 SP’nin %90’ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
+Tamamlanamayan işler (örn. hata & edge case yönetimi) sonraki sprint’e devredilmiştir.  
+Tamamlama ölçütü, önceden belirlenen fonksiyonların **çalışır ve test edilebilir** olmasıdır.
+
+### ✅ Çıktılar
+- Roadmap oluşturma algoritması teknik altyapısı kuruldu  
+- Kullanıcı bazlı roadmap detay ekranları oluşturuldu  
+- Chat ekranına roadmap side panel entegrasyonu başarıyla yapıldı  
+- API çağrılarının tamamlanması ve testlerinin yazılması  
+- Backend fonksiyonları için kapsamlı test dosyaları hazırlandı  
+
+### 🤝🏻 Daily Scrum
+Daily Scrum toplantıları **Google Meet** üzerinden yapılmıştır.  
+Günlük yazışmalar ve toplantı notları, proje belgeleriyle birlikte [Google Drive](https://drive.google.com/drive/folders/1Owg14139fcCrq8VjDjp0u50jFioauFm0?usp=sharing) üzerinde saklanmaktadır.
+
+### 🖼️ Sprint Board Görselleri
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a305e1c5-b413-45b0-afa1-863e876c92ec" alt="Sprint-2 Dashboard"/><br>
+  <sub>🔎 Sprint 2 görev kartlarının güncel durumu</sub>
+</p>
+
+---
+
+### 🧐 Sprint Review
+Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı ve İrem Kılıç katılmıştır.  
+Toplantıda sprint çıktıları ve uygulamanın geldiği nokta değerlendirildi. Tasarım, kullanıcı akışı ve teknik ilerleme ekip ve paydaşlar tarafından olumlu karşılandı.  
+Tamamlanamayan görevler 3. sprint’e taşındı. Yeni ihtiyaçlar üzerine task'lar açıldı, çıkarılacak özellikler belirlendi.
+
+### 🔄 Sprint Retrospective
+Retrospective oturumunda, sprintte yapılan test senaryoları ve UI entegrasyonlarının olumlu etkileri vurgulandı.  
+Ekip içi iş birliği ve iletişim verimli geçti.  
+Önümüzdeki sprintte hata yönetimi, performans optimizasyonu ve kullanıcı etkileşimini artıracak mikro animasyonlar gibi geliştirmelere odaklanılması planlandı.  
+Görev dağılımı büyük ölçüde aynı şekilde korunmuştur.
 
 </details>
 
