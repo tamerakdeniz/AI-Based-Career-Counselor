@@ -203,7 +203,7 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 - Toplam: **50 SP**
 
 ### ✅ Sprint Tamamlama Mantığı
-Sprint 2, planlanan 50 SP’nin %90’ından fazlası başarıyla tamamlanarak başarıyla sonlandırılmıştır.  
+Sprint 2, planlanan 50 SP’nin %90’ından fazlası başarıyla tamamlanarak sonlandırılmıştır.  
 Tamamlanamayan işler (hata ve edge case yönetimi) bir sonraki sprint’e devredilmiştir.  
 Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
 
@@ -221,8 +221,15 @@ Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.goog
 ### 🖼️ Sprint Board Görselleri
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a305e1c5-b413-45b0-afa1-863e876c92ec" alt="Sprint-2 Dashboard"/><br>
-  <sub>🔎 Sprint 2 görev kartlarının güncel durumu</sub>
+  <img src="https://github.com/user-attachments/assets/8d86ea34-f185-4a4f-b6dc-44f9a2c244b9" alt="Sprint-1 Dashboard"/><br>
+  <sub>🔎 Sprint-2 planlama ve görevlerin board görünümü</sub>
+</p>
+
+---
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/fb20439b-1060-4494-b3a1-74821046f0bb" alt="Sprint-2 Dashboard"/><br>
+  <sub>✅ Sprint-2 tamamlandıktan sonraki son durum</sub>
 </p>
 
 ---
