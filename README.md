@@ -124,7 +124,7 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 - Toplam: **45 SP**
 
 ### ✅ Sprint Tamamlama Mantığı
-Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
+Sprint 1, planlanan 45 SP'nin %70'inden fazlası tamamlanarak başarıyla sonlandırılmıştır.  
 Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
 Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
 
