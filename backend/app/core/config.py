@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     
     # AI Provider Priority (gemini, openai, anthropic)
     ai_provider_priority_str: str = Field(
-        default="gemini,openai,anthropic",
+        default="gemini",
         description="AI provider priority as comma-separated string"
     )
     

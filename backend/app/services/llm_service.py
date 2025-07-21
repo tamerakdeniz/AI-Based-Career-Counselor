@@ -24,6 +24,7 @@ from app.core.config import settings
 from app.models.chat_message import ChatMessage
 from app.models.milestone import Milestone
 from app.models.roadmap import Roadmap
+from app.services.prompt_service import prompt_service
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -70,26 +71,25 @@ class LLMService:
                 logger.error(f"Failed to initialize Gemini client: {e}")
                 self.gemini_model = None
         
-        # Initialize OpenAI (Fallback)
-        if settings.openai_api_key:
-            try:
-                openai.api_key = settings.openai_api_key
-                self.openai_client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
-                self.encoding = tiktoken.encoding_for_model(settings.openai_model)
-                logger.info("OpenAI client initialized")
-            except Exception as e:
-                logger.error(f"Failed to initialize OpenAI client: {e}")
+        # OpenAI and Anthropic initialization is disabled for Gemini-only mode
+        # if settings.openai_api_key:
+        #     try:
+        #         openai.api_key = settings.openai_api_key
+        #         self.openai_client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
+        #         self.encoding = tiktoken.encoding_for_model(settings.openai_model)
+        #         logger.info("OpenAI client initialized")
+        #     except Exception as e:
+        #         logger.error(f"Failed to initialize OpenAI client: {e}")
         
-        # Initialize Anthropic (Fallback)
-        if settings.anthropic_api_key:
-            try:
-                import anthropic
-                self.anthropic_client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
-                logger.info("Anthropic client initialized")
-            except ImportError:
-                logger.warning("Anthropic not available, install with: pip install anthropic")
-            except Exception as e:
-                logger.error(f"Failed to initialize Anthropic client: {e}")
+        # if settings.anthropic_api_key:
+        #     try:
+        #         import anthropic
+        #         self.anthropic_client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
+        #         logger.info("Anthropic client initialized")
+        #     except ImportError:
+        #         logger.warning("Anthropic not available, install with: pip install anthropic")
+        #     except Exception as e:
+        #         logger.error(f"Failed to initialize Anthropic client: {e}")
 
     async def generate_follow_up_question(
         self, 
@@ -123,7 +123,9 @@ class LLMService:
         # Generate roadmap using AI
         roadmap_data = await self._generate_roadmap_from_context(context)
         
-        return roadmap_data
+        # Always validate and extract roadmap data
+        validated_roadmap = prompt_service.extract_roadmap_data(json.dumps(roadmap_data) if isinstance(roadmap_data, dict) else roadmap_data)
+        return validated_roadmap
 
     async def get_mentoring_response(
         self,
@@ -404,11 +406,11 @@ class LLMService:
         response = await self._call_ai_service(prompt)
         
         try:
-            # Parse JSON response
-            roadmap_data = json.loads(response)
+            # Always validate and extract roadmap data
+            roadmap_data = prompt_service.extract_roadmap_data(response)
             return roadmap_data
-        except json.JSONDecodeError:
-            # Fallback if AI doesn't return valid JSON
+        except Exception:
+            # Fallback if extraction fails
             return self._generate_fallback_roadmap(context)
 
     def _generate_fallback_roadmap(self, context: ConversationContext) -> Dict[str, Any]:
@@ -476,24 +478,14 @@ class LLMService:
 
     async def _call_ai_service(self, prompt: str) -> str:
         """Call AI service with error handling and fallbacks"""
-        
-        # Try providers in order of priority
-        for provider in settings.ai_provider_priority:
-            try:
-                if provider == "gemini" and self.gemini_model:
-                    response = await self._call_gemini(prompt)
-                    return response
-                elif provider == "openai" and self.openai_client:
-                    response = await self._call_openai(prompt)
-                    return response
-                elif provider == "anthropic" and self.anthropic_client:
-                    response = await self._call_anthropic(prompt)
-                    return response
-            except Exception as e:
-                logger.error(f"AI service error with {provider}: {str(e)}")
-                continue
-        
-        # If all providers fail, return fallback
+        # Only use Gemini for now
+        try:
+            if self.gemini_model:
+                response = await self._call_gemini(prompt)
+                return response
+        except Exception as e:
+            logger.error(f"AI service error with gemini: {str(e)}")
+        # If Gemini fails, return fallback
         return self._get_fallback_response(prompt)
 
     async def _call_gemini(self, prompt: str) -> str:
