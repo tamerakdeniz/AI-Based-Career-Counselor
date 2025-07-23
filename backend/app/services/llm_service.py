@@ -4,10 +4,9 @@ import logging
 from typing import Any, Dict, List
 
 import google.generativeai as genai
-from sqlalchemy.orm import Session
-
 from app.core.config import settings
 from app.models.roadmap import Roadmap
+from sqlalchemy.orm import Session
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -85,8 +84,7 @@ FIELD_CONFIG = {
             {"key": "experience", "text": "What's your experience with product development or project management?"},
             {"key": "interests", "text": "What kind of products are you passionate about building? (e.g., consumer apps, B2B software)"},
             {"key": "goals", "text": "What do you hope to achieve as a product manager?"},
-            {"key": "leadership_style", "text": "Describe your leadership and communication style.
-"},
+            {"key": "leadership_style", "text": "Describe your leadership and communication style."},
             {"key": "technical_skills", "text": "How comfortable are you with technical discussions?"},
         ],
         "prompt_template": """
