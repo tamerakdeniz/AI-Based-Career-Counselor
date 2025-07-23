@@ -1,5 +1,5 @@
 import { ArrowRight, Brain, Loader2, Sparkles, X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
 
 interface RoadmapCreationModalProps {
@@ -8,16 +8,14 @@ interface RoadmapCreationModalProps {
   onSuccess: (roadmapId: string) => void;
 }
 
-interface FormData {
-  field: string;
-  description: string;
-  goals: string;
+interface Question {
+  key: string;
+  text: string;
 }
 
 interface FormErrors {
   field?: string;
-  description?: string;
-  goals?: string;
+  [key: string]: string | undefined;
 }
 
 const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
@@ -25,11 +23,9 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
   onClose,
   onSuccess
 }) => {
-  const [formData, setFormData] = useState<FormData>({
-    field: '',
-    description: '',
-    goals: ''
-  });
+  const [field, setField] = useState('');
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [userResponses, setUserResponses] = useState<{ [key: string]: string }>({});
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -51,45 +47,58 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
     'Other'
   ];
 
-  const validateForm = (): boolean => {
+  useEffect(() => {
+    if (step === 2 && field) {
+      fetchInitialQuestions(field);
+    }
+  }, [step, field]);
+
+  const fetchInitialQuestions = async (selectedField: string) => {
+    setIsLoading(true);
+    try {
+      const response = await axiosInstance.get(`/ai/initial-questions/${selectedField}`);
+      setQuestions(response.data.questions || []);
+    } catch (error) {
+      console.error('Error fetching initial questions:', error);
+      setErrors({ field: 'Could not load questions for this field. Please try another.' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const validateStep1 = (): boolean => {
+    if (!field.trim()) {
+      setErrors({ field: 'Please select or enter a field' });
+      return false;
+    }
+    return true;
+  };
+
+  const validateStep2 = (): boolean => {
     const newErrors: FormErrors = {};
-
-    if (!formData.field.trim()) {
-      newErrors.field = 'Please select or enter a field';
-    }
-
-    if (!formData.description.trim()) {
-      newErrors.description = 'Please describe your career goals';
-    } else if (formData.description.trim().length < 20) {
-      newErrors.description =
-        'Please provide more details (at least 20 characters)';
-    }
-
+    questions.forEach(q => {
+      if (!userResponses[q.key]?.trim()) {
+        newErrors[q.key] = 'This field is required';
+      }
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleInputChange = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+  const handleResponseChange = (key: string, value: string) => {
+    setUserResponses(prev => ({ ...prev, [key]: value }));
+    if (errors[key]) {
+      setErrors(prev => ({ ...prev, [key]: undefined }));
     }
-  };
-
-  const handleFieldSelect = (field: string) => {
-    handleInputChange('field', field);
   };
 
   const handleNext = () => {
     if (step === 1) {
-      if (!formData.field.trim()) {
-        setErrors({ field: 'Please select or enter a field' });
-        return;
+      if (validateStep1()) {
+        setStep(2);
       }
-      setStep(2);
     } else if (step === 2) {
-      if (validateForm()) {
+      if (validateStep2()) {
         setStep(3);
       }
     }
@@ -101,43 +110,28 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
+    if (!validateStep2()) return;
 
     setIsLoading(true);
-
     try {
-      const response = await axiosInstance.post(
-        '/ai/create-roadmap-conversation',
-        {
-          field: formData.field,
-          description: formData.description,
-          initial_message: formData.goals
-        }
-      );
+      const response = await axiosInstance.post('/ai/generate-roadmap', {
+        field,
+        user_responses: userResponses
+      });
 
       if (response.data.success) {
-        // Poll for roadmap creation
-        const pollRoadmap = async (roadmapId: string) => {
-          try {
-            await axiosInstance.get(`/roadmaps/${roadmapId}`);
-            onSuccess(roadmapId);
-            onClose();
-            resetForm();
-          } catch (error) {
-            setTimeout(() => pollRoadmap(roadmapId), 1000);
-          }
-        };
-        pollRoadmap(response.data.roadmap_id);
+        onSuccess(response.data.roadmap_id);
+        resetForm();
+        onClose();
       } else {
-        throw new Error('Failed to create roadmap');
+        throw new Error(response.data.message || 'Failed to create roadmap');
       }
     } catch (error: any) {
       console.error('Error creating roadmap:', error);
       setErrors({
         field:
           error.response?.data?.detail ||
-          'Failed to create roadmap. Please try again.'
+          'An unexpected error occurred. Please try again.'
       });
     } finally {
       setIsLoading(false);
@@ -145,15 +139,17 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
   };
 
   const resetForm = () => {
-    setFormData({ field: '', description: '', goals: '' });
+    setField('');
+    setQuestions([]);
+    setUserResponses({});
     setErrors({});
     setStep(1);
   };
 
   const handleClose = () => {
     if (!isLoading) {
-      onClose();
       resetForm();
+      onClose();
     }
   };
 
@@ -169,46 +165,13 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
               <Brain className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">
-                Create New Roadmap
-              </h2>
+              <h2 className="text-xl font-bold text-gray-900">Create New Roadmap</h2>
               <p className="text-sm text-gray-500">Step {step} of 3</p>
             </div>
           </div>
-          <button
-            onClick={handleClose}
-            disabled={isLoading}
-            title="Close modal"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <button onClick={handleClose} disabled={isLoading} title="Close modal" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="h-5 w-5 text-gray-500" />
           </button>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="px-6 py-4 bg-gray-50">
-          <div className="flex items-center space-x-2">
-            {[1, 2, 3].map(stepNum => (
-              <React.Fragment key={stepNum}>
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    stepNum <= step
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}
-                >
-                  {stepNum}
-                </div>
-                {stepNum < 3 && (
-                  <div
-                    className={`flex-1 h-1 rounded-full ${
-                      stepNum < step ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
         </div>
 
         {/* Form Content */}
@@ -218,105 +181,40 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
             <div className="space-y-6">
               <div className="text-center">
                 <Sparkles className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  What field interests you?
-                </h3>
-                <p className="text-gray-600">
-                  Choose a field you'd like to build your career in, or enter
-                  your own
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">What field interests you?</h3>
+                <p className="text-gray-600">Choose a field to build your career in, or enter your own.</p>
               </div>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  {popularFields.map(field => (
-                    <button
-                      key={field}
-                      type="button"
-                      onClick={() => handleFieldSelect(field)}
-                      className={`p-3 text-left rounded-lg border-2 transition-all ${
-                        formData.field === field
-                          ? 'border-blue-500 bg-blue-50 text-blue-700'
-                          : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                      }`}
-                    >
-                      {field}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Or enter your own field..."
-                    value={formData.field}
-                    onChange={e => handleInputChange('field', e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
-                      errors.field ? 'border-red-500' : 'border-gray-200'
-                    }`}
-                  />
-                  {errors.field && (
-                    <p className="mt-1 text-sm text-red-600">{errors.field}</p>
-                  )}
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                {popularFields.map(f => (
+                  <button key={f} type="button" onClick={() => setField(f)} className={`p-3 text-left rounded-lg border-2 transition-all ${field === f ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`}>
+                    {f}
+                  </button>
+                ))}
               </div>
+              <input type="text" placeholder="Or enter your own field..." value={field} onChange={e => setField(e.target.value)} className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${errors.field ? 'border-red-500' : 'border-gray-200'}`} />
+              {errors.field && <p className="mt-1 text-sm text-red-600">{errors.field}</p>}
             </div>
           )}
 
-          {/* Step 2: Description */}
+          {/* Step 2: Dynamic Questions */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="text-center">
                 <Brain className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Tell us about your goals
-                </h3>
-                <p className="text-gray-600">
-                  Describe what you want to achieve in {formData.field}
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Tell us about yourself</h3>
+                <p className="text-gray-600">Your answers will help us tailor a roadmap for the field of {field}.</p>
               </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Career Description *
-                  </label>
-                  <textarea
-                    placeholder="Describe your career goals, current experience, and what you'd like to achieve..."
-                    value={formData.description}
-                    onChange={e =>
-                      handleInputChange('description', e.target.value)
-                    }
-                    rows={5}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none ${
-                      errors.description ? 'border-red-500' : 'border-gray-200'
-                    }`}
-                  />
-                  <div className="flex justify-between mt-1">
-                    {errors.description && (
-                      <p className="text-sm text-red-600">
-                        {errors.description}
-                      </p>
-                    )}
-                    <p className="text-xs text-gray-500 ml-auto">
-                      {formData.description.length}/500
-                    </p>
+              {isLoading ? (
+                <div className="flex justify-center items-center p-8"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+              ) : (
+                questions.map(q => (
+                  <div key={q.key}>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{q.text}</label>
+                    <textarea value={userResponses[q.key] || ''} onChange={e => handleResponseChange(q.key, e.target.value)} rows={3} className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none ${errors[q.key] ? 'border-red-500' : 'border-gray-200'}`} />
+                    {errors[q.key] && <p className="mt-1 text-sm text-red-600">{errors[q.key]}</p>}
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Specific Goals (Optional)
-                  </label>
-                  <textarea
-                    placeholder="Any specific goals, timelines, or achievements you have in mind..."
-                    value={formData.goals}
-                    onChange={e => handleInputChange('goals', e.target.value)}
-                    rows={3}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none"
-                  />
-                </div>
-              </div>
+                ))
+              )}
             </div>
           )}
 
@@ -327,87 +225,40 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <ArrowRight className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Ready to create your roadmap?
-                </h3>
-                <p className="text-gray-600">
-                  Our AI will start a conversation to understand your background
-                  and create a personalized roadmap
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to create your roadmap?</h3>
+                <p className="text-gray-600">We will now generate a personalized roadmap based on your answers.</p>
               </div>
-
               <div className="bg-gray-50 rounded-xl p-6 space-y-4">
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Field</h4>
-                  <p className="text-gray-600">{formData.field}</p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-gray-900 mb-2">
-                    Description
-                  </h4>
-                  <p className="text-gray-600">{formData.description}</p>
-                </div>
-                {formData.goals && (
-                  <div>
-                    <h4 className="font-medium text-gray-900 mb-2">Goals</h4>
-                    <p className="text-gray-600">{formData.goals}</p>
+                <h4 className="font-medium text-gray-900 mb-2">Field</h4>
+                <p className="text-gray-600">{field}</p>
+                <h4 className="font-medium text-gray-900 mt-4 mb-2">Your Answers</h4>
+                {questions.map(q => (
+                  <div key={q.key}>
+                    <p className="font-semibold text-sm text-gray-800">{q.text}</p>
+                    <p className="text-gray-600 pl-2 border-l-2 border-gray-200">{userResponses[q.key]}</p>
                   </div>
-                )}
-              </div>
-
-              <div className="bg-blue-50 rounded-xl p-4">
-                <h4 className="font-medium text-blue-900 mb-2">
-                  What happens next?
-                </h4>
-                <ul className="text-sm text-blue-700 space-y-1">
-                  <li>• Our AI mentor will ask you 5 key questions</li>
-                  <li>
-                    • Based on your answers, we'll create a personalized roadmap
-                  </li>
-                  <li>• You'll get step-by-step milestones with resources</li>
-                  <li>• Track your progress and get ongoing AI mentorship</li>
-                </ul>
+                ))}
               </div>
             </div>
           )}
 
           {/* Action Buttons */}
           <div className="flex justify-between pt-6 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={step > 1 ? handleBack : handleClose}
-              disabled={isLoading}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-            >
+            <button type="button" onClick={step > 1 ? handleBack : handleClose} disabled={isLoading} className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
               {step > 1 ? 'Back' : 'Cancel'}
             </button>
-
             <div className="flex space-x-3">
               {step < 3 ? (
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-                >
+                <button type="button" onClick={handleNext} disabled={isLoading} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
                   <span>Next</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               ) : (
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-                >
+                <button type="submit" disabled={isLoading} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2">
                   {isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Creating...</span>
-                    </>
+                    <><Loader2 className="h-4 w-4 animate-spin" /><span>Creating...</span></>
                   ) : (
-                    <>
-                      <Sparkles className="h-4 w-4" />
-                      <span>Create Roadmap</span>
-                    </>
+                    <><Sparkles className="h-4 w-4" /><span>Create Roadmap</span></>
                   )}
                 </button>
               )}

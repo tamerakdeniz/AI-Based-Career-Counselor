@@ -1,67 +1,355 @@
 import asyncio
 import json
 import logging
-from dataclasses import dataclass
-from datetime import datetime
-from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List
 
-import httpx
-import openai
-import tiktoken
-from langdetect import detect
+import google.generativeai as genai
 from sqlalchemy.orm import Session
 
-# Import Google Gemini
-try:
-    import google.generativeai as genai
-    GEMINI_AVAILABLE = True
-except ImportError:
-    GEMINI_AVAILABLE = False
-    logging.warning("Google Generative AI not available. Install with: pip install google-generativeai")
-
 from app.core.config import settings
-from app.models.chat_message import ChatMessage
-from app.models.milestone import Milestone
 from app.models.roadmap import Roadmap
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class ConversationStage(Enum):
-    """Enum for different stages of the career guidance conversation"""
-    INTERESTS_STRENGTHS = "interests_strengths"
-    PREFERRED_FIELD = "preferred_field"
-    VALUES_MOTIVATION = "values_motivation"
-    WORK_STYLE = "work_style"
-    LONG_TERM_VISION = "long_term_vision"
-    ROADMAP_GENERATION = "roadmap_generation"
-    MENTORING = "mentoring"
+# --- Field-Specific Configurations ---
+FIELD_CONFIG = {
+    "software_development": {
+        "questions": [
+            {"key": "experience", "text": "What's your current experience level with software development? (e.g., beginner, some projects, professional)"},
+            {"key": "interests", "text": "What parts of software development excite you the most? (e.g., building web apps, data science, mobile development, games)"},
+            {"key": "goals", "text": "What are your primary goals? (e.g., get a job, build a specific project, learn a new technology)"},
+            {"key": "work_style", "text": "How do you prefer to work? (e.g., in a team, alone, remote, in-office)"},
+            {"key": "tech_stack", "text": "Are there any technologies or programming languages you're particularly interested in?"},
+        ],
+        "prompt_template": """
+        You are a career mentor creating a detailed roadmap for an aspiring software developer.
+        Based on the user's profile, generate a clear, actionable, and encouraging roadmap.
 
-@dataclass
-class ConversationContext:
-    """Data class to store conversation context"""
-    stage: ConversationStage
-    collected_data: Dict[str, Any]
-    message_count: int
-    last_updated: datetime
+        User Profile:
+        - Experience Level: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Preferred Work Style: {work_style}
+        - Desired Tech Stack: {tech_stack}
+
+        The roadmap must be a JSON object with a 'title', 'description', 'field', and a 'milestones' array.
+        Each milestone should have a 'title', 'description', 'estimated_duration', 'skills' to acquire, and a list of 'resources' (like courses, books, or projects).
+        """
+    },
+    "data_science": {
+        "questions": [
+            {"key": "experience", "text": "What is your background in math, stats, and programming?"},
+            {"key": "interests", "text": "Which areas of data science are most interesting to you? (e.g., machine learning, data visualization, analytics)"},
+            {"key": "goals", "text": "What do you want to achieve in data science? (e.g., become a data analyst, build predictive models)"},
+            {"key": "industry", "text": "Are you interested in a specific industry? (e.g., finance, healthcare, tech)"},
+            {"key": "learning_style", "text": "How do you prefer to learn complex topics? (e.g., academic papers, practical projects)"},
+        ],
+        "prompt_template": """
+        You are an expert data scientist mentoring a newcomer. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Industry: {industry}
+        - Learning Style: {learning_style}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "digital_marketing": {
+        "questions": [
+            {"key": "experience", "text": "Have you managed any marketing campaigns before?"},
+            {"key": "interests", "text": "What part of digital marketing excites you? (e.g., SEO, social media, content marketing)"},
+            {"key": "goals", "text": "What are your career goals? (e.g., become a marketing manager, specialize in an area)"},
+            {"key": "creative_or_analytical", "text": "Do you lean more towards the creative or analytical side of marketing?"},
+            {"key": "budget_experience", "text": "Have you ever managed a marketing budget?"},
+        ],
+        "prompt_template": """
+        You are a digital marketing director creating a growth plan for a team member. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Creative or Analytical: {creative_or_analytical}
+        - Budget Experience: {budget_experience}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "product_management": {
+        "questions": [
+            {"key": "experience", "text": "What's your experience with product development or project management?"},
+            {"key": "interests", "text": "What kind of products are you passionate about building? (e.g., consumer apps, B2B software)"},
+            {"key": "goals", "text": "What do you hope to achieve as a product manager?"},
+            {"key": "leadership_style", "text": "Describe your leadership and communication style.
+"},
+            {"key": "technical_skills", "text": "How comfortable are you with technical discussions?"},
+        ],
+        "prompt_template": """
+        You are a seasoned Head of Product advising a new Product Manager. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Leadership Style: {leadership_style}
+        - Technical Skills: {technical_skills}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "ux_ui_design": {
+        "questions": [
+            {"key": "experience", "text": "Do you have a portfolio or any design projects you can share?"},
+            {"key": "interests", "text": "Are you more drawn to UX (user research, wireframing) or UI (visual design, prototyping)?"},
+            {"key": "goals", "text": "What are your career goals as a designer?"},
+            {"key": "tools", "text": "Are you familiar with any design tools like Figma, Sketch, or Adobe XD?"},
+            {"key": "collaboration_style", "text": "How do you like to collaborate with developers and product managers?"},
+        ],
+        "prompt_template": """
+        You are a Design Lead mentoring a junior designer. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Tools: {tools}
+        - Collaboration Style: {collaboration_style}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "business_analysis": {
+        "questions": [
+            {"key": "experience", "text": "What is your experience with data analysis and requirements gathering?"},
+            {"key": "interests", "text": "What part of bridging business and tech interests you most?"},
+            {"key": "goals", "text": "What are your career goals as a business analyst?"},
+            {"key": "stakeholder_management", "text": "How comfortable are you with presenting findings to stakeholders?"},
+            {"key": "documentation_style", "text": "Do you have a preferred method for documenting requirements?"},
+        ],
+        "prompt_template": """
+        You are a senior Business Analyst guiding a new team member. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Stakeholder Management: {stakeholder_management}
+        - Documentation Style: {documentation_style}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "project_management": {
+        "questions": [
+            {"key": "experience", "text": "Have you managed projects before? If so, what methodologies did you use (e.g., Agile, Waterfall)?"},
+            {"key": "interests", "text": "What types of projects do you enjoy leading?"},
+            {"key": "goals", "text": "What are your long-term career goals in project management?"},
+            {"key": "team_size", "text": "What size of team are you most comfortable leading?"},
+            {"key": "conflict_resolution", "text": "How do you approach resolving conflicts within a project team?"},
+        ],
+        "prompt_template": """
+        You are a Program Manager mentoring a Project Manager. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Team Size: {team_size}
+        - Conflict Resolution: {conflict_resolution}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "sales": {
+        "questions": [
+            {"key": "experience", "text": "What is your sales experience? Have you worked with quotas before?"},
+            {"key": "interests", "text": "What kind of products or services are you passionate about selling?"},
+            {"key": "goals", "text": "What are your career ambitions in sales? (e.g., account executive, sales manager)"},
+            {"key": "sales_style", "text": "Are you more of a relationship-builder or a hunter?"},
+            {"key": "rejection_handling", "text": "How do you handle rejection and stay motivated?"},
+        ],
+        "prompt_template": """
+        You are a Sales Director coaching a sales representative. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Sales Style: {sales_style}
+        - Rejection Handling: {rejection_handling}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "content_creation": {
+        "questions": [
+            {"key": "experience", "text": "What kind of content have you created before? (e.g., videos, blogs, podcasts)"},
+            {"key": "interests", "text": "What topics are you passionate about creating content for?"},
+            {"key": "goals", "text": "What are your goals as a content creator? (e.g., build an audience, monetize your content)"},
+            {"key": "platform", "text": "Which platforms are you most interested in? (e.g., YouTube, TikTok, Substack)"},
+            {"key": "monetization_strategy", "text": "Have you thought about how you might monetize your content?"},
+        ],
+        "prompt_template": """
+        You are a media strategist advising a content creator. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Platform: {platform}
+        - Monetization Strategy: {monetization_strategy}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "entrepreneurship": {
+        "questions": [
+            {"key": "experience", "text": "Have you ever started a business or a project from scratch?"},
+            {"key": "interests", "text": "What industry or problem area are you passionate about solving?"},
+            {"key": "goals", "text": "What is your ultimate vision for your venture?"},
+            {"key": "risk_tolerance", "text": "How comfortable are you with financial and career risks?"},
+            {"key": "funding_strategy", "text": "Have you thought about how you would fund your business idea?"},
+        ],
+        "prompt_template": """
+        You are a venture capitalist mentoring an aspiring entrepreneur. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Risk Tolerance: {risk_tolerance}
+        - Funding Strategy: {funding_strategy}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "finance": {
+        "questions": [
+            {"key": "experience", "text": "What is your background in finance or accounting?"},
+            {"key": "interests", "text": "Which area of finance interests you most? (e.g., investment banking, personal finance, corporate finance)"},
+            {"key": "goals", "text": "What are your career goals in the finance industry?"},
+            {"key": "quantitative_skills", "text": "How strong are your quantitative and analytical skills?"},
+            {"key": "certifications", "text": "Are you interested in pursuing certifications like the CFA or CPA?"},
+        ],
+        "prompt_template": """
+        You are a CFO mentoring a junior financial analyst. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Quantitative Skills: {quantitative_skills}
+        - Certifications: {certifications}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "healthcare": {
+        "questions": [
+            {"key": "experience", "text": "Do you have any experience in the healthcare field, clinical or otherwise?"},
+            {"key": "interests", "text": "What area of healthcare are you drawn to? (e.g., patient care, research, administration, technology)"},
+            {"key": "goals", "text": "What impact do you want to have in healthcare?"},
+            {"key": "patient_interaction", "text": "How much direct patient interaction are you comfortable with?"},
+            {"key": "education_commitment", "text": "Are you prepared for the educational and training commitments required in healthcare?"},
+        ],
+        "prompt_template": """
+        You are a healthcare administrator advising someone on their career path. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Patient Interaction: {patient_interaction}
+        - Education Commitment: {education_commitment}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "education": {
+        "questions": [
+            {"key": "experience", "text": "Do you have any teaching or tutoring experience?"},
+            {"key": "interests", "text": "What age group or subject are you passionate about teaching?"},
+            {"key": "goals", "text": "What are your long-term goals in education? (e.g., teacher, administrator, curriculum developer)"},
+            {"key": "teaching_philosophy", "text": "What is your teaching philosophy?"},
+            {"key": "classroom_management", "text": "How would you approach classroom management and student engagement?"},
+        ],
+        "prompt_template": """
+        You are a school principal mentoring a new teacher. Create a roadmap based on their profile.
+
+        User Profile:
+        - Experience: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Teaching Philosophy: {teaching_philosophy}
+        - Classroom Management: {classroom_management}
+
+        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        """
+    },
+    "recreational_diving": {
+        "questions": [
+            {"key": "experience", "text": "Have you ever been diving before? What's your current certification level, if any? (e.g., never, PADI Open Water)"},
+            {"key": "interests", "text": "What about the underwater world fascinates you? (e.g., seeing coral reefs, exploring wrecks, marine life photography)"},
+            {"key": "goals", "text": "What do you hope to achieve with diving? (e.g., become a Divemaster, travel to famous dive spots, contribute to conservation)"},
+            {"key": "physical_readiness", "text": "Are you a confident swimmer and comfortable in the water?"},
+            {"key": "environment", "text": "Do you prefer warm, tropical waters or are you open to colder diving adventures?"},
+        ],
+        "prompt_template": """
+        You are a master diving instructor creating a personalized development plan for a recreational diver.
+        Based on the user's profile, generate a safe, exciting, and logical progression of certifications and experiences.
+
+        User Profile:
+        - Experience Level: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Physical Readiness: {physical_readiness}
+        - Preferred Environment: {environment}
+
+        The roadmap must be a JSON object with a 'title', 'description', 'field', and a 'milestones' array.
+        Each milestone should represent a new certification or a key experience, including a 'title', 'description', 'estimated_duration', 'skills' to master, and 'resources' (like training agencies, dive spots, or gear recommendations).
+        """
+    },
+    "default": {
+        "questions": [
+            {"key": "experience", "text": "What is your current experience level in this field?"},
+            {"key": "interests", "text": "What are your main interests related to this area?"},
+            {"key": "goals", "text": "What are your short-term and long-term goals?"},
+            {"key": "work_style", "text": "What is your preferred work style or environment?"},
+            {"key": "learning_style", "text": "How do you learn best? (e.g., through courses, hands-on projects, reading books)"},
+        ],
+        "prompt_template": """
+        You are a career counselor creating a roadmap for a user exploring a new field.
+        Based on the user's profile, generate a clear, actionable, and encouraging roadmap.
+
+        User Profile:
+        - Field: {field}
+        - Experience Level: {experience}
+        - Interests: {interests}
+        - Goals: {goals}
+        - Preferred Work Style: {work_style}
+        - Preferred Learning Style: {learning_style}
+
+        The roadmap must be a JSON object with a 'title', 'description', 'field', and a 'milestones' array.
+        Each milestone should have a 'title', 'description', 'estimated_duration', 'skills' to acquire, and a list of 'resources'.
+        """
+    }
+}
 
 class LLMService:
-    """Service for handling AI/LLM interactions for career guidance"""
-    
+    """Service for handling AI/LLM interactions for career guidance."""
+
     def __init__(self):
         self.gemini_model = None
-        self.openai_client = None
-        self.anthropic_client = None
-        self.encoding = None
         self._initialize_clients()
-        
+
     def _initialize_clients(self):
-        """Initialize AI clients based on available API keys and priority"""
-        
-        # Initialize Google Gemini (Primary)
-        if GEMINI_AVAILABLE and settings.google_ai_api_key:
+        """Initialize AI clients based on available API keys."""
+        if settings.google_ai_api_key:
             try:
                 genai.configure(api_key=settings.google_ai_api_key)
                 self.gemini_model = genai.GenerativeModel(settings.gemini_model)
@@ -69,520 +357,93 @@ class LLMService:
             except Exception as e:
                 logger.error(f"Failed to initialize Gemini client: {e}")
                 self.gemini_model = None
-        
-        # Initialize OpenAI (Fallback)
-        if settings.openai_api_key:
-            try:
-                openai.api_key = settings.openai_api_key
-                self.openai_client = openai.AsyncOpenAI(api_key=settings.openai_api_key)
-                self.encoding = tiktoken.encoding_for_model(settings.openai_model)
-                logger.info("OpenAI client initialized")
-            except Exception as e:
-                logger.error(f"Failed to initialize OpenAI client: {e}")
-        
-        # Initialize Anthropic (Fallback)
-        if settings.anthropic_api_key:
-            try:
-                import anthropic
-                self.anthropic_client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
-                logger.info("Anthropic client initialized")
-            except ImportError:
-                logger.warning("Anthropic not available, install with: pip install anthropic")
-            except Exception as e:
-                logger.error(f"Failed to initialize Anthropic client: {e}")
+        else:
+            logger.warning("Google AI API key not found. LLM service will not function.")
 
-    async def generate_follow_up_question(
-        self, 
-        roadmap_id: int,
-        user_message: str,
-        db: Session
-    ) -> Tuple[str, ConversationStage]:
-        """Generate a follow-up question based on the current conversation stage"""
-        
-        # Get conversation context
-        context = await self._get_conversation_context(roadmap_id, db)
-        
-        # Analyze user message and update context
-        context = await self._analyze_user_message(user_message, context)
-        
-        # Generate appropriate follow-up question
-        follow_up_question = await self._generate_stage_question(context)
-        
-        return follow_up_question, context.stage
+    def get_initial_questions(self, field: str) -> List[Dict[str, str]]:
+        """
+        Returns the list of initial, friendly questions for a given field.
+        These questions are designed to be simple and gather essential context.
+        """
+        field_key = field.lower().replace(" ", "_").replace("/", "_")
+        config = FIELD_CONFIG.get(field_key, FIELD_CONFIG["default"])
+        return config["questions"]
 
     async def generate_career_roadmap(
-        self, 
-        roadmap_id: int,
+        self,
+        field: str,
+        user_responses: Dict[str, Any],
         db: Session
     ) -> Dict[str, Any]:
-        """Generate a complete career roadmap based on collected conversation data"""
-        
-        # Get all conversation context
-        context = await self._get_conversation_context(roadmap_id, db)
-        
-        # Generate roadmap using AI
-        roadmap_data = await self._generate_roadmap_from_context(context)
-        
-        return roadmap_data
+        """
+        Generates a complete career roadmap based on a self-contained set of user answers.
+        This method does not rely on conversation history.
+        """
+        if not self.gemini_model:
+            logger.error("AI model not available.")
+            return self._generate_fallback_roadmap(field)
 
-    async def get_mentoring_response(
-        self,
-        roadmap_id: int,
-        user_message: str,
-        db: Session
-    ) -> str:
-        """Get AI mentoring response for ongoing conversations"""
-        
-        # Get roadmap and conversation history
-        roadmap = db.query(Roadmap).filter(Roadmap.id == roadmap_id).first()
-        if not roadmap:
-            raise ValueError(f"Roadmap {roadmap_id} not found")
-        
-        # Get recent conversation history
-        recent_messages = db.query(ChatMessage).filter(
-            ChatMessage.roadmap_id == roadmap_id
-        ).order_by(ChatMessage.timestamp.desc()).limit(settings.conversation_context_limit).all()
-        
-        # Generate mentoring response
-        response = await self._generate_mentoring_response(
-            roadmap, user_message, recent_messages
-        )
-        
-        return response
+        field_key = field.lower().replace(" ", "_").replace("/", "_")
+        config = FIELD_CONFIG.get(field_key, FIELD_CONFIG["default"])
+        prompt_template = config["prompt_template"]
 
-    async def _get_conversation_context(
-        self, 
-        roadmap_id: int, 
-        db: Session
-    ) -> ConversationContext:
-        """Get or create conversation context for a roadmap"""
-        
-        # Get all messages for this roadmap
-        messages = db.query(ChatMessage).filter(
-            ChatMessage.roadmap_id == roadmap_id
-        ).order_by(ChatMessage.timestamp.asc()).all()
-        
-        # Determine current stage based on message count and content
-        stage = self._determine_conversation_stage(messages)
-        
-        # Extract collected data from messages
-        collected_data = await self._extract_collected_data(messages)
-        
-        return ConversationContext(
-            stage=stage,
-            collected_data=collected_data,
-            message_count=len(messages),
-            last_updated=datetime.utcnow()
-        )
+        # Ensure all keys required by the template are present in user_responses
+        # Provide default values for any missing answers to prevent errors
+        prompt_data = {q["key"]: user_responses.get(q["key"], "Not provided") for q in config["questions"]}
+        prompt_data["field"] = field # Add field for the default template
 
-    def _determine_conversation_stage(self, messages: List[ChatMessage]) -> ConversationStage:
-        """Determine current conversation stage based on message history"""
-        
-        user_messages = [msg for msg in messages if msg.type == 'user']
-        
-        # Stage progression based on user responses
-        if len(user_messages) == 0:
-            return ConversationStage.INTERESTS_STRENGTHS
-        elif len(user_messages) == 1:
-            return ConversationStage.PREFERRED_FIELD
-        elif len(user_messages) == 2:
-            return ConversationStage.VALUES_MOTIVATION
-        elif len(user_messages) == 3:
-            return ConversationStage.WORK_STYLE
-        elif len(user_messages) == 4:
-            return ConversationStage.LONG_TERM_VISION
-        elif len(user_messages) == 5:
-            return ConversationStage.ROADMAP_GENERATION
-        else:
-            return ConversationStage.MENTORING
-
-    async def _extract_collected_data(self, messages: List[ChatMessage]) -> Dict[str, Any]:
-        """Extract and structure collected data from conversation messages"""
-        
-        collected_data = {
-            "interests_strengths": "",
-            "preferred_field": "",
-            "values_motivation": "",
-            "work_style": "",
-            "long_term_vision": "",
-            "additional_context": []
-        }
-        
-        user_messages = [msg for msg in messages if msg.type == 'user']
-        
-        # Map user responses to structured data
-        if len(user_messages) > 0:
-            collected_data["interests_strengths"] = user_messages[0].content
-        if len(user_messages) > 1:
-            collected_data["preferred_field"] = user_messages[1].content
-        if len(user_messages) > 2:
-            collected_data["values_motivation"] = user_messages[2].content
-        if len(user_messages) > 3:
-            collected_data["work_style"] = user_messages[3].content
-        if len(user_messages) > 4:
-            collected_data["long_term_vision"] = user_messages[4].content
-        if len(user_messages) > 5:
-            collected_data["additional_context"] = [msg.content for msg in user_messages[5:]]
-        
-        return collected_data
-
-    async def _analyze_user_message(
-        self, 
-        user_message: str, 
-        context: ConversationContext
-    ) -> ConversationContext:
-        """Analyze user message and update conversation context"""
-        
-        # Basic message validation
-        if len(user_message.strip()) < 10:
-            # Message too short, don't advance stage
-            return context
-        
-        # Update context with new message
-        context.message_count += 1
-        context.last_updated = datetime.utcnow()
-        
-        return context
-
-    async def _generate_stage_question(self, context: ConversationContext) -> str:
-        """Generate appropriate question for current conversation stage"""
-        
-        stage_prompts = {
-            ConversationStage.INTERESTS_STRENGTHS: self._get_interests_prompt(),
-            ConversationStage.PREFERRED_FIELD: self._get_preferred_field_prompt(context),
-            ConversationStage.VALUES_MOTIVATION: self._get_values_prompt(context),
-            ConversationStage.WORK_STYLE: self._get_work_style_prompt(context),
-            ConversationStage.LONG_TERM_VISION: self._get_long_term_vision_prompt(context),
-            ConversationStage.ROADMAP_GENERATION: self._get_roadmap_generation_prompt(context),
-            ConversationStage.MENTORING: self._get_mentoring_prompt(context)
-        }
-        
-        prompt = stage_prompts.get(context.stage, self._get_default_prompt())
-        
-        # Generate response using AI
-        response = await self._call_ai_service(prompt)
-        
-        return response
-
-    def _get_interests_prompt(self) -> str:
-        """Get prompt for interests and strengths stage"""
-        return """You are a career counselor helping someone discover their ideal career path. 
-        
-        Start the conversation by asking about their interests and strengths. Ask in a warm, encouraging way:
-        
-        "Hi! I'm here to help you discover your ideal career path. Let's start by getting to know you better. 
-        Can you tell me what subjects or activities you enjoy most and feel you excel at? 
-        What makes you feel energized and engaged?"
-        
-        Keep your response conversational and supportive."""
-
-    def _get_preferred_field_prompt(self, context: ConversationContext) -> str:
-        """Get prompt for preferred field stage"""
-        interests = context.collected_data.get("interests_strengths", "")
-        
-        return f"""Based on the user's interests and strengths: "{interests}"
-        
-        Now ask about their preferred field. Be encouraging and help them think broadly:
-        
-        "That's great to hear about your interests in {interests}! Now, if you could work in any field, 
-        what would it be? Even if you're unsure, describe the type of work environment or impact you'd 
-        like to have. Don't worry about being too specific - we're exploring possibilities!"
-        
-        Keep it conversational and supportive."""
-
-    def _get_values_prompt(self, context: ConversationContext) -> str:
-        """Get prompt for values and motivation stage"""
-        field = context.collected_data.get("preferred_field", "")
-        
-        return f"""The user is interested in: "{field}"
-        
-        Now explore their values and motivations:
-        
-        "Excellent! I can see you're drawn to {field}. Now let's talk about what matters most to you 
-        in a career. What values are important to you in your work? For example: creativity, security, 
-        helping people, making a difference, continuous learning, work-life balance, leadership, 
-        or something else entirely?"
-        
-        Be encouraging and help them think deeply about their motivations."""
-
-    def _get_work_style_prompt(self, context: ConversationContext) -> str:
-        """Get prompt for work style stage"""
-        values = context.collected_data.get("values_motivation", "")
-        
-        return f"""The user values: "{values}"
-        
-        Now ask about their work style preferences:
-        
-        "I love that you value {values}! Now, let's talk about how you like to work. 
-        Do you prefer remote work, being part of a team, solo deep work, or a mix of different styles? 
-        What would your ideal workday look like? Are you someone who thrives on routine or variety?"
-        
-        Keep it engaging and help them visualize their ideal work environment."""
-
-    def _get_long_term_vision_prompt(self, context: ConversationContext) -> str:
-        """Get prompt for long-term vision stage"""
-        work_style = context.collected_data.get("work_style", "")
-        
-        return f"""The user prefers: "{work_style}"
-        
-        Now explore their long-term vision:
-        
-        "Perfect! I can see you'd thrive in {work_style}. Now let's think about the bigger picture. 
-        Where do you see yourself in 5-10 years? What achievements would make you proud? 
-        What kind of impact do you want to have in your field or community?"
-        
-        Be inspiring and help them think ambitiously about their future."""
-
-    def _get_roadmap_generation_prompt(self, context: ConversationContext) -> str:
-        """Get prompt for roadmap generation stage"""
-        return """Now that we've gathered all this information, let me create a personalized career roadmap for you!
-        
-        "Thank you for sharing all of that with me! I have a clear picture of your interests, goals, and 
-        work style. Give me a moment to create a personalized career roadmap that will guide you toward 
-        your ideal career. This roadmap will include specific milestones, skills to develop, and resources 
-        to help you along the way."
-        
-        [The system will now generate a detailed roadmap based on all collected information]"""
-
-    def _get_mentoring_prompt(self, context: ConversationContext) -> str:
-        """Get prompt for ongoing mentoring stage"""
-        return """Continue providing helpful career mentoring and guidance based on the user's established roadmap 
-        and goals. Be supportive, specific, and actionable in your advice."""
-
-    def _get_default_prompt(self) -> str:
-        """Get default prompt for unexpected stages"""
-        return """I'm here to help you with your career journey. How can I assist you today?"""
-
-    async def _generate_roadmap_from_context(self, context: ConversationContext) -> Dict[str, Any]:
-        """Generate a complete career roadmap based on collected conversation data"""
-        
-        prompt = f"""Based on the following career counseling conversation data, create a detailed career roadmap:
-
-        Interests & Strengths: {context.collected_data.get('interests_strengths', '')}
-        Preferred Field: {context.collected_data.get('preferred_field', '')}
-        Values & Motivation: {context.collected_data.get('values_motivation', '')}
-        Work Style: {context.collected_data.get('work_style', '')}
-        Long-term Vision: {context.collected_data.get('long_term_vision', '')}
-
-        Create a career roadmap with the following structure:
-        
-        1. Career Summary (title, description, field)
-        2. 6-8 Milestones with:
-           - Title
-           - Description
-           - Estimated timeline
-           - Key skills to develop
-           - Resources (courses, certifications, books)
-           - Prerequisites
-        
-        The description should be a short, one-sentence summary of the roadmap's main objective.
-
-        Format the response as a JSON object with this structure:
-        {{
-            "title": "Career path title",
-            "short_title": "Short (2-3 word) title",
-            "description": "Brief description of the career path",
-            "short_description": "A very short, one-sentence summary of the roadmap's main objective.",
-            "field": "Primary field/industry",
-            "milestones": [
-                {{
-                    "title": "Milestone title",
-                    "description": "Detailed description",
-                    "estimated_duration": "Timeline estimate",
-                    "skills": ["skill1", "skill2"],
-                    "resources": [
-                        {{"title": "Resource 1 Title", "url": "https://example.com/resource1"}},
-                        {{"title": "Resource 2 Title", "url": "https://example.com/resource2"}}
-                    ],
-                    "prerequisites": ["prereq1", "prereq2"]
-                }}
-            ]
-        }}
-        
-        Make it specific, actionable, and encouraging."""
-        
-        response = await self._call_ai_service(prompt)
-        
         try:
-            # Parse JSON response
-            roadmap_data = json.loads(response)
-            return roadmap_data
-        except json.JSONDecodeError:
-            # Fallback if AI doesn't return valid JSON
-            return self._generate_fallback_roadmap(context)
+            prompt = prompt_template.format(**prompt_data)
+        except KeyError as e:
+            logger.error(f"Missing key in user_responses for prompt template: {e}")
+            return self._generate_fallback_roadmap(field)
 
-    def _generate_fallback_roadmap(self, context: ConversationContext) -> Dict[str, Any]:
-        """Generate a fallback roadmap if AI fails"""
-        field = context.collected_data.get('preferred_field', 'Your chosen field')
-        
+        response_text = await self._call_ai_service(prompt)
+
+        try:
+            # The AI is prompted to return JSON, so we parse it.
+            return json.loads(response_text)
+        except (json.JSONDecodeError, TypeError):
+            logger.error("Failed to decode JSON from AI response.")
+            # Fallback if the AI fails to return valid JSON
+            return self._generate_fallback_roadmap(field)
+
+    def _generate_fallback_roadmap(self, field: str) -> Dict[str, Any]:
+        """Generate a fallback roadmap if the AI service fails."""
         return {
             "title": f"Career Path in {field}",
-            "description": f"A personalized roadmap for your career in {field}",
+            "description": f"A personalized roadmap for your career in {field}.",
             "field": field,
             "milestones": [
                 {
                     "title": "Foundation Building",
-                    "description": "Build foundational knowledge and skills",
+                    "description": "Build foundational knowledge and skills for your new career path.",
                     "estimated_duration": "3-6 months",
-                    "skills": ["basic skills", "fundamental concepts"],
-                    "resources": ["online courses", "books", "tutorials"],
-                    "prerequisites": []
-                },
-                {
-                    "title": "Skill Development",
-                    "description": "Develop specialized skills",
-                    "estimated_duration": "6-12 months",
-                    "skills": ["specialized skills", "technical competencies"],
-                    "resources": ["advanced courses", "certifications", "practice projects"],
-                    "prerequisites": ["Foundation Building"]
+                    "skills": ["Fundamental concepts", "Core principles"],
+                    "resources": [{"title": "Look for online courses and introductory books", "url": ""}],
                 }
-            ]
+            ],
         }
 
-    async def _generate_mentoring_response(
-        self, 
-        roadmap: Roadmap, 
-        user_message: str, 
-        recent_messages: List[ChatMessage]
-    ) -> str:
-        """Generate mentoring response for ongoing conversations"""
-        
-        # Build context from recent messages
-        context = "\n".join([
-            f"{'User' if msg.type == 'user' else 'AI'}: {msg.content}"
-            for msg in reversed(recent_messages[-5:])
-        ])
-        
-        prompt = f"""You are an AI career mentor helping someone with their career in {roadmap.field}.
-        
-        Roadmap: {roadmap.title}
-        Description: {roadmap.description}
-        
-        Recent conversation:
-        {context}
-        
-        User's current message: "{user_message}"
-        
-        Provide a helpful, encouraging, and specific response that:
-        1. Addresses their question or concern
-        2. Relates to their career roadmap
-        3. Provides actionable advice
-        4. Encourages continued progress
-        
-        Keep your response conversational and supportive."""
-        
-        response = await self._call_ai_service(prompt)
-        return response
-
     async def _call_ai_service(self, prompt: str) -> str:
-        """Call AI service with error handling and fallbacks"""
-        
-        # Try providers in order of priority
-        for provider in settings.ai_provider_priority:
-            try:
-                if provider == "gemini" and self.gemini_model:
-                    response = await self._call_gemini(prompt)
-                    return response
-                elif provider == "openai" and self.openai_client:
-                    response = await self._call_openai(prompt)
-                    return response
-                elif provider == "anthropic" and self.anthropic_client:
-                    response = await self._call_anthropic(prompt)
-                    return response
-            except Exception as e:
-                logger.error(f"AI service error with {provider}: {str(e)}")
-                continue
-        
-        # If all providers fail, return fallback
-        return self._get_fallback_response(prompt)
-
-    async def _call_gemini(self, prompt: str) -> str:
-        """Call Google Gemini API"""
+        """Call the configured AI service (Gemini) with the given prompt."""
+        if not self.gemini_model:
+            return ""
         try:
-            # Configure generation settings
             generation_config = genai.types.GenerationConfig(
                 max_output_tokens=settings.gemini_max_tokens,
                 temperature=settings.gemini_temperature,
+                response_mime_type="application/json", # Request JSON output
             )
-            
-            # Generate response
             response = await asyncio.to_thread(
                 self.gemini_model.generate_content,
                 prompt,
                 generation_config=generation_config
             )
-            
-            if response.parts:
-                return response.text
-            else:
-                logger.warning(f"Gemini API returned no content. Finish reason: {response.candidates[0].finish_reason.name}")
-                return ""
-            
+            return response.text
         except Exception as e:
             logger.error(f"Gemini API error: {str(e)}")
-            raise
-
-    async def _call_openai(self, prompt: str) -> str:
-        """Call OpenAI API"""
-        try:
-            response = await self.openai_client.chat.completions.create(
-                model=settings.openai_model,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=settings.openai_max_tokens,
-                temperature=settings.openai_temperature,
-                timeout=settings.ai_timeout_seconds
-            )
-            return response.choices[0].message.content
-        except Exception as e:
-            logger.error(f"OpenAI API error: {str(e)}")
-            raise
-
-    async def _call_anthropic(self, prompt: str) -> str:
-        """Call Anthropic API"""
-        try:
-            response = await self.anthropic_client.messages.create(
-                model=settings.anthropic_model,
-                max_tokens=settings.openai_max_tokens,
-                temperature=settings.openai_temperature,
-                messages=[{"role": "user", "content": prompt}],
-                timeout=settings.ai_timeout_seconds
-            )
-            return response.content[0].text
-        except Exception as e:
-            logger.error(f"Anthropic API error: {str(e)}")
-            raise
-
-    def _get_fallback_response(self, prompt: str) -> str:
-        """Get fallback response when AI services are unavailable"""
-        
-        if "interests" in prompt.lower():
-            return "Hi! I'm here to help you discover your ideal career path. Can you tell me what subjects or activities you enjoy most and feel you excel at? What makes you feel energized and engaged?"
-        
-        if "field" in prompt.lower():
-            return "That's great to hear about your interests! Now, if you could work in any field, what would it be? Even if you're unsure, describe the type of impact you'd like to have."
-        
-        if "values" in prompt.lower():
-            return "Excellent! Now let's talk about what matters most to you in a career. What values are important to you in your work? For example: creativity, security, helping people, etc."
-        
-        if "work style" in prompt.lower():
-            return "I love that! Now, let's talk about how you like to work. Do you prefer remote work, teamwork, solo deep work, or something else? Describe your ideal workday."
-        
-        if "vision" in prompt.lower():
-            return "Perfect! Now let's think about the bigger picture. Where do you see yourself in 5-10 years? What achievements would make you proud?"
-        
-        return "I'm here to help you with your career journey. Could you please share more about your goals and interests?"
-
-    def count_tokens(self, text: str) -> int:
-        """Count tokens in text for rate limiting"""
-        try:
-            if self.encoding:
-                return len(self.encoding.encode(text))
-            else:
-                # Fallback to character count / 4 for Gemini
-                return len(text) // 4
-        except Exception:
-            # Fallback to character count / 4
-            return len(text) // 4
+            return ""
 
 # Global instance
 llm_service = LLMService()
