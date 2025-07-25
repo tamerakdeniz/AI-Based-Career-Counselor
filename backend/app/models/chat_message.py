@@ -8,7 +8,7 @@ class ChatMessage(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     roadmap_id = Column(Integer, ForeignKey("roadmaps.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     type = Column(String, nullable=False)  # 'ai' or 'user'
     content = Column(Text, nullable=False)
     timestamp = Column(DateTime, default=func.now())

@@ -10,6 +10,7 @@ from app.database import get_db
 from app.models.user import User
 from app.core.security import verify_password, get_password_hash
 from app.core.config import settings
+from app.schemas.user import PasswordChangeRequest, EmailChangeRequest, Token, LoginRequest, RegisterRequest # Import new schemas
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -20,18 +21,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
-
-# Pydantic models
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-    user_id: int
-    user_email: str
-    user_name: str
-
-class LoginRequest(BaseModel):
-    email: EmailStr
-    password: str
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -97,11 +86,6 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
 
 #--REGISTER--
 
-class RegisterRequest(BaseModel):
-    name: str
-    email: EmailStr
-    password: str
-
 @router.post("/register", status_code=201)
 def register(register_data: RegisterRequest, db: Session = Depends(get_db)):
     # 1. Aynı e-posta ile kullanıcı var mı kontrol et
@@ -151,5 +135,72 @@ def get_current_user(current_user: User = Depends(verify_token)):
         "name": current_user.name,
         "email": current_user.email,
         "avatar": current_user.avatar,
-        "joined_at": current_user.joined_at
+        "joined_at": current_user.joined_at.isoformat() if current_user.joined_at else None # Ensure datetime is ISO formatted
     }
+
+@router.put("/change-password", status_code=status.HTTP_200_OK)
+def change_password(
+    password_data: PasswordChangeRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(verify_token)
+):
+    """
+    Change the current user's password.
+    Requires authentication.
+    """
+    if not verify_password(password_data.current_password, str(current_user.hashed_password)):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect."
+        )
+    if password_data.current_password == password_data.new_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password cannot be the same as the current password."
+        )
+    
+    # Hash the new password
+    hashed_new_password = get_password_hash(password_data.new_password)
+    current_user.hashed_password = hashed_new_password
+    
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+    
+    return {"message": "Password updated successfully."}
+
+@router.put("/change-email", status_code=status.HTTP_200_OK)
+def change_email(
+    email_data: EmailChangeRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(verify_token)
+):
+    """
+    Change the current user's email address.
+    Requires authentication.
+    """
+    # Verify current password
+    if not verify_password(email_data.current_password, str(current_user.hashed_password)):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Current password is incorrect",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    # Yeni email mevcut email ile aynıysa hata döndür
+    if email_data.new_email.strip().lower() == current_user.email.strip().lower():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New email cannot be the same as the current email."
+        )
+    # Check if the new email is already registered
+    existing_user_with_new_email = db.query(User).filter(User.email == email_data.new_email).first()
+    if existing_user_with_new_email and existing_user_with_new_email.id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New email already registered by another user."
+        )
+    current_user.email = email_data.new_email
+    db.add(current_user)
+    db.commit()
+    db.refresh(current_user)
+    return {"message": "Email updated successfully."}

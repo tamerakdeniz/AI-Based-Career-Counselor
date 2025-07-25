@@ -89,10 +89,10 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                     <p className="text-sm font-medium text-gray-900">{currentUser?.name || 'User'}</p>
                     <p className="text-xs text-gray-500">{currentUser?.email || ''}</p>
                   </div>
-                  <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  <Link to="/profile" className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     <User className="h-4 w-4" />
                     <span>Profile</span>
-                  </button>
+                  </Link>
                   <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     <Settings className="h-4 w-4" />
                     <span>Settings</span>
@@ -125,10 +125,11 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                   <p className="text-xs text-gray-500">{currentUser?.email || ''}</p>
                 </div>
               </div>
-              <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
+              <Link to="/profile" className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
                 <User className="h-4 w-4" />
                 <span>Profile</span>
-              </button>
+              </Link>
+
               <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>

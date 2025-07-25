@@ -28,17 +28,20 @@ axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      // Clear invalid token
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('isAuthenticated');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userId');
-      
-      // Redirect to login if not already there
-      if (window.location.pathname !== '/signin') {
-        window.location.href = '/signin';
+      const config = error.config;
+      // Sadece gerçek oturum hatalarında token'ı sil
+      const isAuthEndpoint =
+        config?.url?.includes('/auth/me') ||
+        config?.url?.includes('/auth/login') ||
+        config?.url?.includes('/auth/register');
+      if (isAuthEndpoint) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userId');
       }
+      // Yönlendirme yok, hata mesajı frontendde gösterilecek
     }
     return Promise.reject(error);
   }
