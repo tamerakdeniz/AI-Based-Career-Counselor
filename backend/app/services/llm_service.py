@@ -394,14 +394,14 @@ FIELD_CONFIG = {
         - Experience Level: {experience}
         - Interests: {interests}
         - Goals: {goals}
-        - Preferred Work Style: {work_style}
-        - Preferred Learning Style: {learning_style}
+        - Learning Style: {learning_style}
+        - Time Commitment: {time_commitment}
 
         CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
 
         {{
-            "title": "Specific title for this {field} roadmap",
-            "description": "Detailed description of the learning path",
+            "title": "Comprehensive {field} Learning Path",
+            "description": "A step-by-step roadmap tailored to your experience level and goals in {field}",
             "field": "{field}",
             "milestones": [
                 {{
@@ -419,7 +419,8 @@ FIELD_CONFIG = {
             ]
         }}
 
-        Create 4-6 progressive milestones that build upon each other.
+        Create 4-6 progressive milestones that build upon each other, considering the user's experience level and time commitment.
+        For specialized fields like {field}, ensure milestones are field-appropriate and realistic.
         """
     }
 }
@@ -448,9 +449,23 @@ class LLMService:
         """
         Returns the list of initial, friendly questions for a given field.
         These questions are designed to be simple and gather essential context.
+        For custom fields, generates field-specific questions using the default template.
         """
         field_key = field.lower().replace(" ", "_").replace("/", "_")
         config = FIELD_CONFIG.get(field_key, FIELD_CONFIG["default"])
+        
+        # If using default config for a custom field, customize the questions
+        if field_key not in FIELD_CONFIG and field != "default":
+            # Create field-specific questions for custom fields
+            custom_questions = [
+                {"key": "experience", "text": f"What's your current experience level with {field}? (e.g., beginner, some experience, professional)"},
+                {"key": "interests", "text": f"What specific aspects of {field} interest you the most?"},
+                {"key": "goals", "text": f"What are your main goals in {field}? (e.g., career change, skill improvement, certification)"},
+                {"key": "learning_style", "text": "How do you prefer to learn? (e.g., hands-on practice, structured courses, mentorship)"},
+                {"key": "time_commitment", "text": "How much time can you dedicate to learning per week?"},
+            ]
+            return custom_questions
+        
         return config["questions"]
 
     async def generate_career_roadmap(
@@ -473,7 +488,19 @@ class LLMService:
 
         # Ensure all keys required by the template are present in user_responses
         # Provide default values for any missing answers to prevent errors
-        prompt_data = {q["key"]: user_responses.get(q["key"], "Not provided") for q in config["questions"]}
+        # If using default config for a custom field, use custom questions
+        if field_key not in FIELD_CONFIG and field != "default":
+            # Use the custom questions we generated
+            custom_questions = [
+                {"key": "experience", "text": f"What's your current experience level with {field}?"},
+                {"key": "interests", "text": f"What specific aspects of {field} interest you the most?"},
+                {"key": "goals", "text": f"What are your main goals in {field}?"},
+                {"key": "learning_style", "text": "How do you prefer to learn?"},
+                {"key": "time_commitment", "text": "How much time can you dedicate to learning per week?"},
+            ]
+            prompt_data = {q["key"]: user_responses.get(q["key"], "Not provided") for q in custom_questions}
+        else:
+            prompt_data = {q["key"]: user_responses.get(q["key"], "Not provided") for q in config["questions"]}
         prompt_data["field"] = field # Add field for the default template
 
         try:

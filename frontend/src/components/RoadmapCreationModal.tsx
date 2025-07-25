@@ -24,6 +24,7 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
   onSuccess
 }) => {
   const [field, setField] = useState('');
+  const [customField, setCustomField] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [userResponses, setUserResponses] = useState<{ [key: string]: string }>(
     {}
@@ -31,6 +32,7 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [showCustomFieldInput, setShowCustomFieldInput] = useState(false);
 
   const popularFields = [
     'Software Development',
@@ -50,7 +52,7 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
   ];
 
   useEffect(() => {
-    if (step === 2 && field) {
+    if (step === 2 && field && field !== 'Other') {
       fetchInitialQuestions(field);
     }
   }, [step, field]);
@@ -101,13 +103,28 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
   const handleNext = () => {
     if (step === 1) {
       if (validateStep1()) {
-        setStep(2);
+        // If "Other" is selected, show custom field input instead of proceeding to step 2
+        if (field === 'Other') {
+          setShowCustomFieldInput(true);
+        } else {
+          setStep(2);
+        }
       }
     } else if (step === 2) {
       if (validateStep2()) {
         setStep(3);
       }
     }
+  };
+
+  const handleCustomFieldSubmit = () => {
+    if (!customField.trim()) {
+      setErrors({ field: 'Please specify what field you want to learn' });
+      return;
+    }
+    setField(customField);
+    setShowCustomFieldInput(false);
+    setStep(2);
   };
 
   const handleBack = () => {
@@ -159,10 +176,12 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
 
   const resetForm = () => {
     setField('');
+    setCustomField('');
     setQuestions([]);
     setUserResponses({});
     setErrors({});
     setStep(1);
+    setShowCustomFieldInput(false);
   };
 
   const handleClose = () => {
@@ -230,16 +249,60 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
                   </button>
                 ))}
               </div>
-              <input
-                type="text"
-                placeholder="Or enter your own field..."
-                value={field}
-                onChange={e => setField(e.target.value)}
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
-                  errors.field ? 'border-red-500' : 'border-gray-200'
-                }`}
-              />
-              {errors.field && (
+              {/* Custom field input for direct entry or when "Other" is selected */}
+              {(!showCustomFieldInput || field !== 'Other') && (
+                <input
+                  type="text"
+                  placeholder="Or enter your own field..."
+                  value={field === 'Other' ? '' : field}
+                  onChange={e => setField(e.target.value)}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                    errors.field ? 'border-red-500' : 'border-gray-200'
+                  }`}
+                />
+              )}
+
+              {/* Show when "Other" is selected */}
+              {showCustomFieldInput && field === 'Other' && (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      What field would you like to learn about?
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Scuba Diving, Photography, Cooking..."
+                      value={customField}
+                      onChange={e => setCustomField(e.target.value)}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                        errors.field ? 'border-red-500' : 'border-gray-200'
+                      }`}
+                    />
+                  </div>
+                  <div className="flex space-x-3">
+                    <button
+                      type="button"
+                      onClick={handleCustomFieldSubmit}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                    >
+                      Continue
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowCustomFieldInput(false);
+                        setField('');
+                        setCustomField('');
+                      }}
+                      className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {errors.field && !showCustomFieldInput && (
                 <p className="mt-1 text-sm text-red-600">{errors.field}</p>
               )}
             </div>

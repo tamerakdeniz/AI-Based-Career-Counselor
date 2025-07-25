@@ -122,6 +122,50 @@ const Roadmap: React.FC = () => {
     }
   };
 
+  const handleCompleteRoadmap = async () => {
+    if (
+      window.confirm(
+        'Are you sure you want to mark all milestones as complete?'
+      )
+    ) {
+      try {
+        await axiosInstance.put(`/roadmaps/${roadmapId}/complete-all`);
+        // Refresh roadmap data
+        const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
+        const backendRoadmap = res.data;
+        let roadmapNodes: RoadmapNode[] = [];
+        if (backendRoadmap.milestones) {
+          roadmapNodes = backendRoadmap.milestones.map(
+            (milestone: Milestone, idx: number) => ({
+              id: milestone.id,
+              title: milestone.title,
+              description: milestone.description,
+              category: '',
+              completed: milestone.completed,
+              current:
+                !milestone.completed &&
+                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+              available:
+                !milestone.completed &&
+                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+              skills: [],
+              estimatedDuration: '',
+              prerequisites: [],
+              resources: (milestone.resources || []).map((r: any) => ({
+                title: typeof r === 'string' ? r : r.title,
+                type: 'article',
+                url: typeof r === 'string' ? '' : r.url
+              }))
+            })
+          );
+        }
+        setRoadmap({ ...backendRoadmap, roadmapNodes });
+      } catch (err) {
+        setError('Failed to complete roadmap.');
+      }
+    }
+  };
+
   const handleCompleteMilestone = async (milestoneId: number) => {
     try {
       await axiosInstance.put(`/roadmaps/milestones/${milestoneId}/complete`);
@@ -224,47 +268,82 @@ const Roadmap: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <span className="text-gray-600">
-                    Completed ({roadmap.completedMilestones})
+                    Completed (
+                    {roadmap.roadmapNodes?.filter(node => node.completed)
+                      .length || 0}
+                    )
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <span className="text-gray-600">Current</span>
+                  <span className="text-gray-600">
+                    Current (
+                    {roadmap.roadmapNodes?.filter(node => node.current)
+                      .length || 0}
+                    )
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                  <span className="text-gray-600">Available</span>
+                  <span className="text-gray-600">
+                    Available (
+                    {roadmap.roadmapNodes?.filter(node => node.available)
+                      .length || 0}
+                    )
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-gray-100 rounded-full"></div>
-                  <span className="text-gray-600">Locked</span>
+                  <span className="text-gray-600">
+                    Locked (
+                    {roadmap.roadmapNodes?.filter(
+                      node =>
+                        !node.completed && !node.current && !node.available
+                    ).length || 0}
+                    )
+                  </span>
                 </div>
               </div>
             </div>
             <div className="text-right">
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleDelete}
-                  className="p-2 text-gray-500 hover:text-red-600 transition-colors"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </button>
-                <button
-                  onClick={handleRename}
-                  className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
-                >
-                  <Pencil className="h-5 w-5" />
-                </button>
+              <div className="flex flex-col items-end space-y-3 mb-4">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleCompleteRoadmap}
+                    className="text-sm text-gray-600 hover:text-green-600 transition-colors flex items-center space-x-1 border border-gray-300 hover:border-green-300 px-3 py-1 rounded-md bg-white hover:bg-green-50"
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    <span>Complete</span>
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="p-2 text-gray-500 hover:text-red-600 transition-colors"
+                    title="Delete roadmap"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={handleRename}
+                    className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
+                    title="Rename roadmap"
+                  >
+                    <Pencil className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1 mt-2">
-                {roadmap.progress}%
-              </div>
-              <div className="text-sm text-gray-500">Overall Progress</div>
-              <div className="w-32 bg-gray-200 rounded-full h-2 mt-2">
-                <div
-                  className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${roadmap.progress}%` }}
-                />
+              <div className="text-right">
+                <div className="text-3xl font-bold text-gray-900 mb-1">
+                  {roadmap.progress}%
+                </div>
+                <div className="text-sm text-gray-500 mb-2">
+                  Overall Progress
+                </div>
+                <div className="w-32 bg-gray-200 rounded-full h-2 ml-auto">
+                  <div
+                    className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${roadmap.progress}%` }}
+                  />
+                </div>
               </div>
             </div>
           </div>

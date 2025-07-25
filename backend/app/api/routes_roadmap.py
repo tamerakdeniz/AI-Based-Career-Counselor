@@ -87,7 +87,33 @@ async def complete_milestone(milestone_id: int, db: Session = Depends(get_db), c
         total_milestones = db.query(Milestone).filter(Milestone.roadmap_id == roadmap.id).count()
         roadmap.progress = int((completed_milestones / total_milestones) * 100) if total_milestones > 0 else 0
         roadmap.completed_milestones = completed_milestones
+        roadmap.total_milestones = total_milestones
         db.commit()
 
     db.refresh(milestone)
     return milestone
+
+# Complete all milestones in a roadmap
+@router.put("/{roadmap_id}/complete-all")
+async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
+    roadmap = db.query(Roadmap).filter(Roadmap.id == roadmap_id).first()
+    if not roadmap:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+    # Ensure user can only complete their own roadmaps
+    if roadmap.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    # Mark all milestones as complete
+    milestones = db.query(Milestone).filter(Milestone.roadmap_id == roadmap_id).all()
+    for milestone in milestones:
+        milestone.completed = True
+    
+    # Update roadmap progress to 100%
+    total_milestones = len(milestones)
+    roadmap.progress = 100
+    roadmap.completed_milestones = total_milestones
+    roadmap.total_milestones = total_milestones
+    
+    db.commit()
+    
+    return {"message": "All milestones completed successfully", "completed_count": total_milestones}

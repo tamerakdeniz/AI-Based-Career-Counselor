@@ -1,6 +1,6 @@
 import { Award, Clock, Plus, TrendingUp } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import Header from '../components/Header';
 import RoadmapCard from '../components/RoadmapCard';
@@ -14,29 +14,49 @@ const Dashboard: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Get current user (from localStorage or backend)
+      const userRes = await axiosInstance.get('/auth/me');
+      setUser(userRes.data);
+      // Get user's roadmaps
+      const roadmapsRes = await axiosInstance.get(
+        `/roadmaps/user/${userRes.data.id}`
+      );
+      setRoadmaps(roadmapsRes.data);
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+      setError('Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // Get current user (from localStorage or backend)
-        const userRes = await axiosInstance.get('/auth/me');
-        setUser(userRes.data);
-        // Get user's roadmaps
-        const roadmapsRes = await axiosInstance.get(
-          `/roadmaps/user/${userRes.data.id}`
-        );
-        setRoadmaps(roadmapsRes.data);
-      } catch (error) {
-        console.error('Failed to load dashboard data:', error);
-        setError('Failed to load dashboard data.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
+
+    // Refresh data when window gains focus (user comes back from roadmap page)
+    const handleFocus = () => {
+      fetchData();
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
+
+  // Also refresh when location changes (user navigates back to dashboard)
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      fetchData();
+    }
+  }, [location]);
 
   const handleCreateRoadmap = () => {
     setIsModalOpen(true);
@@ -52,11 +72,13 @@ const Dashboard: React.FC = () => {
   };
 
   const totalMilestones = roadmaps.reduce(
-    (sum, roadmap) => sum + (roadmap.totalMilestones || 0),
+    (sum, roadmap) =>
+      sum + (roadmap.total_milestones || roadmap.totalMilestones || 0),
     0
   );
   const completedMilestones = roadmaps.reduce(
-    (sum, roadmap) => sum + (roadmap.completedMilestones || 0),
+    (sum, roadmap) =>
+      sum + (roadmap.completed_milestones || roadmap.completedMilestones || 0),
     0
   );
   const averageProgress =

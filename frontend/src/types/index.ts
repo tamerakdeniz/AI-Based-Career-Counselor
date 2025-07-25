@@ -11,6 +11,12 @@ export interface Roadmap {
   createdAt: string;
   milestones: Milestone[];
   roadmapNodes?: RoadmapNode[];
+  // Backend snake_case versions (for compatibility)
+  total_milestones?: number;
+  completed_milestones?: number;
+  next_milestone?: string;
+  estimated_time_to_complete?: string;
+  created_at?: string;
 }
 
 export interface Resource {
