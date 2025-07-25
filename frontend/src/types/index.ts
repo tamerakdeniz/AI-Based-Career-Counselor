@@ -13,13 +13,18 @@ export interface Roadmap {
   roadmapNodes?: RoadmapNode[];
 }
 
+export interface Resource {
+  title: string;
+  url?: string;
+}
+
 export interface Milestone {
   id: string;
   title: string;
   description: string;
   completed: boolean;
   dueDate?: string;
-  resources?: string[];
+  resources?: Resource[];
 }
 
 export interface RoadmapNode {

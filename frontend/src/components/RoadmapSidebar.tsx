@@ -1,5 +1,13 @@
-import React from 'react';
-import { CheckCircle, Circle, Clock, X, ChevronRight } from 'lucide-react';
+import {
+  CheckCircle,
+  ChevronDown,
+  ChevronRight,
+  Circle,
+  Clock,
+  ExternalLink,
+  X
+} from 'lucide-react';
+import React, { useState } from 'react';
 import { Roadmap } from '../types';
 
 interface RoadmapSidebarProps {
@@ -8,7 +16,15 @@ interface RoadmapSidebarProps {
   onClose: () => void;
 }
 
-const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClose }) => {
+const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({
+  roadmap,
+  isOpen,
+  onClose
+}) => {
+  const [expandedMilestones, setExpandedMilestones] = useState<Set<string>>(
+    new Set()
+  );
+
   const getProgressColor = (progress: number) => {
     if (progress >= 75) return 'bg-green-500';
     if (progress >= 50) return 'bg-blue-500';
@@ -16,22 +32,34 @@ const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClos
     return 'bg-gray-300';
   };
 
+  const toggleMilestoneExpansion = (milestoneId: string) => {
+    const newExpanded = new Set(expandedMilestones);
+    if (newExpanded.has(milestoneId)) {
+      newExpanded.delete(milestoneId);
+    } else {
+      newExpanded.add(milestoneId);
+    }
+    setExpandedMilestones(newExpanded);
+  };
+
   return (
     <>
       {/* Overlay for mobile/tablet - only show when sidebar is open and on smaller screens */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 xl:hidden"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
-      <div className={`
+      <div
+        className={`
         fixed right-0 top-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 z-50
         xl:relative xl:translate-x-0 xl:shadow-none xl:border-l xl:border-gray-200 xl:z-auto
         ${isOpen ? 'translate-x-0' : 'translate-x-full xl:translate-x-0'}
-      `}>
+      `}
+      >
         <div className="h-full flex flex-col">
           {/* Header */}
           <div className="p-4 border-b border-gray-200 flex-shrink-0">
@@ -40,6 +68,7 @@ const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClos
               <button
                 onClick={onClose}
                 className="p-1 hover:bg-gray-100 rounded-full transition-colors xl:hidden"
+                title="Close sidebar"
               >
                 <X className="h-5 w-5 text-gray-500" />
               </button>
@@ -50,9 +79,13 @@ const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClos
           <div className="flex-1 overflow-y-auto p-4">
             {/* Roadmap Info */}
             <div className="mb-6">
-              <h3 className="font-semibold text-gray-900 mb-2">{roadmap.title}</h3>
-              <p className="text-sm text-gray-600 mb-4">{roadmap.description}</p>
-              
+              <h3 className="font-semibold text-gray-900 mb-2">
+                {roadmap.title}
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                {roadmap.description}
+              </p>
+
               {/* Progress */}
               <div className="mb-4">
                 <div className="flex justify-between text-sm text-gray-600 mb-1">
@@ -60,8 +93,10 @@ const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClos
                   <span>{roadmap.progress}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(roadmap.progress)}`}
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(
+                      roadmap.progress
+                    )}`}
                     style={{ width: `${roadmap.progress}%` }}
                   />
                 </div>
@@ -70,11 +105,17 @@ const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClos
               {/* Stats */}
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="font-semibold text-gray-900">{roadmap.completedMilestones}</div>
+                  <div className="font-semibold text-gray-900">
+                    {roadmap.completedMilestones}
+                  </div>
                   <div className="text-gray-500">Completed</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="font-semibold text-gray-900">{roadmap.totalMilestones > 0 ? roadmap.totalMilestones - roadmap.completedMilestones : 0}</div>
+                  <div className="font-semibold text-gray-900">
+                    {roadmap.totalMilestones > 0
+                      ? roadmap.totalMilestones - roadmap.completedMilestones
+                      : 0}
+                  </div>
                   <div className="text-gray-500">Remaining</div>
                 </div>
               </div>
@@ -84,43 +125,111 @@ const RoadmapSidebar: React.FC<RoadmapSidebarProps> = ({ roadmap, isOpen, onClos
             <div>
               <h4 className="font-medium text-gray-900 mb-3">Milestones</h4>
               <div className="space-y-3">
-                {roadmap.milestones.map((milestone, index) => (
-                  <div key={milestone.id} className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 mt-1">
-                      {milestone.completed ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                      ) : (
-                        <Circle className="h-5 w-5 text-gray-400" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h5 className={`text-sm font-medium ${
-                        milestone.completed ? 'text-gray-900' : 'text-gray-700'
-                      }`}>
-                        {milestone.title}
-                      </h5>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {milestone.description}
-                      </p>
-                      {milestone.dueDate && !milestone.completed && (
-                        <div className="flex items-center space-x-1 mt-2">
-                          <Clock className="h-3 w-3 text-gray-400" />
-                          <span className="text-xs text-gray-500">
-                            Due: {new Date(milestone.dueDate).toLocaleDateString()}
-                          </span>
+                {roadmap.milestones.map(milestone => {
+                  const isExpanded = expandedMilestones.has(milestone.id);
+                  const hasResources =
+                    milestone.resources && milestone.resources.length > 0;
+
+                  return (
+                    <div
+                      key={milestone.id}
+                      className="border border-gray-200 rounded-lg p-3"
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 mt-1">
+                          {milestone.completed ? (
+                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          ) : (
+                            <Circle className="h-5 w-5 text-gray-400" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h5
+                            className={`text-sm font-medium ${
+                              milestone.completed
+                                ? 'text-gray-900'
+                                : 'text-gray-700'
+                            }`}
+                          >
+                            {milestone.title}
+                          </h5>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {milestone.description}
+                          </p>
+                          {milestone.dueDate && !milestone.completed && (
+                            <div className="flex items-center space-x-1 mt-2">
+                              <Clock className="h-3 w-3 text-gray-400" />
+                              <span className="text-xs text-gray-500">
+                                Due:{' '}
+                                {new Date(
+                                  milestone.dueDate
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+                          )}
+                          {hasResources && (
+                            <div className="mt-2">
+                              <button
+                                onClick={() =>
+                                  toggleMilestoneExpansion(milestone.id)
+                                }
+                                className="text-xs text-blue-600 hover:text-blue-700 flex items-center space-x-1 transition-colors"
+                              >
+                                <span>
+                                  {isExpanded ? 'Hide' : 'View'} Resources (
+                                  {milestone.resources?.length || 0})
+                                </span>
+                                {isExpanded ? (
+                                  <ChevronDown className="h-3 w-3" />
+                                ) : (
+                                  <ChevronRight className="h-3 w-3" />
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Resources Section */}
+                      {hasResources && isExpanded && milestone.resources && (
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          <h6 className="text-xs font-medium text-gray-700 mb-2">
+                            Resources:
+                          </h6>
+                          <div className="space-y-2">
+                            {milestone.resources.map(
+                              (resource, resourceIndex) => (
+                                <div
+                                  key={resourceIndex}
+                                  className="bg-gray-50 rounded p-2"
+                                >
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <p className="text-xs font-medium text-gray-800">
+                                        {resource.title}
+                                      </p>
+                                      {resource.url && (
+                                        <a
+                                          href={resource.url}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-xs text-blue-600 hover:text-blue-700 flex items-center space-x-1 mt-1"
+                                        >
+                                          <span>Visit resource</span>
+                                          <ExternalLink className="h-3 w-3" />
+                                        </a>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
                         </div>
                       )}
-                      {milestone.resources && milestone.resources.length > 0 && (
-                        <div className="mt-2">
-                          <button className="text-xs text-blue-600 hover:text-blue-700 flex items-center space-x-1">
-                            <span>View Resources</span>
-                            <ChevronRight className="h-3 w-3" />
-                          </button>
-                        </div>
-                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

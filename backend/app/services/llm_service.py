@@ -33,8 +33,29 @@ FIELD_CONFIG = {
         - Preferred Work Style: {work_style}
         - Desired Tech Stack: {tech_stack}
 
-        The roadmap must be a JSON object with a 'title', 'description', 'field', and a 'milestones' array.
-        Each milestone should have a 'title', 'description', 'estimated_duration', 'skills' to acquire, and a list of 'resources' (like courses, books, or projects).
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this software development roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Software Development",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for software development skills.
         """
     },
     "data_science": {
@@ -55,7 +76,29 @@ FIELD_CONFIG = {
         - Industry: {industry}
         - Learning Style: {learning_style}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this data science roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Data Science",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for data science skills.
         """
     },
     "digital_marketing": {
@@ -151,7 +194,7 @@ FIELD_CONFIG = {
             {"key": "conflict_resolution", "text": "How do you approach resolving conflicts within a project team?"},
         ],
         "prompt_template": """
-        You are a Program Manager mentoring a Project Manager. Create a roadmap based on their profile.
+        You are a Program Manager mentoring a Project Manager. Create a detailed roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -160,7 +203,29 @@ FIELD_CONFIG = {
         - Team Size: {team_size}
         - Conflict Resolution: {conflict_resolution}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this project management roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Project Management",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for project management skills.
         """
     },
     "sales": {
@@ -332,8 +397,29 @@ FIELD_CONFIG = {
         - Preferred Work Style: {work_style}
         - Preferred Learning Style: {learning_style}
 
-        The roadmap must be a JSON object with a 'title', 'description', 'field', and a 'milestones' array.
-        Each milestone should have a 'title', 'description', 'estimated_duration', 'skills' to acquire, and a list of 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this {field} roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "{field}",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other.
         """
     }
 }
@@ -397,12 +483,67 @@ class LLMService:
             return self._generate_fallback_roadmap(field)
 
         response_text = await self._call_ai_service(prompt)
+        
+        # Log the AI response for debugging
+        logger.info(f"AI response length: {len(response_text)}")
+        if len(response_text) < 100:
+            logger.warning(f"AI response appears truncated: {response_text}")
+        
+        if not response_text or response_text.strip() == "":
+            logger.error("AI service returned empty response, using fallback roadmap")
+            return self._generate_fallback_roadmap(field)
 
         try:
+            # Clean the response text to handle potential formatting issues
+            cleaned_response = response_text.strip()
+            if cleaned_response.startswith('```json'):
+                cleaned_response = cleaned_response[7:]
+            if cleaned_response.endswith('```'):
+                cleaned_response = cleaned_response[:-3]
+            cleaned_response = cleaned_response.strip()
+            
             # The AI is prompted to return JSON, so we parse it.
-            return json.loads(response_text)
-        except (json.JSONDecodeError, TypeError):
-            logger.error("Failed to decode JSON from AI response.")
+            roadmap_data = json.loads(cleaned_response)
+            
+            # Validate that we have a proper dictionary structure
+            if not isinstance(roadmap_data, dict):
+                logger.error(f"AI response is not a dictionary: {type(roadmap_data)}")
+                return self._generate_fallback_roadmap(field)
+            
+            logger.info(f"Successfully parsed AI response JSON with {len(roadmap_data.get('milestones', []))} milestones")
+            
+            # Validate and correct the structure of milestones and resources
+            if "milestones" in roadmap_data and isinstance(roadmap_data["milestones"], list):
+                for milestone in roadmap_data["milestones"]:
+                    if isinstance(milestone, dict):
+                        if "resources" in milestone and isinstance(milestone["resources"], list):
+                            corrected_resources = []
+                            for resource in milestone["resources"]:
+                                if isinstance(resource, str):
+                                    corrected_resources.append({"title": resource, "url": ""})
+                                elif isinstance(resource, dict) and "title" in resource:
+                                    corrected_resources.append(resource)
+                            milestone["resources"] = corrected_resources
+            
+            return roadmap_data
+        except (json.JSONDecodeError, TypeError) as e:
+            logger.error(f"Failed to decode JSON from AI response: {str(e)}")
+            logger.error(f"AI response content: {response_text[:500]}...")  # Log first 500 chars
+            
+            # Try to extract JSON from a potentially malformed response
+            try:
+                # Look for JSON-like content in the response
+                import re
+                json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+                if json_match:
+                    potential_json = json_match.group(0)
+                    roadmap_data = json.loads(potential_json)
+                    if isinstance(roadmap_data, dict):
+                        logger.info("Successfully extracted JSON from malformed response")
+                        return roadmap_data
+            except:
+                pass
+            
             # Fallback if the AI fails to return valid JSON
             return self._generate_fallback_roadmap(field)
 
@@ -423,24 +564,43 @@ class LLMService:
             ],
         }
 
-    async def _call_ai_service(self, prompt: str) -> str:
+    async def _call_ai_service(self, prompt: str, json_output: bool = True) -> str:
         """Call the configured AI service (Gemini) with the given prompt."""
         if not self.gemini_model:
+            logger.error("Gemini model not initialized")
             return ""
+        
         try:
             generation_config = genai.types.GenerationConfig(
                 max_output_tokens=settings.gemini_max_tokens,
                 temperature=settings.gemini_temperature,
-                response_mime_type="application/json", # Request JSON output
             )
+            
+            # Only set JSON output for roadmap generation
+            if json_output:
+                generation_config.response_mime_type = "application/json"
+            
+            logger.info(f"Calling Gemini API with prompt length: {len(prompt)}")
+            logger.info(f"Max tokens: {settings.gemini_max_tokens}, Temperature: {settings.gemini_temperature}")
+            
             response = await asyncio.to_thread(
                 self.gemini_model.generate_content,
                 prompt,
                 generation_config=generation_config
             )
-            return response.text
+            
+            if not response or not hasattr(response, 'text'):
+                logger.error("Gemini API returned invalid response object")
+                return ""
+                
+            response_text = response.text
+            logger.info(f"Gemini API response received, length: {len(response_text)}")
+            
+            return response_text
+            
         except Exception as e:
             logger.error(f"Gemini API error: {str(e)}")
+            logger.error(f"Exception type: {type(e).__name__}")
             return ""
 
 # Global instance

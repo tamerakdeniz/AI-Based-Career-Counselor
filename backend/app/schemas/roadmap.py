@@ -5,22 +5,17 @@ import json
 from pydantic import BaseModel, field_validator
 
 
+class Resource(BaseModel):
+    title: str
+    url: Optional[str] = ""
+
+
 class MilestoneBase(BaseModel):
     title: str
     description: Optional[str] = None
     completed: bool = False
     due_date: Optional[datetime] = None
-    resources: Optional[List[str]] = None
-
-    @field_validator('resources', mode='before')
-    @classmethod
-    def parse_resources(cls, v: Any) -> Optional[List[str]]:
-        if isinstance(v, str):
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                return None
-        return v
+    resources: List[Resource] = []
 
 class MilestoneCreate(MilestoneBase):
     pass
@@ -28,7 +23,7 @@ class MilestoneCreate(MilestoneBase):
 class Milestone(MilestoneBase):
     id: int
     roadmap_id: int
-    
+
     class Config:
         from_attributes = True
 

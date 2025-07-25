@@ -12,20 +12,18 @@ class Milestone(Base):
     description = Column(String, nullable=True)
     completed = Column(Boolean, default=False)
     due_date = Column(Date, nullable=True)
-    resources = Column(Text, nullable=True)  # JSON string for resources list
+    _resources = Column("resources", Text, nullable=True)
 
     roadmap = relationship("Roadmap", back_populates="milestones")
 
-    def get_resources(self):
-        """Get resources as a list"""
-        value = getattr(self, "resources", None)
-        if isinstance(value, str) and value:
-            return json.loads(value)
+    @property
+    def resources(self):
+        """Get resources as a list of objects"""
+        if self._resources:
+            return json.loads(self._resources)
         return []
 
-    def set_resources(self, resources_list):
-        """Set resources from a list"""
-        if resources_list:
-            self.resources = json.dumps(resources_list)
-        else:
-            self.resources = None
+    @resources.setter
+    def resources(self, value):
+        """Set resources from a list of objects"""
+        self._resources = json.dumps(value)

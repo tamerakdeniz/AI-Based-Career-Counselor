@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     # AI/LLM Settings - Primary Provider: Google Gemini
     google_ai_api_key: Optional[str] = None
     gemini_model: str = "gemini-2.0-flash"
-    gemini_max_tokens: int = 500
+    gemini_max_tokens: int = 10000
     gemini_temperature: float = 0.7
     
     # Alternative AI providers (for fallback)

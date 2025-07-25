@@ -25,7 +25,9 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
 }) => {
   const [field, setField] = useState('');
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [userResponses, setUserResponses] = useState<{ [key: string]: string }>({});
+  const [userResponses, setUserResponses] = useState<{ [key: string]: string }>(
+    {}
+  );
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -56,11 +58,15 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
   const fetchInitialQuestions = async (selectedField: string) => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get(`/ai/initial-questions/${selectedField}`);
+      const response = await axiosInstance.get(
+        `/ai/initial-questions/${selectedField}`
+      );
       setQuestions(response.data.questions || []);
     } catch (error) {
       console.error('Error fetching initial questions:', error);
-      setErrors({ field: 'Could not load questions for this field. Please try another.' });
+      setErrors({
+        field: 'Could not load questions for this field. Please try another.'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -128,10 +134,23 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
       }
     } catch (error: any) {
       console.error('Error creating roadmap:', error);
+      console.error('Full error response:', error.response);
+
+      let errorMessage = 'An unexpected error occurred. Please try again.';
+
+      if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      } else if (error.response?.status === 500) {
+        errorMessage =
+          'Server error occurred while creating roadmap. Please try again.';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Authentication failed. Please log in again.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       setErrors({
-        field:
-          error.response?.data?.detail ||
-          'An unexpected error occurred. Please try again.'
+        field: errorMessage
       });
     } finally {
       setIsLoading(false);
@@ -165,11 +184,18 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
               <Brain className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Create New Roadmap</h2>
+              <h2 className="text-xl font-bold text-gray-900">
+                Create New Roadmap
+              </h2>
               <p className="text-sm text-gray-500">Step {step} of 3</p>
             </div>
           </div>
-          <button onClick={handleClose} disabled={isLoading} title="Close modal" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+          <button
+            onClick={handleClose}
+            disabled={isLoading}
+            title="Close modal"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             <X className="h-5 w-5 text-gray-500" />
           </button>
         </div>
@@ -181,18 +207,41 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
             <div className="space-y-6">
               <div className="text-center">
                 <Sparkles className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">What field interests you?</h3>
-                <p className="text-gray-600">Choose a field to build your career in, or enter your own.</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  What field interests you?
+                </h3>
+                <p className="text-gray-600">
+                  Choose a field to build your career in, or enter your own.
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {popularFields.map(f => (
-                  <button key={f} type="button" onClick={() => setField(f)} className={`p-3 text-left rounded-lg border-2 transition-all ${field === f ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 hover:border-gray-300 text-gray-700'}`}>
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setField(f)}
+                    className={`p-3 text-left rounded-lg border-2 transition-all ${
+                      field === f
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
                     {f}
                   </button>
                 ))}
               </div>
-              <input type="text" placeholder="Or enter your own field..." value={field} onChange={e => setField(e.target.value)} className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${errors.field ? 'border-red-500' : 'border-gray-200'}`} />
-              {errors.field && <p className="mt-1 text-sm text-red-600">{errors.field}</p>}
+              <input
+                type="text"
+                placeholder="Or enter your own field..."
+                value={field}
+                onChange={e => setField(e.target.value)}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors ${
+                  errors.field ? 'border-red-500' : 'border-gray-200'
+                }`}
+              />
+              {errors.field && (
+                <p className="mt-1 text-sm text-red-600">{errors.field}</p>
+              )}
             </div>
           )}
 
@@ -201,17 +250,39 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
             <div className="space-y-6">
               <div className="text-center">
                 <Brain className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Tell us about yourself</h3>
-                <p className="text-gray-600">Your answers will help us tailor a roadmap for the field of {field}.</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Tell us about yourself
+                </h3>
+                <p className="text-gray-600">
+                  Your answers will help us tailor a roadmap for the field of{' '}
+                  {field}.
+                </p>
               </div>
               {isLoading ? (
-                <div className="flex justify-center items-center p-8"><Loader2 className="h-8 w-8 animate-spin text-blue-500" /></div>
+                <div className="flex justify-center items-center p-8">
+                  <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+                </div>
               ) : (
                 questions.map(q => (
                   <div key={q.key}>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{q.text}</label>
-                    <textarea value={userResponses[q.key] || ''} onChange={e => handleResponseChange(q.key, e.target.value)} rows={3} className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none ${errors[q.key] ? 'border-red-500' : 'border-gray-200'}`} />
-                    {errors[q.key] && <p className="mt-1 text-sm text-red-600">{errors[q.key]}</p>}
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {q.text}
+                    </label>
+                    <textarea
+                      value={userResponses[q.key] || ''}
+                      onChange={e =>
+                        handleResponseChange(q.key, e.target.value)
+                      }
+                      rows={3}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors resize-none ${
+                        errors[q.key] ? 'border-red-500' : 'border-gray-200'
+                      }`}
+                    />
+                    {errors[q.key] && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors[q.key]}
+                      </p>
+                    )}
                   </div>
                 ))
               )}
@@ -225,17 +296,28 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <ArrowRight className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to create your roadmap?</h3>
-                <p className="text-gray-600">We will now generate a personalized roadmap based on your answers.</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Ready to create your roadmap?
+                </h3>
+                <p className="text-gray-600">
+                  We will now generate a personalized roadmap based on your
+                  answers.
+                </p>
               </div>
               <div className="bg-gray-50 rounded-xl p-6 space-y-4">
                 <h4 className="font-medium text-gray-900 mb-2">Field</h4>
                 <p className="text-gray-600">{field}</p>
-                <h4 className="font-medium text-gray-900 mt-4 mb-2">Your Answers</h4>
+                <h4 className="font-medium text-gray-900 mt-4 mb-2">
+                  Your Answers
+                </h4>
                 {questions.map(q => (
                   <div key={q.key}>
-                    <p className="font-semibold text-sm text-gray-800">{q.text}</p>
-                    <p className="text-gray-600 pl-2 border-l-2 border-gray-200">{userResponses[q.key]}</p>
+                    <p className="font-semibold text-sm text-gray-800">
+                      {q.text}
+                    </p>
+                    <p className="text-gray-600 pl-2 border-l-2 border-gray-200">
+                      {userResponses[q.key]}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -244,21 +326,41 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
 
           {/* Action Buttons */}
           <div className="flex justify-between pt-6 border-t border-gray-200">
-            <button type="button" onClick={step > 1 ? handleBack : handleClose} disabled={isLoading} className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors">
+            <button
+              type="button"
+              onClick={step > 1 ? handleBack : handleClose}
+              disabled={isLoading}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
               {step > 1 ? 'Back' : 'Cancel'}
             </button>
             <div className="flex space-x-3">
               {step < 3 ? (
-                <button type="button" onClick={handleNext} disabled={isLoading} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={isLoading}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
                   <span>Next</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               ) : (
-                <button type="submit" disabled={isLoading} className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                >
                   {isLoading ? (
-                    <><Loader2 className="h-4 w-4 animate-spin" /><span>Creating...</span></>
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Creating...</span>
+                    </>
                   ) : (
-                    <><Sparkles className="h-4 w-4" /><span>Create Roadmap</span></>
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      <span>Create Roadmap</span>
+                    </>
                   )}
                 </button>
               )}
