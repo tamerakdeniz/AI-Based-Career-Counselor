@@ -10,9 +10,9 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Header from '../components/Header';
 import axiosInstance from '../api/axiosInstance';
-import type { RoadmapNode, Roadmap, Milestone } from '../types';
+import Header from '../components/Header';
+import type { Milestone, Roadmap, RoadmapNode } from '../types';
 
 const Roadmap: React.FC = () => {
   const { roadmapId } = useParams<{ roadmapId: string }>();
@@ -31,21 +31,29 @@ const Roadmap: React.FC = () => {
         const backendRoadmap = res.data;
         let roadmapNodes: RoadmapNode[] = [];
         if (backendRoadmap.milestones) {
-          roadmapNodes = backendRoadmap.milestones.map((milestone: Milestone, idx: number) => ({
-            id: milestone.id,
-            title: milestone.title,
-            description: milestone.description,
-            category: '',
-            completed: milestone.completed,
-            current: !milestone.completed &&
-              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-            available: !milestone.completed &&
-              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-            skills: [],
-            estimatedDuration: '',
-            prerequisites: [],
-            resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
-          }));
+          roadmapNodes = backendRoadmap.milestones.map(
+            (milestone: Milestone, idx: number) => ({
+              id: milestone.id,
+              title: milestone.title,
+              description: milestone.description,
+              category: '',
+              completed: milestone.completed,
+              current:
+                !milestone.completed &&
+                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+              available:
+                !milestone.completed &&
+                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+              skills: [],
+              estimatedDuration: '',
+              prerequisites: [],
+              resources: (milestone.resources || []).map((r: any) => ({
+                title: typeof r === 'string' ? r : r.title,
+                type: 'article',
+                url: typeof r === 'string' ? '' : r.url
+              }))
+            })
+          );
         }
         setRoadmap({ ...backendRoadmap, roadmapNodes });
       } catch (err: any) {
@@ -62,44 +70,54 @@ const Roadmap: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this roadmap?")) {
+    if (window.confirm('Are you sure you want to delete this roadmap?')) {
       try {
         await axiosInstance.delete(`/roadmaps/${roadmapId}`);
         navigate('/dashboard');
       } catch (err) {
-        setError("Failed to delete roadmap.");
+        setError('Failed to delete roadmap.');
       }
     }
   };
 
   const handleRename = async () => {
-    const newTitle = prompt("Enter a new title for the roadmap:");
+    const newTitle = prompt('Enter a new title for the roadmap:');
     if (newTitle) {
       try {
-        await axiosInstance.put(`/roadmaps/${roadmapId}/rename`, { new_title: newTitle });
+        await axiosInstance.put(`/roadmaps/${roadmapId}`, {
+          title: newTitle
+        });
         const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
         const backendRoadmap = res.data;
         let roadmapNodes: RoadmapNode[] = [];
         if (backendRoadmap.milestones) {
-          roadmapNodes = backendRoadmap.milestones.map((milestone: Milestone, idx: number) => ({
-            id: milestone.id,
-            title: milestone.title,
-            description: milestone.description,
-            category: '',
-            completed: milestone.completed,
-            current: !milestone.completed &&
-              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-            available: !milestone.completed &&
-              (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-            skills: [],
-            estimatedDuration: '',
-            prerequisites: [],
-            resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
-          }));
+          roadmapNodes = backendRoadmap.milestones.map(
+            (milestone: Milestone, idx: number) => ({
+              id: milestone.id,
+              title: milestone.title,
+              description: milestone.description,
+              category: '',
+              completed: milestone.completed,
+              current:
+                !milestone.completed &&
+                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+              available:
+                !milestone.completed &&
+                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+              skills: [],
+              estimatedDuration: '',
+              prerequisites: [],
+              resources: (milestone.resources || []).map((r: any) => ({
+                title: typeof r === 'string' ? r : r.title,
+                type: 'article',
+                url: typeof r === 'string' ? '' : r.url
+              }))
+            })
+          );
         }
         setRoadmap({ ...backendRoadmap, roadmapNodes });
       } catch (err) {
-        setError("Failed to rename roadmap.");
+        setError('Failed to rename roadmap.');
       }
     }
   };
@@ -111,30 +129,42 @@ const Roadmap: React.FC = () => {
       const backendRoadmap = res.data;
       let roadmapNodes: RoadmapNode[] = [];
       if (backendRoadmap.milestones) {
-        roadmapNodes = backendRoadmap.milestones.map((milestone: Milestone, idx: number) => ({
-          id: milestone.id,
-          title: milestone.title,
-          description: milestone.description,
-          category: '',
-          completed: milestone.completed,
-          current: !milestone.completed &&
-            (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-          available: !milestone.completed &&
-            (idx === 0 || (backendRoadmap.milestones[idx - 1]?.completed)),
-          skills: [],
-          estimatedDuration: '',
-          prerequisites: [],
-          resources: (milestone.resources || []).map((r: string) => ({ title: r, type: 'article' })),
-        }));
+        roadmapNodes = backendRoadmap.milestones.map(
+          (milestone: Milestone, idx: number) => ({
+            id: milestone.id,
+            title: milestone.title,
+            description: milestone.description,
+            category: '',
+            completed: milestone.completed,
+            current:
+              !milestone.completed &&
+              (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+            available:
+              !milestone.completed &&
+              (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+            skills: [],
+            estimatedDuration: '',
+            prerequisites: [],
+            resources: (milestone.resources || []).map((r: any) => ({
+              title: typeof r === 'string' ? r : r.title,
+              type: 'article',
+              url: typeof r === 'string' ? '' : r.url
+            }))
+          })
+        );
       }
       setRoadmap({ ...backendRoadmap, roadmapNodes });
     } catch (err) {
-      setError("Failed to complete milestone.");
+      setError('Failed to complete milestone.');
     }
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
   if (error || !roadmap) {
     return (
@@ -187,7 +217,9 @@ const Roadmap: React.FC = () => {
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 {roadmap.short_title || roadmap.title}
               </h1>
-              <p className="text-gray-600 mb-4">{roadmap.short_description || roadmap.description}</p>
+              <p className="text-gray-600 mb-4">
+                {roadmap.short_description || roadmap.description}
+              </p>
               <div className="flex items-center space-x-6 text-sm">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
@@ -211,8 +243,18 @@ const Roadmap: React.FC = () => {
             </div>
             <div className="text-right">
               <div className="flex items-center space-x-2">
-                <button onClick={handleDelete} className="p-2 text-gray-500 hover:text-red-600 transition-colors"><Trash2 className="h-5 w-5" /></button>
-                <button onClick={handleRename} className="p-2 text-gray-500 hover:text-blue-600 transition-colors"><Pencil className="h-5 w-5" /></button>
+                <button
+                  onClick={handleDelete}
+                  className="p-2 text-gray-500 hover:text-red-600 transition-colors"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={handleRename}
+                  className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
+                >
+                  <Pencil className="h-5 w-5" />
+                </button>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-1 mt-2">
                 {roadmap.progress}%
@@ -450,7 +492,10 @@ const Roadmap: React.FC = () => {
                         ✓ Completed
                       </button>
                     ) : selectedNode.current ? (
-                      <button onClick={() => handleCompleteMilestone(selectedNode.id)} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                      <button
+                        onClick={() => handleCompleteMilestone(selectedNode.id)}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                      >
                         Continue Learning
                       </button>
                     ) : selectedNode.available ? (
