@@ -298,10 +298,11 @@ const Roadmap: React.FC = () => {
 
                       <div className="ml-6 flex-1">
                         <div
-                          className={`p-4 rounded-lg border transition-all duration-200 ${
+                          onClick={() => setSelectedNode(node)}
+                          className={`p-4 rounded-lg border transition-all duration-200 cursor-pointer ${
                             selectedNode?.id === node.id
                               ? 'border-blue-300 bg-blue-50'
-                              : 'border-gray-200 bg-white hover:border-gray-300'
+                              : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
                           }`}
                         >
                           <div className="flex items-start justify-between">
@@ -438,21 +439,33 @@ const Roadmap: React.FC = () => {
                           Learning Resources
                         </h4>
                         <div className="space-y-2">
-                          {selectedNode.resources.map((resource, index) => (
-                            <a
-                              key={index}
-                              href={resource.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                            >
-                              <BookOpen className="h-4 w-4 text-gray-500" />
-                              <span className="text-sm text-gray-700 flex-1">
-                                {resource.title}
-                              </span>
-                              <ExternalLink className="h-4 w-4 text-blue-600" />
-                            </a>
-                          ))}
+                          {selectedNode.resources.map((resource, index) =>
+                            resource.url ? (
+                              <a
+                                key={index}
+                                href={resource.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                              >
+                                <BookOpen className="h-4 w-4 text-gray-500" />
+                                <span className="text-sm text-gray-700 flex-1">
+                                  {resource.title}
+                                </span>
+                                <ExternalLink className="h-4 w-4 text-blue-600" />
+                              </a>
+                            ) : (
+                              <div
+                                key={index}
+                                className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg"
+                              >
+                                <BookOpen className="h-4 w-4 text-gray-500" />
+                                <span className="text-sm text-gray-700 flex-1">
+                                  {resource.title}
+                                </span>
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
                     )}
