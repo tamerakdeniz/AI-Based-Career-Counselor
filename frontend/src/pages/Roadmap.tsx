@@ -18,6 +18,7 @@ const Roadmap: React.FC = () => {
   const { roadmapId } = useParams<{ roadmapId: string }>();
   const navigate = useNavigate();
   const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
+  const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
   const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -218,6 +219,7 @@ const Roadmap: React.FC = () => {
             Roadmap Not Found
           </h1>
           <p className="text-gray-600 mb-4">
+            {error || "The roadmap you're looking for doesn't exist."}
             {error || "The roadmap you're looking for doesn't exist."}
           </p>
           <button

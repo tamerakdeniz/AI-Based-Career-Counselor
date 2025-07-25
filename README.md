@@ -84,7 +84,7 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 ### ✅ Toplam Story Point
 
 - **Sprint 1:** 45 SP
-- **Sprint 2:** 35 SP
+- **Sprint 2:** 50 SP
 - **Sprint 3:** 30 SP
 - **Toplam:** 110 SP
 
@@ -129,7 +129,7 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 
 ### ✅ Sprint Tamamlama Mantığı
 
-Sprint 1, planlanan 45 SP'nin %90'ından fazlası tamamlanarak başarıyla sonlandırılmıştır.  
+Sprint 1, planlanan 45 SP'nin %70'inden fazlası tamamlanarak başarıyla sonlandırılmıştır.  
 Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
 Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
 
@@ -171,27 +171,148 @@ Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te �
 Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır.  
 2. sprint için tasarım ve genel planlama konuşulmuş, motivasyon yüksek şekilde yeni sprint'e geçilmesine karar verilmiştir.
 
+---
+
+### 🚀 Ürüne Eklenen Özellikler (Sprint Sonu Ekran Görüntüleri)
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/84da9e0a-2d8d-41a8-b7ca-a626a3d7665b">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/cfc603e9-348c-4468-a7a8-7d0a976e57c7">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/49b670ea-7b2a-491a-81c9-0da0153c753a">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/f394003f-4745-43b9-afad-1ef4aba304ba">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c0b02632-22d0-4e40-83cd-60b0ad9fbc56">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d326fd99-dd34-4f86-9ed6-0714596c63ed">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7cf4e55d-af3f-4d25-8515-c8eb5f9700f8">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b5f3ca51-7850-4e86-bbba-a93d63a3a89f">
+</p>
+
 </details>
 
 ---
 
 <details>
-<summary><strong>⚡️ SPRINT 2 - Özellik Geliştirme & AI Entegrasyonu (35 SP)</strong></summary>
+<summary><strong>⚡️ SPRINT 2 - Özellik Geliştirme & AI Entegrasyonu (50 SP)</strong></summary>
 
-### Sprint Amacı
+### 🎯 Sprint Amacı
 
 - AI tabanlı öneri ve roadmap akışını devreye almak
-- Kullanıcı etkileşimini zenginleştirmek
+- Kullanıcı etkileşimini artıracak fonksiyonları aktif hale getirmek
 
-### Ana Görevler
+### 🛠️ Ana Görevler
 
-- AI chat bot geliştirmesi (front & back)
+- AI chat bot geliştirmesi (frontend & backend)
 - Roadmap oluşturma algoritması
 - Kullanıcı bazlı roadmap detay ekranları
 - Chat ekranında roadmap side panel entegrasyonu
-- Kullanıcı profil güncelleme ve ilgi alanları yönetimi
-- Önerilen kaynaklar (kurslar, makaleler) bölümü
-- API çağrılarının tamamlanması ve testleri
+- Kullanıcı kayıt ekranının backend'e bağlanması
+- FastAPI endpoint sınırlandırması
+- Konuşma geçmişinin veritabanına eklenmesi
+- Test case’lerin hazırlanması
+- Kullanıcı profiline özel test senaryoları
+- LLM & Backend entegrasyonlarının tamamlanması
+- Takım rolleri güncellemesi, aktif olmayan üyelerin belirlenmesi
+
+### ✍🏻 Sprint Notları
+
+- Sprint başlangıcında roadmap oluşturma ve chatbot modülleri önceliklendirildi.
+- Chat ekranında roadmap side panel entegrasyonu başarıyla yapıldı.
+- Kullanıcı kayıt ekranı backend’e başarıyla bağlandı.
+- FastAPI endpoint’lerine erişim sınırlandırmaları getirildi.
+- Konuşma geçmişi, kullanıcı bazlı olarak veritabanına eklendi.
+- PyTest ile test senaryoları geliştirildi.
+- LLM (Gemini API) & Backend entegrasyonu başarıyla tamamlandı.
+- İlgi alanı güncelleme ekranı ve kurs/kaynak öneri API’si kapsam dışına alındı.
+- Takım içinde rol güncellemeleri yapılarak aktif olmayan üyeler belirlendi.
+- Proje yönetimi ve süreç takibi için GitHub Projects ve Miro aktif şekilde kullanılmaya devam etti.
+- Günlük Scrum toplantıları Google Meet üzerinden devam etti, anlık iletişim için WhatsApp grubu kullanıldı.
+
+### 🎯 Sprint Tahmini Story Point
+
+- Toplam: **50 SP**
+
+### ✅ Sprint Tamamlama Mantığı
+
+Sprint 2, planlanan 50 SP’nin %90’ından fazlası başarıyla tamamlanarak sonlandırılmıştır.  
+Tamamlanamayan işler (hata ve edge case yönetimi) bir sonraki sprint’e devredilmiştir.  
+Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
+
+### ✅ Çıktılar
+
+- Roadmap oluşturma algoritması teknik altyapısı kuruldu
+- Kullanıcı bazlı roadmap detay ekranları oluşturuldu
+- Chat ekranına roadmap side panel entegrasyonu başarıyla yapıldı
+- API çağrılarının tamamlanması ve testlerinin yazılması
+- Backend fonksiyonları için kapsamlı test dosyaları hazırlandı
+
+### 🤝🏻 Daily Scrum
+
+Daily Scrum toplantıları **Google Meet** üzerinden yapılmaktadır.  
+Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/13dtKtvmZWRzEGQWnk_iphIlVbCHLM7zB?usp=sharing) üzerinde saklanmaktadır.
+
+### 🖼️ Sprint Board Görselleri
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8d86ea34-f185-4a4f-b6dc-44f9a2c244b9" alt="Sprint-1 Dashboard"/><br>
+  <sub>🔎 Sprint-2 planlama ve görevlerin board görünümü</sub>
+</p>
+
+---
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/fb20439b-1060-4494-b3a1-74821046f0bb" alt="Sprint-2 Dashboard"/><br>
+  <sub>✅ Sprint-2 tamamlandıktan sonraki son durum</sub>
+</p>
+
+---
+
+### 🧐 Sprint Review
+
+Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı katılmıştır.  
+Toplantıda sprint çıktıları ve uygulamanın geldiği nokta değerlendirilmiştir.  
+Tasarım, kullanıcı akışı ve teknik ilerleme ekip ve paydaşlar tarafından olumlu karşılanmıştır.  
+Tamamlanamayan görevler üçüncü sprint’e taşınmış, ek ihtiyaçlara yönelik yeni task'lar tanımlanmıştır.
+
+### 🔄 Sprint Retrospective
+
+Sprint Retrospective oturumunda; test senaryoları, roadmap algoritması ve UI entegrasyonlarının ekip verimliliğine katkısı vurgulanmıştır.  
+İletişim ve görev yönetimi konusunda olumlu geri bildirimler alınmıştır.  
+Üçüncü sprint’te hata yönetimi, performans optimizasyonu ve kullanıcı deneyimini artıracak mikro animasyonlara odaklanılması planlanmıştır.  
+Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni sprint’e geçilmiştir.
+
+---
+
+### 🚀 Ürüne Eklenen Özellikler (Sprint Sonu Ekran Görüntüleri)
+
+<p align="center">
+  <img alt="Roadmap-Interest" src="https://github.com/user-attachments/assets/a9e8c24a-03fd-4d11-9986-f940ad3d1cfe" />
+  <br>
+  <img alt="Roadmap-Interest-2" src="https://github.com/user-attachments/assets/40f1cec7-b68d-4b20-9971-1f387c0078e7" />
+  <br>
+  <img alt="Roadmap" src="https://github.com/user-attachments/assets/72cacbaf-489b-475c-a459-956c0a55e994" />
+  <br>
+  <sub>💡 Bu görseller, sprint sonunda platforma entegre edilen yeni roadmap özelliklerini göstermektedir.</sub>
+</p>
 
 </details>
 

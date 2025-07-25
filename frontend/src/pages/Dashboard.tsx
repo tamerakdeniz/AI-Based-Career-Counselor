@@ -127,7 +127,8 @@ const Dashboard: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
               <div className="mb-4 sm:mb-0">
                 <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-                  Welcome back, {user?.name || 'User'}! 🚀
+                  Welcome back, {user?.name || 'User'}! 🚀 Welcome back,{' '}
+                  {user?.name || 'User'}! 🚀
                 </h1>
                 <p className="text-blue-100 text-sm sm:text-base">
                   Ready to continue your learning journey? Your AI mentors are

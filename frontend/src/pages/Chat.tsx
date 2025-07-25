@@ -89,17 +89,17 @@ const Chat: React.FC = () => {
     e.preventDefault();
     if (!newMessage.trim() || isTyping) return;
 
-    const userMessage: ChatMessageType = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: newMessage,
-      timestamp: new Date().toISOString(),
-      roadmapId: roadmapId
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setNewMessage('');
     setIsTyping(true);
+    try {
+      // Save user message to backend
+      const userRes = await axiosInstance.post(`/chat/roadmap/${roadmapId}`, {
+        roadmap_id: Number(roadmapId),
+        user_id: currentUser.id,
+        type: 'user',
+        content: newMessage
+      });
+      setMessages(prev => [...prev, userRes.data]);
+      setNewMessage('');
 
     try {
       // Send message to AI
