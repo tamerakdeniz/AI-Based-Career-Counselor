@@ -27,6 +27,7 @@ class UserProfileResponse(BaseModel):
     total_roadmaps: int
     total_milestones: int
     completed_milestones: int
+    completed_roadmaps: int
 
 class UpdateProfileRequest(BaseModel):
     name: Optional[str] = None
@@ -92,6 +93,13 @@ def get_user_profile(current_user: User = Depends(verify_token), db: Session = D
         Milestone.completed == True
     ).count()
     
+    # Get completed roadmaps count (roadmaps where completed_milestones equals total_milestones and total_milestones > 0)
+    completed_roadmaps = db.query(Roadmap).filter(
+        Roadmap.user_id == current_user.id,
+        Roadmap.total_milestones > 0,
+        Roadmap.completed_milestones == Roadmap.total_milestones
+    ).count()
+    
     return UserProfileResponse(
         id=current_user.id,
         name=current_user.name,
@@ -100,7 +108,8 @@ def get_user_profile(current_user: User = Depends(verify_token), db: Session = D
         joined_at=current_user.joined_at,
         total_roadmaps=total_roadmaps,
         total_milestones=total_milestones,
-        completed_milestones=completed_milestones
+        completed_milestones=completed_milestones,
+        completed_roadmaps=completed_roadmaps
     )
 
 # Update user profile

@@ -21,6 +21,7 @@ interface UserProfile {
   total_roadmaps: number;
   total_milestones: number;
   completed_milestones: number;
+  completed_roadmaps: number;
 }
 
 const Profile: React.FC = () => {
@@ -193,9 +194,9 @@ const Profile: React.FC = () => {
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Completed</p>
+                <p className="text-sm text-gray-600">Completed Roadmap</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {profile.completed_milestones}
+                  {profile.completed_roadmaps}
                 </p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -253,13 +254,13 @@ const Profile: React.FC = () => {
                 <p className="text-2xl font-bold text-green-600">
                   {profile.completed_milestones}
                 </p>
-                <p className="text-sm text-gray-600">Completed</p>
+                <p className="text-sm text-gray-600">Completed Milestones</p>
               </div>
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <p className="text-2xl font-bold text-orange-600">
                   {profile.total_milestones - profile.completed_milestones}
                 </p>
-                <p className="text-sm text-gray-600">Remaining</p>
+                <p className="text-sm text-gray-600">Remaining Milestones</p>
               </div>
             </div>
           </div>
