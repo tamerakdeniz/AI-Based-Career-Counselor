@@ -305,7 +305,10 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </button>
-            <button className="p-4 text-left hover:bg-gray-50 rounded-lg transition-colors">
+            <button 
+              onClick={() => navigate('/analytics')}
+              className="p-4 text-left hover:bg-gray-50 rounded-lg transition-colors"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                   <TrendingUp className="h-5 w-5 text-purple-600" />

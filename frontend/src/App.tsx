@@ -1,6 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Achievements from './pages/Achievements';
+import Analytics from './pages/Analytics';
 import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
 import Landing from './pages/Landing';
@@ -63,6 +64,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Achievements />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute>
+                <Analytics />
               </ProtectedRoute>
             }
           />
