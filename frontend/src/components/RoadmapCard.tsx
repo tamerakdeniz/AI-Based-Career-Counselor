@@ -81,17 +81,33 @@ const RoadmapCard: React.FC<RoadmapCardProps> = ({ roadmap }) => {
         {roadmap.short_description || roadmap.description}
       </p>
 
-      {/* Next Milestone */}
+      {/* Next Milestone or Completion Status */}
       <div className="flex items-center space-x-2 mb-4 p-3 bg-gray-50 rounded-lg">
-        <MapPin className="h-4 w-4 text-gray-500 flex-shrink-0" />
-        <div className="flex-1">
-          <p className="text-xs text-gray-500 uppercase tracking-wide">
-            Next Milestone
-          </p>
-          <p className="text-sm font-medium text-gray-900">
-            {roadmap.nextMilestone}
-          </p>
-        </div>
+        {roadmap.progress === 100 ? (
+          <>
+            <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-xs text-green-600 uppercase tracking-wide font-medium">
+                Status
+              </p>
+              <p className="text-sm font-medium text-green-700">
+                Roadmap Completed
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <MapPin className="h-4 w-4 text-gray-500 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-xs text-gray-500 uppercase tracking-wide">
+                Next Milestone
+              </p>
+              <p className="text-sm font-medium text-gray-900">
+                {roadmap.nextMilestone}
+              </p>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Stats */}

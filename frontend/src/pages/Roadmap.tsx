@@ -11,7 +11,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
+import ConfirmationModal from '../components/ConfirmationModal';
 import Header from '../components/Header';
+import RenameModal from '../components/RenameModal';
 import type { Milestone, Roadmap, RoadmapNode } from '../types';
 
 const Roadmap: React.FC = () => {
@@ -21,6 +23,12 @@ const Roadmap: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<RoadmapNode | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Modal states
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
+  const [completeModalOpen, setCompleteModalOpen] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -70,99 +78,112 @@ const Roadmap: React.FC = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this roadmap?')) {
-      try {
-        await axiosInstance.delete(`/roadmaps/${roadmapId}`);
-        navigate('/dashboard');
-      } catch (err) {
-        setError('Failed to delete roadmap.');
-      }
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setModalLoading(true);
+    try {
+      await axiosInstance.delete(`/roadmaps/${roadmapId}`);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Failed to delete roadmap.');
+    } finally {
+      setModalLoading(false);
+      setDeleteModalOpen(false);
     }
   };
 
   const handleRename = async () => {
-    const newTitle = prompt('Enter a new title for the roadmap:');
-    if (newTitle) {
-      try {
-        await axiosInstance.put(`/roadmaps/${roadmapId}`, {
-          title: newTitle
-        });
-        const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
-        const backendRoadmap = res.data;
-        let roadmapNodes: RoadmapNode[] = [];
-        if (backendRoadmap.milestones) {
-          roadmapNodes = backendRoadmap.milestones.map(
-            (milestone: Milestone, idx: number) => ({
-              id: milestone.id,
-              title: milestone.title,
-              description: milestone.description,
-              category: '',
-              completed: milestone.completed,
-              current:
-                !milestone.completed &&
-                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
-              available:
-                !milestone.completed &&
-                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
-              skills: [],
-              estimatedDuration: '',
-              prerequisites: [],
-              resources: (milestone.resources || []).map((r: any) => ({
-                title: typeof r === 'string' ? r : r.title,
-                type: 'article',
-                url: typeof r === 'string' ? '' : r.url
-              }))
-            })
-          );
-        }
-        setRoadmap({ ...backendRoadmap, roadmapNodes });
-      } catch (err) {
-        setError('Failed to rename roadmap.');
+    setRenameModalOpen(true);
+  };
+
+  const confirmRename = async (newTitle: string) => {
+    setModalLoading(true);
+    try {
+      await axiosInstance.put(`/roadmaps/${roadmapId}`, {
+        title: newTitle
+      });
+      const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
+      const backendRoadmap = res.data;
+      let roadmapNodes: RoadmapNode[] = [];
+      if (backendRoadmap.milestones) {
+        roadmapNodes = backendRoadmap.milestones.map(
+          (milestone: Milestone, idx: number) => ({
+            id: milestone.id,
+            title: milestone.title,
+            description: milestone.description,
+            category: '',
+            completed: milestone.completed,
+            current:
+              !milestone.completed &&
+              (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+            available:
+              !milestone.completed &&
+              (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+            skills: [],
+            estimatedDuration: '',
+            prerequisites: [],
+            resources: (milestone.resources || []).map((r: any) => ({
+              title: typeof r === 'string' ? r : r.title,
+              type: 'article',
+              url: typeof r === 'string' ? '' : r.url
+            }))
+          })
+        );
       }
+      setRoadmap({ ...backendRoadmap, roadmapNodes });
+    } catch (err) {
+      setError('Failed to rename roadmap.');
+    } finally {
+      setModalLoading(false);
+      setRenameModalOpen(false);
     }
   };
 
   const handleCompleteRoadmap = async () => {
-    if (
-      window.confirm(
-        'Are you sure you want to mark all milestones as complete?'
-      )
-    ) {
-      try {
-        await axiosInstance.put(`/roadmaps/${roadmapId}/complete-all`);
-        // Refresh roadmap data
-        const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
-        const backendRoadmap = res.data;
-        let roadmapNodes: RoadmapNode[] = [];
-        if (backendRoadmap.milestones) {
-          roadmapNodes = backendRoadmap.milestones.map(
-            (milestone: Milestone, idx: number) => ({
-              id: milestone.id,
-              title: milestone.title,
-              description: milestone.description,
-              category: '',
-              completed: milestone.completed,
-              current:
-                !milestone.completed &&
-                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
-              available:
-                !milestone.completed &&
-                (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
-              skills: [],
-              estimatedDuration: '',
-              prerequisites: [],
-              resources: (milestone.resources || []).map((r: any) => ({
-                title: typeof r === 'string' ? r : r.title,
-                type: 'article',
-                url: typeof r === 'string' ? '' : r.url
-              }))
-            })
-          );
-        }
-        setRoadmap({ ...backendRoadmap, roadmapNodes });
-      } catch (err) {
-        setError('Failed to complete roadmap.');
+    setCompleteModalOpen(true);
+  };
+
+  const confirmCompleteRoadmap = async () => {
+    setModalLoading(true);
+    try {
+      await axiosInstance.put(`/roadmaps/${roadmapId}/complete-all`);
+      // Refresh roadmap data
+      const res = await axiosInstance.get(`/roadmaps/${roadmapId}`);
+      const backendRoadmap = res.data;
+      let roadmapNodes: RoadmapNode[] = [];
+      if (backendRoadmap.milestones) {
+        roadmapNodes = backendRoadmap.milestones.map(
+          (milestone: Milestone, idx: number) => ({
+            id: milestone.id,
+            title: milestone.title,
+            description: milestone.description,
+            category: '',
+            completed: milestone.completed,
+            current:
+              !milestone.completed &&
+              (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+            available:
+              !milestone.completed &&
+              (idx === 0 || backendRoadmap.milestones[idx - 1]?.completed),
+            skills: [],
+            estimatedDuration: '',
+            prerequisites: [],
+            resources: (milestone.resources || []).map((r: any) => ({
+              title: typeof r === 'string' ? r : r.title,
+              type: 'article',
+              url: typeof r === 'string' ? '' : r.url
+            }))
+          })
+        );
       }
+      setRoadmap({ ...backendRoadmap, roadmapNodes });
+    } catch (err) {
+      setError('Failed to complete roadmap.');
+    } finally {
+      setModalLoading(false);
+      setCompleteModalOpen(false);
     }
   };
 
@@ -619,6 +640,39 @@ const Roadmap: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Modals */}
+      <ConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Roadmap"
+        message="Are you sure you want to delete this roadmap? This action cannot be undone and will remove all milestones and progress."
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        isLoading={modalLoading}
+      />
+
+      <ConfirmationModal
+        isOpen={completeModalOpen}
+        onClose={() => setCompleteModalOpen(false)}
+        onConfirm={confirmCompleteRoadmap}
+        title="Complete Roadmap"
+        message="Are you sure you want to mark all milestones as complete? This will set your roadmap progress to 100%."
+        confirmText="Complete All"
+        cancelText="Cancel"
+        type="info"
+        isLoading={modalLoading}
+      />
+
+      <RenameModal
+        isOpen={renameModalOpen}
+        onClose={() => setRenameModalOpen(false)}
+        onConfirm={confirmRename}
+        currentTitle={roadmap?.title || ''}
+        isLoading={modalLoading}
+      />
     </div>
   );
 };
