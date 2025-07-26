@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import ConfirmationModal from '../components/ConfirmationModal';
 import Header from '../components/Header';
+import NotificationToast from '../components/NotificationToast';
 import { logout } from '../utils/auth';
 
 interface UserData {
@@ -21,6 +22,14 @@ interface UserData {
   name: string;
   email: string;
   avatar?: string;
+}
+
+interface ApiError {
+  response?: {
+    data?: {
+      detail?: string;
+    };
+  };
 }
 
 const Settings: React.FC = () => {
@@ -58,6 +67,28 @@ const Settings: React.FC = () => {
   const [deletePassword, setDeletePassword] = useState('');
   const [modalLoading, setModalLoading] = useState(false);
 
+  // Notification state
+  const [notification, setNotification] = useState({
+    show: false,
+    type: 'success' as 'success' | 'error' | 'warning' | 'info',
+    title: '',
+    message: ''
+  });
+
+  // Helper function to show notifications
+  const showNotification = (
+    type: 'success' | 'error' | 'warning' | 'info',
+    title: string,
+    message?: string
+  ) => {
+    setNotification({
+      show: true,
+      type,
+      title,
+      message: message || ''
+    });
+  };
+
   const fetchUserData = async () => {
     try {
       setLoading(true);
@@ -87,7 +118,7 @@ const Settings: React.FC = () => {
     setProfileSuccess('');
 
     try {
-      const updateData: any = {};
+      const updateData: Record<string, string> = {};
       if (profileForm.name !== user?.name) updateData.name = profileForm.name;
       if (profileForm.email !== user?.email)
         updateData.email = profileForm.email;
@@ -102,11 +133,21 @@ const Settings: React.FC = () => {
       const response = await axiosInstance.put('/users/profile', updateData);
       setUser(response.data.user);
       setProfileSuccess('Profile updated successfully!');
+      showNotification(
+        'success',
+        'Profile Updated',
+        'Your profile has been updated successfully!'
+      );
 
       // Clear success message after 3 seconds
       setTimeout(() => setProfileSuccess(''), 3000);
-    } catch (error: any) {
-      setError(error.response?.data?.detail || 'Failed to update profile.');
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as ApiError).response?.data?.detail ||
+            'Failed to update profile.'
+          : 'Failed to update profile.';
+      setError(errorMessage);
       setTimeout(() => setError(''), 5000);
     } finally {
       setProfileLoading(false);
@@ -135,6 +176,21 @@ const Settings: React.FC = () => {
       return;
     }
 
+    // Validate password has letters and numbers
+    if (!/[a-zA-Z]/.test(passwordForm.newPassword)) {
+      setError('New password must contain at least one letter.');
+      setPasswordLoading(false);
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
+
+    if (!/\d/.test(passwordForm.newPassword)) {
+      setError('New password must contain at least one number.');
+      setPasswordLoading(false);
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
+
     try {
       await axiosInstance.put('/users/change-password', {
         current_password: passwordForm.currentPassword,
@@ -148,10 +204,21 @@ const Settings: React.FC = () => {
         confirmPassword: ''
       });
 
+      showNotification(
+        'success',
+        'Password Changed',
+        'Your password has been updated successfully!'
+      );
+
       // Clear success message after 3 seconds
       setTimeout(() => setPasswordSuccess(''), 3000);
-    } catch (error: any) {
-      setError(error.response?.data?.detail || 'Failed to change password.');
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as ApiError).response?.data?.detail ||
+            'Failed to change password.'
+          : 'Failed to change password.';
+      setError(errorMessage);
       setTimeout(() => setError(''), 5000);
     } finally {
       setPasswordLoading(false);
@@ -163,10 +230,19 @@ const Settings: React.FC = () => {
     try {
       await axiosInstance.delete('/users/reset-progress');
       setShowResetModal(false);
-      alert('All progress has been reset successfully!');
-      navigate('/dashboard');
-    } catch (error: any) {
-      setError(error.response?.data?.detail || 'Failed to reset progress.');
+      showNotification(
+        'success',
+        'Progress Reset',
+        'All your progress has been reset successfully!'
+      );
+      setTimeout(() => navigate('/dashboard'), 2000);
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as ApiError).response?.data?.detail ||
+            'Failed to reset progress.'
+          : 'Failed to reset progress.';
+      setError(errorMessage);
       setTimeout(() => setError(''), 5000);
     } finally {
       setModalLoading(false);
@@ -181,11 +257,22 @@ const Settings: React.FC = () => {
       });
 
       setShowDeleteModal(false);
-      logout();
-      navigate('/');
-      alert('Account deleted successfully.');
-    } catch (error: any) {
-      setError(error.response?.data?.detail || 'Failed to delete account.');
+      showNotification(
+        'success',
+        'Account Deleted',
+        'Your account has been deleted successfully.'
+      );
+      setTimeout(() => {
+        logout();
+        navigate('/');
+      }, 2000);
+    } catch (error: unknown) {
+      const errorMessage =
+        error && typeof error === 'object' && 'response' in error
+          ? (error as ApiError).response?.data?.detail ||
+            'Failed to delete account.'
+          : 'Failed to delete account.';
+      setError(errorMessage);
       setTimeout(() => setError(''), 5000);
     } finally {
       setModalLoading(false);
@@ -570,6 +657,15 @@ const Settings: React.FC = () => {
             />
           </div>
         </ConfirmationModal>
+
+        {/* Notification Toast */}
+        <NotificationToast
+          type={notification.type}
+          title={notification.title}
+          message={notification.message}
+          isVisible={notification.show}
+          onClose={() => setNotification({ ...notification, show: false })}
+        />
       </main>
     </div>
   );
