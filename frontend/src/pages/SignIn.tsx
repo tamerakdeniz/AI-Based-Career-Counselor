@@ -171,7 +171,7 @@ const SignIn: React.FC = () => {
               Demo Credentials:
             </p>
             <p className="text-xs text-blue-600">Email: tamer@example.com</p>
-            <p className="text-xs text-blue-600">Password: password</p>
+            <p className="text-xs text-blue-600">Password: password123</p>
           </div>
 
           {/* Sign up link */}
