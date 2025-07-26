@@ -8,7 +8,7 @@ export const isAuthenticated = (): boolean => {
 
 export const getCurrentUser = () => {
   if (!isAuthenticated()) return null;
-  
+
   return {
     id: localStorage.getItem('userId') || '',
     email: localStorage.getItem('userEmail') || '',
@@ -25,22 +25,25 @@ export const logout = (): void => {
 };
 
 // Real API authentication function
-export const authenticateUser = async (email: string, password: string): Promise<boolean> => {
+export const authenticateUser = async (
+  email: string,
+  password: string
+): Promise<boolean> => {
   try {
     const response = await axiosInstance.post('/auth/login', {
       email,
       password
     });
-    
+
     const { access_token, user_id, user_email, user_name } = response.data;
-    
+
     // Store authentication data
     localStorage.setItem('isAuthenticated', 'true');
     localStorage.setItem('accessToken', access_token);
     localStorage.setItem('userEmail', user_email);
     localStorage.setItem('userName', user_name);
     localStorage.setItem('userId', user_id.toString());
-    
+
     return true;
   } catch (error) {
     console.error('Authentication error:', error);
@@ -71,5 +74,20 @@ export const getCurrentUserFromAPI = async () => {
   } catch (error) {
     console.error('Error fetching current user:', error);
     return null;
+  }
+};
+
+// Update current user data in localStorage
+export const updateCurrentUser = (userData: {
+  name?: string;
+  email?: string;
+}) => {
+  if (!isAuthenticated()) return;
+
+  if (userData.name) {
+    localStorage.setItem('userName', userData.name);
+  }
+  if (userData.email) {
+    localStorage.setItem('userEmail', userData.email);
   }
 };

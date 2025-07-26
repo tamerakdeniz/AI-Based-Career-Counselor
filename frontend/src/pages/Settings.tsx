@@ -15,7 +15,7 @@ import axiosInstance from '../api/axiosInstance';
 import ConfirmationModal from '../components/ConfirmationModal';
 import Header from '../components/Header';
 import NotificationToast from '../components/NotificationToast';
-import { logout } from '../utils/auth';
+import { logout, updateCurrentUser } from '../utils/auth';
 
 interface UserData {
   id: number;
@@ -133,6 +133,10 @@ const Settings: React.FC = () => {
       const response = await axiosInstance.put('/users/profile', updateData);
       setUser(response.data.user);
       setProfileSuccess('Profile updated successfully!');
+
+      // Update localStorage with new user data
+      updateCurrentUser(updateData);
+
       showNotification(
         'success',
         'Profile Updated',

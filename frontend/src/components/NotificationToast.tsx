@@ -81,9 +81,9 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
   const IconComponent = config.icon;
 
   return (
-    <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-top-2 duration-300">
+    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-top-2 duration-300 px-4 w-full max-w-md">
       <div
-        className={`max-w-sm w-full ${config.bgColor} border ${config.borderColor} rounded-lg shadow-lg p-4`}
+        className={`w-full ${config.bgColor} border ${config.borderColor} rounded-lg shadow-lg p-4`}
       >
         <div className="flex items-start">
           <div className="flex-shrink-0">
