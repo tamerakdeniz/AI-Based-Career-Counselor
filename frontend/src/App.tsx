@@ -3,7 +3,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
 import Landing from './pages/Landing';
+import Profile from './pages/Profile';
 import Roadmap from './pages/Roadmap';
+import Settings from './pages/Settings';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 
@@ -36,6 +38,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <Chat />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             }
           />

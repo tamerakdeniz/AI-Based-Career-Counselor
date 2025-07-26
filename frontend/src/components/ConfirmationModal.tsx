@@ -11,6 +11,8 @@ interface ConfirmationModalProps {
   cancelText?: string;
   type?: 'danger' | 'warning' | 'info';
   isLoading?: boolean;
+  loading?: boolean; // Alternative prop name for compatibility
+  children?: React.ReactNode;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -22,8 +24,11 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   type = 'warning',
-  isLoading = false
+  isLoading = false,
+  loading = false,
+  children
 }) => {
+  const actualLoading = isLoading || loading;
   if (!isOpen) return null;
 
   const getTypeStyles = () => {
@@ -75,7 +80,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
-            disabled={isLoading}
+            disabled={actualLoading}
             title="Close dialog"
           >
             <X className="h-5 w-5" />
@@ -85,23 +90,24 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         {/* Content */}
         <div className="p-6">
           <p className="text-gray-600 leading-relaxed">{message}</p>
+          {children}
         </div>
 
         {/* Actions */}
         <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
           <button
             onClick={onClose}
-            disabled={isLoading}
+            disabled={actualLoading}
             className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors disabled:opacity-50"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
-            disabled={isLoading}
+            disabled={actualLoading}
             className={`px-4 py-2 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 ${styles.confirmButton}`}
           >
-            {isLoading ? 'Processing...' : confirmText}
+            {actualLoading ? 'Processing...' : confirmText}
           </button>
         </div>
       </div>

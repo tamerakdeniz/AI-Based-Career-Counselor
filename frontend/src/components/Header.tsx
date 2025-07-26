@@ -1,6 +1,6 @@
+import { ArrowLeft, LogOut, Menu, Settings, User, X } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout } from '../utils/auth';
 
 interface HeaderProps {
@@ -12,9 +12,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const location = useLocation();
+
   const navigate = useNavigate();
-  
+
   const currentUser = getCurrentUser();
 
   const handleLogout = () => {
@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                 <span className="hidden sm:inline">Back to Dashboard</span>
               </button>
             )}
-            
+
             {!showBackButton && (
               <Link to="/dashboard" className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -80,24 +80,42 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                   alt={currentUser?.name || 'User'}
                   className="h-8 w-8 rounded-full object-cover"
                 />
-                <span className="font-medium">{currentUser?.name || 'User'}</span>
+                <span className="font-medium">
+                  {currentUser?.name || 'User'}
+                </span>
               </button>
 
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                   <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">{currentUser?.name || 'User'}</p>
-                    <p className="text-xs text-gray-500">{currentUser?.email || ''}</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {currentUser?.name || 'User'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {currentUser?.email || ''}
+                    </p>
                   </div>
-                  <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  <button
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      navigate('/profile');
+                    }}
+                    className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
                     <User className="h-4 w-4" />
                     <span>Profile</span>
                   </button>
-                  <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  <button
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      navigate('/settings');
+                    }}
+                    className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
                     <Settings className="h-4 w-4" />
                     <span>Settings</span>
                   </button>
-                  <button 
+                  <button
                     onClick={handleLogout}
                     className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
@@ -121,19 +139,35 @@ const Header: React.FC<HeaderProps> = ({ showBackButton, onBack, title }) => {
                   className="h-8 w-8 rounded-full object-cover"
                 />
                 <div>
-                  <p className="font-medium text-gray-900">{currentUser?.name || 'User'}</p>
-                  <p className="text-xs text-gray-500">{currentUser?.email || ''}</p>
+                  <p className="font-medium text-gray-900">
+                    {currentUser?.name || 'User'}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {currentUser?.email || ''}
+                  </p>
                 </div>
               </div>
-              <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  navigate('/profile');
+                }}
+                className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              >
                 <User className="h-4 w-4" />
                 <span>Profile</span>
               </button>
-              <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  navigate('/settings');
+                }}
+                className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
+              >
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </button>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
               >

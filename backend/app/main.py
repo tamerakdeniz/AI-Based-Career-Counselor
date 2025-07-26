@@ -6,6 +6,7 @@ from app.api.routes_ai import router as ai_router
 from app.api.routes_auth import router as auth_router
 from app.api.routes_chat import router as chat_router
 from app.api.routes_roadmap import router as roadmap_router
+from app.api.routes_user import router as user_router
 from app.core.config import settings
 from app.core.security import (RequestSizeLimitMiddleware,
                                SecurityHeadersMiddleware, get_password_hash,
@@ -50,6 +51,7 @@ app.include_router(auth_router)
 app.include_router(roadmap_router)
 app.include_router(chat_router)
 app.include_router(ai_router)
+app.include_router(user_router)
 
 
 # Dependency to get DB session
