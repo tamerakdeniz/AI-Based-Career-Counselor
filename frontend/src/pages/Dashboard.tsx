@@ -28,6 +28,14 @@ const Dashboard: React.FC = () => {
         `/roadmaps/user/${userRes.data.id}`
       );
       setRoadmaps(roadmapsRes.data);
+      
+      // Check and award any achievements the user has earned
+      try {
+        await axiosInstance.post('/achievements/check');
+      } catch (achievementError) {
+        console.log('Achievement check failed:', achievementError);
+        // Don't show error to user, this is not critical
+      }
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
       setError('Failed to load dashboard data.');
@@ -67,6 +75,10 @@ const Dashboard: React.FC = () => {
   };
 
   const handleRoadmapCreated = (roadmapId: string) => {
+    // Trigger achievement check for roadmap creation
+    axiosInstance.post('/achievements/check').catch(err => 
+      console.log('Achievement check failed:', err)
+    );
     // Navigate to chat page to start the AI conversation
     navigate(`/chat/${roadmapId}`);
   };
@@ -277,7 +289,10 @@ const Dashboard: React.FC = () => {
                 </div>
               </div>
             </button>
-            <button className="p-4 text-left hover:bg-gray-50 rounded-lg transition-colors">
+            <button 
+              onClick={() => navigate('/achievements')}
+              className="p-4 text-left hover:bg-gray-50 rounded-lg transition-colors"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                   <Award className="h-5 w-5 text-green-600" />

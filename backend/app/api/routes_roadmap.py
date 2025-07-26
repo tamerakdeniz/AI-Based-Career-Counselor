@@ -8,6 +8,7 @@ from app.models.user import User
 from app.schemas.roadmap import Milestone as MilestoneSchema
 from app.schemas.roadmap import Roadmap as RoadmapSchema
 from app.schemas.roadmap import RoadmapUpdate
+from app.services.achievement_service import achievement_service
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -110,6 +111,9 @@ async def complete_milestone(milestone_id: int, db: Session = Depends(get_db), c
             roadmap.next_milestone = next_milestone.title if next_milestone else None
         
         db.commit()
+        
+        # Check for new achievements after milestone completion
+        achievement_service.check_and_award_achievements(current_user.id, db)
 
     db.refresh(milestone)
     return milestone
@@ -137,5 +141,8 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
     roadmap.next_milestone = None  # All milestones completed
     
     db.commit()
+    
+    # Check for new achievements after completing all milestones
+    achievement_service.check_and_award_achievements(current_user.id, db)
     
     return {"message": "All milestones completed successfully", "completed_count": total_milestones}

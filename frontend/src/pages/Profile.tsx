@@ -5,7 +5,13 @@ import {
   Edit3,
   Mail,
   TrendingUp,
-  User
+  User,
+  Trophy,
+  Target,
+  CheckCircle,
+  Map,
+  Zap,
+  BookOpen
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -24,8 +30,42 @@ interface UserProfile {
   completed_roadmaps: number;
 }
 
+interface Achievement {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  category: string;
+  condition_type: string;
+  condition_value?: number;
+  color_scheme: string;
+  is_hidden: boolean;
+  created_at: string;
+}
+
+interface UserAchievement {
+  id: number;
+  achievement_id: number;
+  unlocked_at: string;
+  is_notified: boolean;
+  achievement: Achievement;
+}
+
+const iconMap = {
+  User,
+  Award,
+  Trophy,
+  Target,
+  TrendingUp,
+  CheckCircle,
+  Map,
+  Zap,
+  BookOpen,
+};
+
 const Profile: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [userAchievements, setUserAchievements] = useState<UserAchievement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -33,8 +73,12 @@ const Profile: React.FC = () => {
   const fetchProfile = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get('/users/profile');
-      setProfile(response.data);
+      const [profileRes, achievementsRes] = await Promise.all([
+        axiosInstance.get('/users/profile'),
+        axiosInstance.get('/achievements/user')
+      ]);
+      setProfile(profileRes.data);
+      setUserAchievements(achievementsRes.data);
     } catch (error) {
       console.error('Failed to load profile:', error);
       setError('Failed to load profile data.');
@@ -68,6 +112,26 @@ const Profile: React.FC = () => {
     const today = new Date();
     const diffTime = Math.abs(today.getTime() - joinDate.getTime());
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  const renderAchievementIcon = (iconName: string, colorClass: string) => {
+    const IconComponent = iconMap[iconName as keyof typeof iconMap] || Award;
+    return <IconComponent className={`h-6 w-6 ${colorClass}`} />;
+  };
+
+  const parseColorScheme = (colorScheme: string) => {
+    // Extract classes from the color scheme string
+    const gradientMatch = colorScheme.match(/from-[\w-]+ to-[\w-]+/);
+    const borderMatch = colorScheme.match(/border-[\w-]+/);
+    const bgMatch = colorScheme.match(/bg-[\w-]+/);
+    const textMatch = colorScheme.match(/text-[\w-]+/);
+
+    return {
+      gradient: gradientMatch ? `bg-gradient-to-r ${gradientMatch[0]}` : 'bg-gradient-to-r from-gray-50 to-gray-100',
+      border: borderMatch ? borderMatch[0] : 'border-gray-100',
+      iconBg: bgMatch ? bgMatch[0] : 'bg-gray-100',
+      iconText: textMatch ? textMatch[0] : 'text-gray-600'
+    };
   };
 
   if (loading) {
@@ -268,53 +332,54 @@ const Profile: React.FC = () => {
 
         {/* Achievement Section */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Achievements
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Early Adopter Badge */}
-            <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-100">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <User className="h-6 w-6 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Early Adopter</p>
-                <p className="text-sm text-gray-600">Joined Pathyvo</p>
-              </div>
-            </div>
-
-            {/* Milestone Achievement */}
-            {profile.completed_milestones > 0 && (
-              <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <Award className="h-6 w-6 text-green-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">First Steps</p>
-                  <p className="text-sm text-gray-600">
-                    Completed {profile.completed_milestones} milestone
-                    {profile.completed_milestones > 1 ? 's' : ''}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Roadmap Creator */}
-            {profile.total_roadmaps > 0 && (
-              <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <TrendingUp className="h-6 w-6 text-purple-600" />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-900">Roadmap Creator</p>
-                  <p className="text-sm text-gray-600">
-                    Created {profile.total_roadmaps} roadmap
-                    {profile.total_roadmaps > 1 ? 's' : ''}
-                  </p>
-                </div>
-              </div>
-            )}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Achievements
+            </h2>
+            <button
+              onClick={() => navigate('/achievements')}
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              View All
+            </button>
           </div>
+          
+          {userAchievements.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userAchievements.slice(0, 6).map((userAchievement) => {
+                const achievement = userAchievement.achievement;
+                const colors = parseColorScheme(achievement.color_scheme);
+                
+                return (
+                  <div
+                    key={userAchievement.id}
+                    className={`
+                      flex items-center space-x-3 p-4 rounded-lg border
+                      ${colors.gradient} ${colors.border}
+                    `}
+                  >
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${colors.iconBg}`}>
+                      {renderAchievementIcon(achievement.icon, colors.iconText)}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{achievement.title}</p>
+                      <p className="text-sm text-gray-600">{achievement.description}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trophy className="h-8 w-8 text-gray-400" />
+              </div>
+              <p className="text-gray-500 mb-4">No achievements yet</p>
+              <p className="text-sm text-gray-400">
+                Complete milestones and create roadmaps to earn achievements!
+              </p>
+            </div>
+          )}
         </div>
       </main>
     </div>

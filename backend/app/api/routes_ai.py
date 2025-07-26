@@ -11,6 +11,7 @@ from app.models.roadmap import Roadmap
 from app.models.user import User
 from app.services.llm_service import llm_service
 from app.services.rate_limit_service import RateLimitService
+from app.services.achievement_service import achievement_service
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -199,6 +200,9 @@ async def generate_roadmap(
         
         db.commit()
         logger.info(f"Successfully created roadmap with {milestones_created} milestones")
+        
+        # Check for new achievements after roadmap creation
+        achievement_service.check_and_award_achievements(current_user.id, db)
 
         return GenerateRoadmapResponse(
             success=True,
