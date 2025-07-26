@@ -113,14 +113,18 @@ async def generate_roadmap(
             )
 
         # Create a new roadmap entry in the database
+        milestones_data = roadmap_data.get("milestones", [])
+        first_milestone_title = milestones_data[0].get("title", "First Milestone") if milestones_data else None
+        
         new_roadmap = Roadmap(
             user_id=current_user.id,
             title=roadmap_data.get("title", f"Roadmap for {request.field}"),
             description=roadmap_data.get("description", ""),
             field=request.field,
             progress=0,
-            total_milestones=len(roadmap_data.get("milestones", [])),
-            completed_milestones=0
+            total_milestones=len(milestones_data),
+            completed_milestones=0,
+            next_milestone=first_milestone_title
         )
         db.add(new_roadmap)
         db.commit()

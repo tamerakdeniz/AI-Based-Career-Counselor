@@ -103,7 +103,9 @@ const RoadmapCard: React.FC<RoadmapCardProps> = ({ roadmap }) => {
                 Next Milestone
               </p>
               <p className="text-sm font-medium text-gray-900">
-                {roadmap.nextMilestone}
+                {roadmap.nextMilestone ||
+                  roadmap.next_milestone ||
+                  'No milestones available'}
               </p>
             </div>
           </>
@@ -114,11 +116,33 @@ const RoadmapCard: React.FC<RoadmapCardProps> = ({ roadmap }) => {
       <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
         <div className="flex items-center space-x-1">
           <Clock className="h-4 w-4" />
-          <span>{roadmap.estimatedTimeToComplete}</span>
+          <span>
+            {roadmap.estimatedTimeToComplete ||
+              roadmap.estimated_time_to_complete}
+          </span>
         </div>
         <div className="flex items-center space-x-1">
-          <CheckCircle className="h-4 w-4 text-green-500" />
-          <span>{roadmap.completedMilestones} completed</span>
+          {roadmap.progress === 100 ? (
+            <>
+              <CheckCircle className="h-4 w-4 text-green-500" />
+              <span className="text-green-600 font-medium">
+                {roadmap.completedMilestones ||
+                  roadmap.completed_milestones ||
+                  0}
+                /{roadmap.totalMilestones || roadmap.total_milestones || 0}
+              </span>
+            </>
+          ) : (
+            <>
+              <Clock className="h-4 w-4 text-blue-500" />
+              <span>
+                {roadmap.completedMilestones ||
+                  roadmap.completed_milestones ||
+                  0}
+                /{roadmap.totalMilestones || roadmap.total_milestones || 0}
+              </span>
+            </>
+          )}
         </div>
       </div>
 

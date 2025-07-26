@@ -88,6 +88,18 @@ async def complete_milestone(milestone_id: int, db: Session = Depends(get_db), c
         roadmap.progress = int((completed_milestones / total_milestones) * 100) if total_milestones > 0 else 0
         roadmap.completed_milestones = completed_milestones
         roadmap.total_milestones = total_milestones
+        
+        # Update next milestone
+        if completed_milestones >= total_milestones:
+            roadmap.next_milestone = None  # All milestones completed
+        else:
+            # Find the first incomplete milestone
+            next_milestone = db.query(Milestone).filter(
+                Milestone.roadmap_id == roadmap.id, 
+                Milestone.completed == False
+            ).first()
+            roadmap.next_milestone = next_milestone.title if next_milestone else None
+        
         db.commit()
 
     db.refresh(milestone)
@@ -113,6 +125,7 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
     roadmap.progress = 100
     roadmap.completed_milestones = total_milestones
     roadmap.total_milestones = total_milestones
+    roadmap.next_milestone = None  # All milestones completed
     
     db.commit()
     
