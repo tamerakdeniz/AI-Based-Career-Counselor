@@ -115,7 +115,6 @@ const RoadmapCard: React.FC<RoadmapCardProps> = ({ roadmap }) => {
       {/* Stats */}
       <div className="flex items-center justify-between text-sm text-gray-500 mb-6">
         <div className="flex items-center space-x-1">
-          <Clock className="h-4 w-4" />
           <span>
             {roadmap.estimatedTimeToComplete ||
               roadmap.estimated_time_to_complete}
