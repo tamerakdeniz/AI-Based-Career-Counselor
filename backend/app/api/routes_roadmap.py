@@ -63,7 +63,16 @@ def delete_roadmap(roadmap_id: int, db: Session = Depends(get_db), current_user:
 
 # List milestones for a roadmap
 @router.get("/{roadmap_id}/milestones", response_model=List[MilestoneSchema])
-def get_milestones(roadmap_id: int, db: Session = Depends(get_db)):
+def get_milestones(roadmap_id: int, db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
+    # First, verify that the roadmap exists and belongs to the current user
+    roadmap = db.query(Roadmap).filter(Roadmap.id == roadmap_id).first()
+    if not roadmap:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+    
+    # Ensure user can only access their own roadmap's milestones
+    if roadmap.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+        
     return db.query(Milestone).filter(Milestone.roadmap_id == roadmap_id).all()
 
 # Mark a milestone as complete

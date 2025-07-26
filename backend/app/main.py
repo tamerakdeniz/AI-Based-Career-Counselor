@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 from typing import List
 
@@ -6,11 +7,14 @@ from app.api.routes_auth import router as auth_router
 from app.api.routes_chat import router as chat_router
 from app.api.routes_roadmap import router as roadmap_router
 from app.core.config import settings
-from app.core.security import get_password_hash, verify_password
+from app.core.security import (RequestSizeLimitMiddleware,
+                               SecurityHeadersMiddleware, get_password_hash,
+                               verify_password)
 from app.database import Base, SessionLocal, engine
 from app.models.user import User
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
@@ -22,12 +26,22 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Add security middleware (order matters!)
+app.add_middleware(RequestSizeLimitMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# Add trusted host middleware to prevent host header injection
+app.add_middleware(
+    TrustedHostMiddleware, 
+    allowed_hosts=["localhost", "127.0.0.1", "*.vercel.app", "*.netlify.app"]
+)
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Be explicit about allowed methods
     allow_headers=["*"],
 )
 

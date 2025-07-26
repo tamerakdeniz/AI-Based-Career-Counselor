@@ -3,11 +3,14 @@ from typing import Any, Dict, List
 
 from app.api.routes_auth import verify_token
 from app.core.config import settings
+from app.core.security import (validate_and_sanitize_input,
+                               validate_roadmap_field)
 from app.database import get_db
 from app.models.milestone import Milestone
 from app.models.roadmap import Roadmap
 from app.models.user import User
 from app.services.llm_service import llm_service
+from app.services.rate_limit_service import RateLimitService
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -17,6 +20,33 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/ai", tags=["AI-powered features"])
+
+# Initialize rate limiting service
+rate_limit_service = RateLimitService()
+
+async def check_ai_rate_limit(current_user: User = Depends(verify_token)) -> User:
+    """
+    Dependency to check rate limits for AI endpoints.
+    Returns the user if rate limit is not exceeded, raises HTTPException otherwise.
+    """
+    rate_limit_info = rate_limit_service.check_rate_limit(current_user.id)
+    
+    if rate_limit_info.is_limited:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Rate limit exceeded. Try again after {rate_limit_info.reset_time.strftime('%H:%M:%S')}",
+            headers=rate_limit_service.get_rate_limit_headers(current_user.id)
+        )
+    
+    # Increment the counter
+    if not rate_limit_service.increment_request_count(current_user.id):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Rate limit exceeded",
+            headers=rate_limit_service.get_rate_limit_headers(current_user.id)
+        )
+    
+    return current_user
 
 # --- Pydantic Models for Requests and Responses ---
 
@@ -49,12 +79,18 @@ class ChatResponse(BaseModel):
 # --- API Endpoints ---
 
 @router.get("/initial-questions/{field}", response_model=InitialQuestionsResponse)
-async def get_initial_questions(field: str):
+async def get_initial_questions(
+    field: str, 
+    current_user: User = Depends(check_ai_rate_limit)
+):
     """
     Provides a list of initial questions tailored to the selected career field.
+    Requires authentication to prevent abuse.
     """
     try:
-        questions = llm_service.get_initial_questions(field)
+        # Validate and sanitize the field input
+        validated_field = validate_roadmap_field(field)
+        questions = llm_service.get_initial_questions(validated_field)
         if not questions:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -62,7 +98,7 @@ async def get_initial_questions(field: str):
             )
         return InitialQuestionsResponse(questions=questions)
     except Exception as e:
-        logger.error(f"Error fetching initial questions for field '{field}': {e}")
+        logger.error(f"Error fetching initial questions for field '{field}' for user {current_user.id}: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve initial questions."
@@ -72,7 +108,7 @@ async def get_initial_questions(field: str):
 async def generate_roadmap(
     request: GenerateRoadmapRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(verify_token)
+    current_user: User = Depends(check_ai_rate_limit)
 ):
     """
     Generates a new career roadmap based on user's answers to initial questions.
@@ -217,12 +253,15 @@ async def get_conversation_status(
 async def chat_with_ai(
     request: ChatRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(verify_token)
+    current_user: User = Depends(check_ai_rate_limit)
 ):
     """
     Chat with AI mentor about the roadmap.
     """
     try:
+        # Validate and sanitize the message content
+        sanitized_message = validate_and_sanitize_input(request.message, max_length=settings.max_message_length)
+        
         # Check if roadmap exists and belongs to user
         roadmap = db.query(Roadmap).filter(
             Roadmap.id == request.roadmap_id,
@@ -241,7 +280,7 @@ async def chat_with_ai(
             roadmap_id=request.roadmap_id,
             user_id=current_user.id,
             type="user",
-            content=request.message
+            content=sanitized_message
         )
         db.add(user_message)
         db.commit()

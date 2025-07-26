@@ -1,15 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from typing import Optional
-import jwt
-from pydantic import BaseModel, EmailStr
 
+import jwt
+from app.core.config import settings
+from app.core.security import get_password_hash, verify_password
 from app.database import get_db
 from app.models.user import User
-from app.core.security import verify_password, get_password_hash
-from app.core.config import settings
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from pydantic import BaseModel, EmailStr
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -50,16 +50,43 @@ def verify_token(token: str = Depends(oauth2_scheme), db: Session = Depends(get_
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        # Decode and validate token with additional security checks
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("sub")
-        if user_id is None:
+        user_id_str: str = payload.get("sub")
+        if user_id_str is None:
             raise credentials_exception
-    except jwt.PyJWTError:
+        
+        # Validate user_id format
+        try:
+            user_id = int(user_id_str)
+        except (ValueError, TypeError):
+            raise credentials_exception
+        
+        # Check token expiration (jwt.decode handles this, but explicit check for clarity)
+        exp = payload.get("exp")
+        if exp is None:
+            raise credentials_exception
+            
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token has expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    except jwt.InvalidTokenError:
+        raise credentials_exception
+    except Exception:
         raise credentials_exception
     
+    # Verify user still exists and is active
     user = db.query(User).filter(User.id == user_id).first()
     if user is None:
-        raise credentials_exception
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     return user
 
 @router.post("/login", response_model=Token)

@@ -16,9 +16,26 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./mentor.db"
     
     # JWT Settings
-    secret_key: str = "your-secret-key-here-change-in-production"
+    secret_key: str = Field(
+        default="your-secret-key-here-change-in-production-NEVER-USE-DEFAULT",
+        description="JWT secret key - MUST be changed in production",
+        min_length=32
+    )
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
+    
+    # Security validation
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Warn if using default secret key
+        if self.secret_key == "your-secret-key-here-change-in-production-NEVER-USE-DEFAULT":
+            import warnings
+            warnings.warn(
+                "WARNING: Using default JWT secret key! This is extremely insecure. "
+                "Set the SECRET_KEY environment variable in production.",
+                UserWarning,
+                stacklevel=2
+            )
     
     # CORS Settings - Store as string and parse later
     cors_origins_str: str = Field(
@@ -66,6 +83,11 @@ class Settings(BaseSettings):
     max_conversation_length: int = 50
     max_message_length: int = 2000
     ai_timeout_seconds: int = 30
+    
+    # Request limits and timeouts
+    max_request_size: int = 1024 * 1024  # 1 MB
+    request_timeout_seconds: int = 30
+    max_json_payload_size: int = 100 * 1024  # 100 KB for JSON payloads
     
     # Prompt Engineering
     enable_conversation_memory: bool = True
