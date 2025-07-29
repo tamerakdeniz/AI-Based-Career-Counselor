@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import Header from '../components/Header';
+import MilestoneChart from '../components/MilestoneChart';
 import type { Roadmap, User } from '../types';
 
 interface AnalyticsData {
@@ -41,11 +42,17 @@ interface UserAchievement {
   unlocked_at: string;
 }
 
+interface MilestoneData {
+  date: string;
+  milestones: number;
+}
+
 const Analytics: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [achievements, setAchievements] = useState<UserAchievement[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [milestoneData, setMilestoneData] = useState<MilestoneData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -66,6 +73,10 @@ const Analytics: React.FC = () => {
         // Fetch achievements
         const achievementsRes = await axiosInstance.get('/achievements/user');
         setAchievements(achievementsRes.data);
+
+        // Fetch milestone completion data
+        const milestoneRes = await axiosInstance.get('/roadmaps/analytics/milestones-by-date');
+        setMilestoneData(milestoneRes.data);
 
         // Calculate analytics
         const roadmapsData = roadmapsRes.data;
@@ -240,6 +251,11 @@ const Analytics: React.FC = () => {
             <div className="text-lg font-bold text-gray-900 mb-1">{analytics.joinDate}</div>
             <div className="text-sm text-gray-600">Member Since</div>
           </div>
+        </div>
+
+        {/* Milestone Completion Chart */}
+        <div className="mb-8">
+          <MilestoneChart data={milestoneData} chartType="line" />
         </div>
 
         {/* Milestone Progress */}

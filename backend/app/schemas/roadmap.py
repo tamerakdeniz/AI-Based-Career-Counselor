@@ -15,6 +15,7 @@ class MilestoneBase(BaseModel):
     description: Optional[str] = None
     completed: bool = False
     due_date: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
     resources: List[Resource] = []
 
 class MilestoneCreate(MilestoneBase):

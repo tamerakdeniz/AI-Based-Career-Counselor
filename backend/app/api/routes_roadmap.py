@@ -1,4 +1,6 @@
-from typing import List
+from typing import List, Dict
+from datetime import datetime, date
+from sqlalchemy import func
 
 from app.api.routes_auth import verify_token
 from app.database import get_db
@@ -89,6 +91,7 @@ async def complete_milestone(milestone_id: int, db: Session = Depends(get_db), c
         raise HTTPException(status_code=403, detail="Access denied")
 
     milestone.completed = True
+    milestone.completed_at = datetime.now()
     db.commit()
 
     # Update roadmap progress
@@ -132,6 +135,8 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
     milestones = db.query(Milestone).filter(Milestone.roadmap_id == roadmap_id).all()
     for milestone in milestones:
         milestone.completed = True
+        if not milestone.completed_at:  # Only set if not already set
+            milestone.completed_at = datetime.now()
     
     # Update roadmap progress to 100%
     total_milestones = len(milestones)
@@ -146,3 +151,32 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
     achievement_service.check_and_award_achievements(current_user.id, db)
     
     return {"message": "All milestones completed successfully", "completed_count": total_milestones}
+
+# Get milestone completion statistics by date for analytics
+@router.get("/analytics/milestones-by-date", response_model=List[Dict])
+def get_milestones_by_date(db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
+    """Get milestone completion counts grouped by date for the current user"""
+    
+    # Query milestones that belong to the current user's roadmaps and are completed
+    milestone_stats = db.query(
+        func.date(Milestone.completed_at).label('completion_date'),
+        func.count(Milestone.id).label('milestone_count')
+    ).join(Roadmap).filter(
+        Roadmap.user_id == current_user.id,
+        Milestone.completed == True,
+        Milestone.completed_at.isnot(None)
+    ).group_by(
+        func.date(Milestone.completed_at)
+    ).order_by(
+        func.date(Milestone.completed_at)
+    ).all()
+    
+    # Convert to list of dictionaries
+    result = []
+    for stat in milestone_stats:
+        result.append({
+            "date": str(stat.completion_date) if stat.completion_date else None,
+            "milestones": stat.milestone_count
+        })
+    
+    return result
