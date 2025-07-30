@@ -1,6 +1,5 @@
-from typing import List, Dict
-from datetime import datetime, date, timedelta
-from sqlalchemy import func
+from datetime import date, datetime, timedelta
+from typing import Dict, List
 
 from app.api.routes_auth import verify_token
 from app.database import get_db
@@ -12,6 +11,7 @@ from app.schemas.roadmap import Roadmap as RoadmapSchema
 from app.schemas.roadmap import RoadmapUpdate
 from app.services.achievement_service import achievement_service
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/roadmaps", tags=["roadmaps"])
@@ -157,23 +157,21 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
 def get_milestones_by_date(db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
     """Get milestone completion counts grouped by week for the current user, including empty weeks"""
     
-    # Query milestones that belong to the current user's roadmaps and are completed
-    milestone_stats = db.query(
-        func.strftime('%Y-W%W', Milestone.completed_at).label('week'),
-        func.count(Milestone.id).label('milestone_count')
-    ).join(Roadmap).filter(
+    # Query completed milestones that belong to the current user's roadmaps
+    completed_milestones = db.query(Milestone).join(Roadmap).filter(
         Roadmap.user_id == current_user.id,
         Milestone.completed == True,
         Milestone.completed_at.isnot(None)
-    ).group_by(
-        func.strftime('%Y-W%W', Milestone.completed_at)
     ).all()
     
-    # Convert to dictionary for easy lookup
+    # Group milestones by ISO week using Python's isocalendar()
     stats_dict = {}
-    for stat in milestone_stats:
-        if stat.week:
-            stats_dict[stat.week] = stat.milestone_count
+    for milestone in completed_milestones:
+        if milestone.completed_at:
+            # Use ISO week calculation which correctly handles week boundaries
+            iso_year, iso_week, _ = milestone.completed_at.isocalendar()
+            week_key = f"{iso_year}-W{iso_week:02d}"
+            stats_dict[week_key] = stats_dict.get(week_key, 0) + 1
     
     # If no completed milestones, show last 4 weeks with zeros
     if not stats_dict:
@@ -202,7 +200,7 @@ def get_milestones_by_date(db: Session = Depends(get_db), current_user: User = D
     def week_to_string(year, week):
         return f"{year}-W{week:02d}"
     
-    # Get current week
+    # Get current week using ISO calendar
     today = datetime.now().date()
     current_year, current_week_num, _ = today.isocalendar()
     current_week_str = week_to_string(current_year, current_week_num)
@@ -234,17 +232,29 @@ def get_milestones_by_date(db: Session = Depends(get_db), current_user: User = D
         week += 1
         # Handle year rollover using ISO week dates (can go up to week 53)
         if week > 53:
-            # Check if week 53 exists in this year
+            # Check if week 53 exists in this year by trying to create a date
             try:
-                datetime.strptime(f"{year}-W53-1", "%Y-W%W-%w")
-            except ValueError:
+                # ISO week 53 exists if Jan 1 is Thursday or if it's a leap year and Jan 1 is Wednesday
+                jan1 = datetime(year, 1, 1).date()
+                jan1_weekday = jan1.weekday()  # Monday = 0, Sunday = 6
+                if jan1_weekday == 3 or (jan1_weekday == 2 and year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)):
+                    # Week 53 exists, continue
+                    pass
+                else:
+                    week = 1
+                    year += 1
+            except:
                 week = 1
                 year += 1
         elif week == 53:
             # Check if week 53 exists in this year
             try:
-                datetime.strptime(f"{year}-W53-1", "%Y-W%W-%w")
-            except ValueError:
+                jan1 = datetime(year, 1, 1).date()
+                jan1_weekday = jan1.weekday()
+                if not (jan1_weekday == 3 or (jan1_weekday == 2 and year % 4 == 0 and (year % 100 != 0 or year % 400 == 0))):
+                    week = 1
+                    year += 1
+            except:
                 week = 1
                 year += 1
     

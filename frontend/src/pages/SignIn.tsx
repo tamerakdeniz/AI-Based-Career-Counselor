@@ -165,15 +165,6 @@ const SignIn: React.FC = () => {
             </button>
           </form>
 
-          {/* Demo credentials */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm text-blue-700 font-medium mb-2">
-              Demo Credentials:
-            </p>
-            <p className="text-xs text-blue-600">Email: tamer@example.com</p>
-            <p className="text-xs text-blue-600">Password: password123</p>
-          </div>
-
           {/* Sign up link */}
           <div className="mt-6 text-center">
             <p className="text-gray-600">
