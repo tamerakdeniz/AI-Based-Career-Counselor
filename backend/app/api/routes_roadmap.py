@@ -152,31 +152,70 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
     
     return {"message": "All milestones completed successfully", "completed_count": total_milestones}
 
-# Get milestone completion statistics by date for analytics
+# Get milestone completion statistics by week for analytics
 @router.get("/analytics/milestones-by-date", response_model=List[Dict])
 def get_milestones_by_date(db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
-    """Get milestone completion counts grouped by date for the current user"""
+    """Get milestone completion counts grouped by week for the current user"""
     
     # Query milestones that belong to the current user's roadmaps and are completed
+    # Group by week using strftime to get year-week format
     milestone_stats = db.query(
-        func.date(Milestone.completed_at).label('completion_date'),
+        func.strftime('%Y-W%W', Milestone.completed_at).label('week'),
         func.count(Milestone.id).label('milestone_count')
     ).join(Roadmap).filter(
         Roadmap.user_id == current_user.id,
         Milestone.completed == True,
         Milestone.completed_at.isnot(None)
     ).group_by(
-        func.date(Milestone.completed_at)
+        func.strftime('%Y-W%W', Milestone.completed_at)
     ).order_by(
-        func.date(Milestone.completed_at)
+        func.strftime('%Y-W%W', Milestone.completed_at)
     ).all()
     
     # Convert to list of dictionaries
     result = []
     for stat in milestone_stats:
+        # Convert week format to more readable format
+        if stat.week:
+            # stat.week is in format "2025-W30", convert to "Week 30, 2025"
+            year, week_part = stat.week.split('-W')
+            week_display = f"Week {week_part}, {year}"
+        else:
+            week_display = None
+            
         result.append({
-            "date": str(stat.completion_date) if stat.completion_date else None,
+            "date": week_display,
             "milestones": stat.milestone_count
+        })
+    
+    return result
+
+# Get recent completed milestones for activity log
+@router.get("/analytics/recent-milestones")
+def get_recent_milestones(limit: int = 20, db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
+    """Get recent completed milestones for the current user"""
+    
+    # Query recent completed milestones with roadmap info
+    recent_milestones = db.query(Milestone).join(Roadmap).filter(
+        Roadmap.user_id == current_user.id,
+        Milestone.completed == True,
+        Milestone.completed_at.isnot(None)
+    ).order_by(
+        Milestone.completed_at.desc()
+    ).limit(limit).all()
+    
+    # Convert to response format
+    result = []
+    for milestone in recent_milestones:
+        result.append({
+            "id": milestone.id,
+            "title": milestone.title,
+            "description": milestone.description,
+            "completed_at": milestone.completed_at.isoformat() if milestone.completed_at else None,
+            "roadmap": {
+                "id": milestone.roadmap.id,
+                "title": milestone.roadmap.title
+            } if milestone.roadmap else None
         })
     
     return result

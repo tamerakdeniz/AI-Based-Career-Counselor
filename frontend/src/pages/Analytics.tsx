@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import Header from '../components/Header';
 import MilestoneChart from '../components/MilestoneChart';
+import ActivityLog from '../components/ActivityLog';
 import type { Roadmap, User } from '../types';
 
 interface AnalyticsData {
@@ -326,52 +327,58 @@ const Analytics: React.FC = () => {
           </div>
         </div>
 
-        {/* Recent Achievements */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <Calendar className="h-5 w-5 text-yellow-600" />
+        {/* Recent Achievements and Activity Log */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Recent Achievements */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <Calendar className="h-5 w-5 text-yellow-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Recent Achievements</h3>
+                <p className="text-sm text-gray-600">Your latest accomplishments</p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Recent Achievements</h3>
-              <p className="text-sm text-gray-600">Your latest accomplishments</p>
-            </div>
+            
+            {achievements.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {achievements
+                  .sort((a, b) => new Date(b.unlocked_at).getTime() - new Date(a.unlocked_at).getTime())
+                  .slice(0, 6)
+                  .map((userAchievement) => (
+                    <div key={userAchievement.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                        <span className="text-white text-sm">🏆</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {userAchievement.achievement.title}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(userAchievement.unlocked_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-gray-400 text-4xl mb-4">🏆</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No achievements yet</h3>
+                <p className="text-gray-500 mb-4">Start learning to unlock your first achievement!</p>
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Create a Roadmap
+                </button>
+              </div>
+            )}
           </div>
-          
-          {achievements.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {achievements
-                .sort((a, b) => new Date(b.unlocked_at).getTime() - new Date(a.unlocked_at).getTime())
-                .slice(0, 6)
-                .map((userAchievement) => (
-                  <div key={userAchievement.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
-                      <span className="text-white text-sm">🏆</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {userAchievement.achievement.title}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(userAchievement.unlocked_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <div className="text-gray-400 text-4xl mb-4">🏆</div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No achievements yet</h3>
-              <p className="text-gray-500 mb-4">Start learning to unlock your first achievement!</p>
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Create a Roadmap
-              </button>
-            </div>
-          )}
+
+          {/* Activity Log */}
+          <ActivityLog limit={10} />
         </div>
       </main>
     </div>
