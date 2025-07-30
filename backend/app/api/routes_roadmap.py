@@ -1,4 +1,6 @@
-from typing import List
+from typing import List, Dict
+from datetime import datetime, date, timedelta
+from sqlalchemy import func
 
 from app.api.routes_auth import verify_token
 from app.database import get_db
@@ -89,6 +91,7 @@ async def complete_milestone(milestone_id: int, db: Session = Depends(get_db), c
         raise HTTPException(status_code=403, detail="Access denied")
 
     milestone.completed = True
+    milestone.completed_at = datetime.now()
     db.commit()
 
     # Update roadmap progress
@@ -132,6 +135,8 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
     milestones = db.query(Milestone).filter(Milestone.roadmap_id == roadmap_id).all()
     for milestone in milestones:
         milestone.completed = True
+        if not milestone.completed_at:  # Only set if not already set
+            milestone.completed_at = datetime.now()
     
     # Update roadmap progress to 100%
     total_milestones = len(milestones)
@@ -146,3 +151,131 @@ async def complete_all_milestones(roadmap_id: int, db: Session = Depends(get_db)
     achievement_service.check_and_award_achievements(current_user.id, db)
     
     return {"message": "All milestones completed successfully", "completed_count": total_milestones}
+
+# Get milestone completion statistics by week for analytics
+@router.get("/analytics/milestones-by-date", response_model=List[Dict])
+def get_milestones_by_date(db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
+    """Get milestone completion counts grouped by week for the current user, including empty weeks"""
+    
+    # Query milestones that belong to the current user's roadmaps and are completed
+    milestone_stats = db.query(
+        func.strftime('%Y-W%W', Milestone.completed_at).label('week'),
+        func.count(Milestone.id).label('milestone_count')
+    ).join(Roadmap).filter(
+        Roadmap.user_id == current_user.id,
+        Milestone.completed == True,
+        Milestone.completed_at.isnot(None)
+    ).group_by(
+        func.strftime('%Y-W%W', Milestone.completed_at)
+    ).all()
+    
+    # Convert to dictionary for easy lookup
+    stats_dict = {}
+    for stat in milestone_stats:
+        if stat.week:
+            stats_dict[stat.week] = stat.milestone_count
+    
+    # If no completed milestones, show last 4 weeks with zeros
+    if not stats_dict:
+        result = []
+        today = datetime.now().date()
+        for i in range(4):
+            week_start = today - timedelta(days=today.weekday() + (i * 7))
+            year, week_num, _ = week_start.isocalendar()
+            week_display = f"Week {week_num}, {year}"
+            result.insert(0, {
+                "date": week_display,
+                "milestones": 0
+            })
+        return result
+    
+    # Find the range of weeks to display
+    weeks = list(stats_dict.keys())
+    earliest_week = min(weeks)
+    latest_week = max(weeks)
+    
+    # Parse week strings and extend range to current week
+    def parse_week(week_str):
+        year, week_part = week_str.split('-W')
+        return int(year), int(week_part)
+    
+    def week_to_string(year, week):
+        return f"{year}-W{week:02d}"
+    
+    # Get current week
+    today = datetime.now().date()
+    current_year, current_week_num, _ = today.isocalendar()
+    current_week_str = week_to_string(current_year, current_week_num)
+    
+    # Extend range to current week if needed
+    if current_week_str > latest_week:
+        latest_week = current_week_str
+    
+    earliest_year, earliest_week_num = parse_week(earliest_week)
+    latest_year, latest_week_num = parse_week(latest_week)
+    
+    # Generate all weeks in the range
+    result = []
+    year, week = earliest_year, earliest_week_num
+    
+    while (year < latest_year) or (year == latest_year and week <= latest_week_num):
+        week_string = week_to_string(year, week)
+        milestone_count = stats_dict.get(week_string, 0)
+        
+        # Convert week format to more readable format
+        week_display = f"Week {week}, {year}"
+        
+        result.append({
+            "date": week_display,
+            "milestones": milestone_count
+        })
+        
+        # Move to next week
+        week += 1
+        # Handle year rollover using ISO week dates (can go up to week 53)
+        if week > 53:
+            # Check if week 53 exists in this year
+            try:
+                datetime.strptime(f"{year}-W53-1", "%Y-W%W-%w")
+            except ValueError:
+                week = 1
+                year += 1
+        elif week == 53:
+            # Check if week 53 exists in this year
+            try:
+                datetime.strptime(f"{year}-W53-1", "%Y-W%W-%w")
+            except ValueError:
+                week = 1
+                year += 1
+    
+    return result
+
+# Get recent completed milestones for activity log
+@router.get("/analytics/recent-milestones")
+def get_recent_milestones(limit: int = 20, db: Session = Depends(get_db), current_user: User = Depends(verify_token)):
+    """Get recent completed milestones for the current user"""
+    
+    # Query recent completed milestones with roadmap info
+    recent_milestones = db.query(Milestone).join(Roadmap).filter(
+        Roadmap.user_id == current_user.id,
+        Milestone.completed == True,
+        Milestone.completed_at.isnot(None)
+    ).order_by(
+        Milestone.completed_at.desc()
+    ).limit(limit).all()
+    
+    # Convert to response format
+    result = []
+    for milestone in recent_milestones:
+        result.append({
+            "id": milestone.id,
+            "title": milestone.title,
+            "description": milestone.description,
+            "completed_at": milestone.completed_at.isoformat() if milestone.completed_at else None,
+            "roadmap": {
+                "id": milestone.roadmap.id,
+                "title": milestone.roadmap.title
+            } if milestone.roadmap else None
+        })
+    
+    return result
