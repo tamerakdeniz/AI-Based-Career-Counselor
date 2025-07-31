@@ -35,7 +35,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 # Add trusted host middleware to prevent host header injection
 app.add_middleware(
     TrustedHostMiddleware, 
-    allowed_hosts=["localhost", "127.0.0.1", "*.vercel.app", "*.netlify.app"]
+    allowed_hosts=["localhost", "127.0.0.1", "207.154.224.101", "*.vercel.app", "*.netlify.app"]
 )
 
 # Add CORS middleware

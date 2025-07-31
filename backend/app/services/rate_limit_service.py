@@ -10,7 +10,7 @@ import time
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 from app.core.config import settings
 
@@ -29,19 +29,24 @@ class RateLimitService:
     
     def __init__(self):
         self.user_requests: Dict[int, List[datetime]] = defaultdict(list)
-        self.redis_client = None
+        self.redis_client: Optional[Any] = None
         self._initialize_redis()
     
     def _initialize_redis(self):
         """Initialize Redis client if available"""
         try:
             import redis
+            import os
 
-            # In production, these would come from environment variables
+            # Get Redis configuration from environment variables
+            redis_host = os.getenv('REDIS_HOST', 'localhost')
+            redis_port = int(os.getenv('REDIS_PORT', '6379'))
+            redis_db = int(os.getenv('REDIS_DB', '0'))
+
             self.redis_client = redis.Redis(
-                host='localhost',
-                port=6379,
-                db=0,
+                host=redis_host,
+                port=redis_port,
+                db=redis_db,
                 decode_responses=True
             )
             self.redis_client.ping()  # Test connection
