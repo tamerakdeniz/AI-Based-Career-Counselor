@@ -318,22 +318,113 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 ---
 
 <details>
-<summary><strong>⚡️ SPRINT 3 - Final Dokunuşlar & Yayına Hazırlık (30 SP)</strong></summary>
+<summary><strong>⚡️ SPRINT 3 - Yayına Hazırlık & Son Testler (65 SP)</strong></summary>
 
-### Sprint Amacı
+### 🎯 Sprint Amacı
 
-- Uygulamayı yayına hazırlamak
-- UI/UX iyileştirmeleri
-- Performans ve güvenlik geliştirmeleri
+- Analytics ve Achievements ekranlarının geliştirilerek kullanıcıya veri odaklı geri bildirim sunulması
+- LLM etkileşimi, prompt kontrolü ve roadmap yönetimi gibi temel işlevlerin son kullanıcı senaryolarıyla test edilmesi
+- Uygulamanın performans, güvenlik ve hata yönetimi açısından optimize edilmesi
+- Tüm platform bileşenlerinin entegre edilerek uygulamanın yayına hazır son haline getirilmesi
 
-### Ana Görevler
+### 🛠️ Ana Görevler
 
-- Genel UI optimizasyonları ve mikro animasyonlar
-- Son entegrasyon testleri ve hata düzeltmeleri
-- Erişilebilirlik (a11y) geliştirmeleri
-- Yol haritası final düzenlemeleri
-- Kullanıcı başarı rozetleri ve mini motivasyon mesajları
-- Son demo sunumu ve review
+- LLM servislerinin kontrolü ve prompt kalitesi iyileştirmesi
+- Hata ve edge case senaryolarının yazılması
+- Performans optimizasyonları
+- Gelişmiş loglama ve analitik altyapısı
+- Responsive ve mobil uyumluluk son kontrolleri
+- Profile Page, Settings Page, View Achievements ve Analytics Page ekranlarının tamamlanması
+- Analytics sayfası için milestone grafiklerinin entegrasyonu
+- Test senaryolarının tamamlanması
+- DevOps süreçleri ve projenin dockerize edilmesi
+- Son kullanıcı testleri (UAT)
+- Lansman öncesi kapsamlı hata avı
+
+### ✍🏻 Sprint Notları
+
+- LLM servisleri test edildi, prompt akışı optimize edilerek daha doğru yanıtlar alınması sağlandı.
+- Sistem genelinde yaygın ve özel hata senaryoları oluşturuldu ve uygulamaya entegre edildi.
+- Backend sorgularında optimizasyonlar yapılarak hız artışı sağlandı.
+- Analytics modülünde milestone tabanlı grafik gösterimi aktif hale getirildi.
+- Tüm sayfalar farklı cihazlarda responsive testlerden geçirildi.
+- Kullanıcı profil sayfası, ayarlar ve başarı ekranları başarıyla oluşturuldu.
+- PyTest altyapısı ile test senaryoları tüm modülleri kapsayacak şekilde genişletildi.
+- Docker yapılandırması tamamlandı ve CI/CD süreci tanımlandı.
+- UAT sürecinde alınan geri bildirimlere göre düzeltmeler uygulandı.
+- Uygulama yayına hazır hale getirildi.
+
+### 🎯 Sprint Tahmini Story Point
+
+- Toplam: **65 SP**
+
+### ✅ Sprint Tamamlama Mantığı
+
+Sprint 3, planlanan görevlerin tamamı bitirilerek %100 başarıyla tamamlanmıştır.  
+Sprint boyunca kullanıcı deneyimini doğrudan etkileyen son kontroller, testler ve LLM davranışı optimize edilmiştir.  
+Uygulamanın ilk sürümü yayına hazır olacak şekilde teslim edilmiştir.
+
+### ✅ Çıktılar
+
+- LLM servisleri stabil hale getirildi ve prompt yönetimi geliştirildi
+- Edge case & hata senaryoları oluşturulup test edildi
+- Tüm backend ve frontend modülleri için performans iyileştirildi
+- Analytics Page tamamlandı, milestone grafik yapısı eklendi
+- Kullanıcı odaklı sayfalar: Profile, Settings, View Achievements hazırlandı
+- Mobil uyumluluk ve responsive yapılar son kez kontrol edildi
+- PyTest test dosyaları tüm sistem bileşenlerini kapsayacak şekilde tamamlandı
+- Dockerfile ve deploy betikleri ile uygulama dockerize edildi
+- UAT süreci yürütüldü, raporlanan sorunlar giderildi
+- Yayın öncesi son hata avı süreci başarıyla tamamlandı
+
+### 🤝🏻 Daily Scrum
+
+Daily Scrum toplantıları **Google Meet** üzerinden yapılmaktadır.  
+Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/13dtKtvmZWRzEGQWnk_iphIlVbCHLM7zB?usp=sharing) üzerinde saklanmaktadır.
+
+### 🖼️ Sprint Board Görselleri
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3rd-sprint-start-board.png" alt="Sprint-3 Start Board"/><br>
+  <sub>🔎 Sprint-3 başlarken görev planlaması</sub>
+</p>
+
+---
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3rd-sprint-done-board.png" alt="Sprint-3 Done Board"/><br>
+  <sub>✅ Sprint-3 tamamlandıktan sonraki görev durumu</sub>
+</p>
+
+---
+
+### 🧐 Sprint Review
+
+Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı katılmıştır.  
+Toplantıda sprint çıktıları detaylı şekilde değerlendirilmiş, özellikle LLM davranışı ve analitik modülün başarısı vurgulanmıştır.  
+Uygulamanın kararlı bir şekilde yayına alınabileceği kanaatine varılmıştır.  
+Yayın süreci için roadmap güncellenmiş ve planlar netleştirilmiştir.
+
+### 🔄 Sprint Retrospective
+
+Retrospective oturumunda; test süreçlerinin yoğunluğu, DevOps altyapısının kurulumu ve ekip koordinasyonunun başarıyla sağlanması vurgulanmıştır.  
+Zamanlama ve iş bölümü açısından ideal bir sprint deneyimi yaşanmıştır.  
+Ürünün son haline ulaşmasında bu sprintin belirleyici olduğu ifade edilmiştir.  
+Ekipteki motivasyon yüksek kalmış, iş birliği güçlü şekilde korunmuştur.
+
+---
+
+### 🚀 Ürüne Eklenen Özellikler (Sprint Sonu Ekran Görüntüleri)
+
+<p align="center">
+  <img alt="Analytics-Milestone" src="https://github.com/user-attachments/assets/analytics-milestone-graph.png" />
+  <br>
+  <img alt="Settings-Profile" src="https://github.com/user-attachments/assets/settings-profile-screen.png" />
+  <br>
+  <img alt="Dockerized-App" src="https://github.com/user-attachments/assets/docker-ci-cd-status.png" />
+  <br>
+  <sub>🛠️ Bu görseller, sprint sonunda entegre edilen analiz, profil ve sistem bileşenlerini göstermektedir.</sub>
+</p>
 
 </details>
 
