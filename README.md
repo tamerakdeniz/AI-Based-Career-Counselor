@@ -381,7 +381,7 @@ Uygulamanın ilk sürümü yayına hazır olacak şekilde teslim edilmiştir.
 ### 🤝🏻 Daily Scrum
 
 Daily Scrum toplantıları **Google Meet** üzerinden yapılmaktadır.  
-Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/13dtKtvmZWRzEGQWnk_iphIlVbCHLM7zB?usp=sharing) üzerinde saklanmaktadır.
+Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/1ydRLTnpVa4aC6fRHT6GeEhaVTEBKHOP6?usp=sharing) üzerinde saklanmaktadır.
 
 ### 🖼️ Sprint Board Görselleri
 
@@ -418,83 +418,119 @@ Ekipteki motivasyon yüksek kalmış, iş birliği güçlü şekilde korunmuştu
 ### 🚀 Ürüne Eklenen Özellikler (Sprint Sonu Ekran Görüntüleri)
 
 <p align="center">
-  <img alt="Analytics-Milestone" src="https://github.com/user-attachments/assets/analytics-milestone-graph.png" />
+  <img alt="Achievements" src="https://github.com/user-attachments/assets/ce62c5b0-e200-43d0-aa54-f0ea80208b5e" />
   <br>
-  <img alt="Settings-Profile" src="https://github.com/user-attachments/assets/settings-profile-screen.png" />
+  <img alt="Analytics1" src="https://github.com/user-attachments/assets/e2074f6f-663b-4c60-88b0-f3f53b9952e8" />
+  <img alt="Analytics2" src="https://github.com/user-attachments/assets/5f533122-3934-45d2-afd7-867171f3d4f2" />
   <br>
-  <img alt="Dockerized-App" src="https://github.com/user-attachments/assets/docker-ci-cd-status.png" />
+  <img alt="Profile" src="https://github.com/user-attachments/assets/3e9fa95a-86dc-4160-be26-5f3b66fa5680" />
   <br>
-  <sub>🛠️ Bu görseller, sprint sonunda entegre edilen analiz, profil ve sistem bileşenlerini göstermektedir.</sub>
+  <img alt="Settings" src="https://github.com/user-attachments/assets/fa59eda7-cbaa-432e-881b-885ded7661f1" />
+  <br>
+  <sub>🛠️ Bu görseller, sprint sonunda entegre edilen analiz, başarımlar, profil ve ayarlar bileşenlerini göstermektedir.</sub>
 </p>
 
 </details>
 
 ---
 
-## 🖼 Örnek Ekran Görselleri
+## 🖼 Uygulama Görselleri
 
 > Görseller ilerleyen sürümlerde güncellenebilir.
 
+---
+
+### 🏠 Homepage
+
 <p align="center">
-  <h3 align="center">🔑 Signin</h3>
+  <img alt="Homepage-1" src="https://github.com/user-attachments/assets/79abd774-31c7-4c7f-b23a-49f0b931fbdd" />
+  <img alt="Homepage-2" src="https://github.com/user-attachments/assets/6ec0d871-541a-43c7-ab93-6d7239239ae4" />
+  <img alt="Homepage-3" src="https://github.com/user-attachments/assets/c8764c66-8a45-4031-89d1-9abb6d88999f" />
+  <img alt="Homepage-4" src="https://github.com/user-attachments/assets/8d8c1d74-80be-4f41-b823-50b1d0332c41" />
+  <img alt="Homepage-5" src="https://github.com/user-attachments/assets/899c28a7-0898-4432-bbed-75d27a12041c" />
 </p>
 
 ---
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/84da9e0a-2d8d-41a8-b7ca-a626a3d7665b">
-</p>
+### 🔑 Sign Up
 
 <p align="center">
-  <h3 align="center">🏠 Homepage</h3>
-</p>
-
----
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/cfc603e9-348c-4468-a7a8-7d0a976e57c7">
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/49b670ea-7b2a-491a-81c9-0da0153c753a">
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/f394003f-4745-43b9-afad-1ef4aba304ba">
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/c0b02632-22d0-4e40-83cd-60b0ad9fbc56">
-</p>
-
-<p align="center">
-  <h3 align="center">📄 Dashboard</h3>
+  <img alt="SignUp" src="https://github.com/user-attachments/assets/b5f3ca51-7850-4e86-bbba-a93d63a3a89f" />
 </p>
 
 ---
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/d326fd99-dd34-4f86-9ed6-0714596c63ed">
-</p>
+### 🔑 Sign In
 
 <p align="center">
-  <h3 align="center">💬 Chat</h3>
-</p>
-
----
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/7cf4e55d-af3f-4d25-8515-c8eb5f9700f8">
-</p>
-
-<p align="center">
-  <h3 align="center">🔑 Signup</h3>
+  <img alt="SignIn" src="https://github.com/user-attachments/assets/62ec1e33-324d-4d5c-b3ab-5f55be2ca733" />
 </p>
 
 ---
 
+### 📄 Dashboard
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b5f3ca51-7850-4e86-bbba-a93d63a3a89f">
+  <img alt="Dashboard" src="https://github.com/user-attachments/assets/1b47b0b6-1ca3-4c69-bd64-68bed36a2ae0" />
+</p>
+
+---
+
+#### ➕ New Roadmap (Popup)
+
+<p align="center">
+  <img alt="NewRoadmap1" src="https://github.com/user-attachments/assets/72c98e30-f3fb-4d98-a068-0d32ce34cbc4" />
+  <img alt="NewRoadmap2" src="https://github.com/user-attachments/assets/2d4d187f-12d8-48a5-88e6-e7930485ba50" />
+  <img alt="NewRoadmap3" src="https://github.com/user-attachments/assets/35d508de-759a-4b51-a522-77a6e7598c82" />
+</p>
+
+---
+
+### 💬 Open Chat
+
+<p align="center">
+  <img alt="Chat" src="https://github.com/user-attachments/assets/7292ab49-3c83-4efc-97be-bde5b6d4f386" />
+</p>
+
+---
+
+### 📌 View Roadmap
+
+<p align="center">
+  <img alt="ViewRoadmap" src="https://github.com/user-attachments/assets/470b5403-0ad6-40b6-9d79-e3681d05b2fe" />
+</p>
+
+---
+
+### 🏆 View Achievements
+
+<p align="center">
+  <img alt="Achievements" src="https://github.com/user-attachments/assets/ce62c5b0-e200-43d0-aa54-f0ea80208b5e" />
+</p>
+
+---
+
+### 📊 Analytics
+
+<p align="center">
+  <img alt="Analytics1" src="https://github.com/user-attachments/assets/e2074f6f-663b-4c60-88b0-f3f53b9952e8" />
+  <img alt="Analytics2" src="https://github.com/user-attachments/assets/5f533122-3934-45d2-afd7-867171f3d4f2" />
+</p>
+
+---
+
+### 🙍 Profile
+
+<p align="center">
+  <img alt="Profile" src="https://github.com/user-attachments/assets/3e9fa95a-86dc-4160-be26-5f3b66fa5680" />
+</p>
+
+---
+
+### ⚙️ Settings
+
+<p align="center">
+  <img alt="Settings" src="https://github.com/user-attachments/assets/fa59eda7-cbaa-432e-881b-885ded7661f1" />
 </p>
 
 ---
