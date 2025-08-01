@@ -58,7 +58,16 @@ export const registerUser = async (userData: {
   password: string;
 }): Promise<boolean> => {
   try {
-    await axiosInstance.post('/users/', userData);
+    const response = await axiosInstance.post('/auth/register', userData);
+    const { access_token, user_id, email, name } = response.data;
+
+    // Store authentication data after successful registration
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('accessToken', access_token);
+    localStorage.setItem('userEmail', email);
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userId', user_id.toString());
+
     return true;
   } catch (error) {
     console.error('Registration error:', error);
