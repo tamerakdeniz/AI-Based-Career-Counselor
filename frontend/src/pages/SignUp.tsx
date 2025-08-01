@@ -1,6 +1,7 @@
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { registerUser } from '../utils/auth';
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState({
