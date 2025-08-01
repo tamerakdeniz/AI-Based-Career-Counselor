@@ -12,13 +12,13 @@
 
 ## 🧑‍🤝‍🧑 Takım Üyeleri
 
-| İsim                   | Rol                                                  | Socials                                           |
-|------------------------|------------------------------------------------------|--------------------------------------------------|
-| *Mustafa Tamer AKDENİZ*| Product Owner / AI-Prompt Engineer / Fullstack Dev.  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/tamerakdeniz/) |
-| *Yusuf Cemal KARATAŞ*  | Backend Developer                                    | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/yusuf-cemal-karatas/) |
-| *Öyküm İlayda DEMİR*   | Backend Developer                                    | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/öyküm-ilayda-demir-5a7aba2a0/) |
-| *İkra Selma KENESARI*  | Scrum Master                                         | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1) |
-| *İrem KILIÇ*           | ---                                                  | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
+| İsim                    | Rol                                                 | Socials                                                                                                                                                          |
+| ----------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _Mustafa Tamer AKDENİZ_ | Product Owner / AI-Prompt Engineer / Fullstack Dev. | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/tamerakdeniz/)                        |
+| _Yusuf Cemal KARATAŞ_   | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/yusuf-cemal-karatas/)                 |
+| _Öyküm İlayda DEMİR_    | Backend Developer                                   | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/öyküm-ilayda-demir-5a7aba2a0/)        |
+| _İkra Selma KENESARI_   | Scrum Master                                        | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/ikraselma1)                           |
+| _İrem KILIÇ_            | ---                                                 | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
 
 ---
 
@@ -61,14 +61,13 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 
 ## 👨‍💻 Teknolojik Altyapı
 
-| Katman        | Teknoloji / Araç                              |
-|---------------|-----------------------------------------------|
-| **LLM**       | Gemini API, LangChain                         |
-| **Backend**   | FastAPI / Node.js                             |
-| **Frontend**  | React (TypeScript & JSX), TailwindCSS         |
-| **Veritabanı**| SQLite / Firebase                             |
-| **Veri Kaynağı** | O\*NET, LinkedIn API, kariyer.net scraping |
-| **Analitik**  | Python (Pandas, Scikit-learn), Google Charts |
+| Katman         | Teknoloji / Araç                             |
+| -------------- | -------------------------------------------- |
+| **LLM**        | Gemini API, LangChain                        |
+| **Backend**    | FastAPI / Node.js                            |
+| **Frontend**   | React (TypeScript & JSX), TailwindCSS        |
+| **Veritabanı** | SQLite / Firebase                            |
+| **Analitik**   | Python (Pandas, Scikit-learn), Google Charts |
 
 ---
 
@@ -94,10 +93,12 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 <summary><strong>⚡️ SPRINT 1 - MVP Kurulumu (45 SP)</strong></summary>
 
 ### 🎯 Sprint Amacı
+
 - Minimum Viable Product (MVP) altyapısını kurmak
 - Temel kullanıcı akışını hazırlamak
 
 ### 🛠️ Ana Görevler
+
 - Proje yapısının kurulumu (Frontend & Backend)
 - Landing page tasarımı ve geliştirmesi
 - Dashboard temel layout geliştirmesi
@@ -107,6 +108,7 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 - Chat sisteminin temel ekran tasarımı ve dummy veri entegrasyonu
 
 ### ✍🏻 Sprint Notları
+
 - Sprint başlangıcında kapsam ve öncelikler netleştirildi.
 - Backend ve frontend entegrasyonu için temel bağlantılar kuruldu.
 - Kullanılan teknolojiler ve kullanım alanları:
@@ -121,19 +123,23 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 - Ekip içi iletişim düzenli **Daily Scrum** toplantılarıyla (Google Meet) sürdürüldü, ayrıca anlık koordinasyon için WhatsApp grubu kullanıldı.
 
 ### 🎯 Sprint Tahmini Story Point
+
 - Toplam: **45 SP**
 
 ### ✅ Sprint Tamamlama Mantığı
+
 Sprint 1, planlanan 45 SP'nin %70'inden fazlası tamamlanarak başarıyla sonlandırılmıştır.  
 Tamamlanamayan işler sonraki sprint'e taşınmış, bu sayede akışın sürekliliği korunmuştur.  
 Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
 
 ### ✅ Çıktılar
+
 - Çalışan ilk versiyon dashboard
 - Bağlantılı dummy chat akışı
 - Örnek roadmap görüntüleme
 
 ### 🤝🏻 Daily Scrum
+
 Daily Scrum toplantıları Google Meet üzerinden yapılmaktadır.  
 Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/1Owg14139fcCrq8VjDjp0u50jFioauFm0?usp=sharing)’da toplanmaktadır.
 
@@ -152,11 +158,13 @@ Günlük WhatsApp yazışmaları ve toplantı kayıtları [Google Drive](https:/
 </p>
 
 ### 🧐 Sprint Review
+
 Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı ve İrem Kılıç katılmıştır.  
 Toplantıda, sprint çıktıları ve genel ilerleme değerlendirilmiştir. Güncel tasarım ve projenin gidişatı ekip ve paydaşlar tarafından beğenilmiş, mevcut yön üzerinde devam edilmesine karar verilmiştir.  
 Tamamlanamayan görevler, öncelikli olarak 2. sprint’e devredilmiştir. Ayrıca, eklenmesi gereken yeni özellikler ve çıkarılması planlanan özellikler üzerine konuşulmuş ve bu konularda yeni task'lar tanımlanmıştır.
 
 ### 🔄 Sprint Retrospective
+
 Sprint Retrospective oturumunda; ekip, tamamlanamayan görevlerin 2. sprint'te öncelikli olarak ele alınacağını belirtmiştir.  
 Özellikle frontend geliştirmelerinin hızlandırılması ve backend entegrasyonu test edilebilirliğinin artırılması için çalışmaya hazır bir yapı oluşturulması kararlaştırılmıştır.  
 Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut dağılımın yeterli olduğu vurgulanmıştır.  
@@ -206,51 +214,58 @@ Görev dağılımı konusunda herhangi bir değişikliğe gidilmemiş, mevcut da
 <summary><strong>⚡️ SPRINT 2 - Özellik Geliştirme & AI Entegrasyonu (50 SP)</strong></summary>
 
 ### 🎯 Sprint Amacı
-- AI tabanlı öneri ve roadmap akışını devreye almak  
-- Kullanıcı etkileşimini artıracak fonksiyonları aktif hale getirmek  
+
+- AI tabanlı öneri ve roadmap akışını devreye almak
+- Kullanıcı etkileşimini artıracak fonksiyonları aktif hale getirmek
 
 ### 🛠️ Ana Görevler
-- AI chat bot geliştirmesi (frontend & backend)  
-- Roadmap oluşturma algoritması  
-- Kullanıcı bazlı roadmap detay ekranları  
-- Chat ekranında roadmap side panel entegrasyonu  
-- Kullanıcı kayıt ekranının backend'e bağlanması  
-- FastAPI endpoint sınırlandırması  
-- Konuşma geçmişinin veritabanına eklenmesi  
-- Test case’lerin hazırlanması  
-- Kullanıcı profiline özel test senaryoları  
-- LLM & Backend entegrasyonlarının tamamlanması  
-- Takım rolleri güncellemesi, aktif olmayan üyelerin belirlenmesi  
+
+- AI chat bot geliştirmesi (frontend & backend)
+- Roadmap oluşturma algoritması
+- Kullanıcı bazlı roadmap detay ekranları
+- Chat ekranında roadmap side panel entegrasyonu
+- Kullanıcı kayıt ekranının backend'e bağlanması
+- FastAPI endpoint sınırlandırması
+- Konuşma geçmişinin veritabanına eklenmesi
+- Test case’lerin hazırlanması
+- Kullanıcı profiline özel test senaryoları
+- LLM & Backend entegrasyonlarının tamamlanması
+- Takım rolleri güncellemesi, aktif olmayan üyelerin belirlenmesi
 
 ### ✍🏻 Sprint Notları
-- Sprint başlangıcında roadmap oluşturma ve chatbot modülleri önceliklendirildi.  
-- Chat ekranında roadmap side panel entegrasyonu başarıyla yapıldı.  
-- Kullanıcı kayıt ekranı backend’e başarıyla bağlandı.  
-- FastAPI endpoint’lerine erişim sınırlandırmaları getirildi.  
-- Konuşma geçmişi, kullanıcı bazlı olarak veritabanına eklendi.  
-- PyTest ile test senaryoları geliştirildi.  
-- LLM (Gemini API) & Backend entegrasyonu başarıyla tamamlandı.  
-- İlgi alanı güncelleme ekranı ve kurs/kaynak öneri API’si kapsam dışına alındı.  
-- Takım içinde rol güncellemeleri yapılarak aktif olmayan üyeler belirlendi.  
-- Proje yönetimi ve süreç takibi için GitHub Projects ve Miro aktif şekilde kullanılmaya devam etti.  
-- Günlük Scrum toplantıları Google Meet üzerinden devam etti, anlık iletişim için WhatsApp grubu kullanıldı.  
+
+- Sprint başlangıcında roadmap oluşturma ve chatbot modülleri önceliklendirildi.
+- Chat ekranında roadmap side panel entegrasyonu başarıyla yapıldı.
+- Kullanıcı kayıt ekranı backend’e başarıyla bağlandı.
+- FastAPI endpoint’lerine erişim sınırlandırmaları getirildi.
+- Konuşma geçmişi, kullanıcı bazlı olarak veritabanına eklendi.
+- PyTest ile test senaryoları geliştirildi.
+- LLM (Gemini API) & Backend entegrasyonu başarıyla tamamlandı.
+- İlgi alanı güncelleme ekranı ve kurs/kaynak öneri API’si kapsam dışına alındı.
+- Takım içinde rol güncellemeleri yapılarak aktif olmayan üyeler belirlendi.
+- Proje yönetimi ve süreç takibi için GitHub Projects ve Miro aktif şekilde kullanılmaya devam etti.
+- Günlük Scrum toplantıları Google Meet üzerinden devam etti, anlık iletişim için WhatsApp grubu kullanıldı.
 
 ### 🎯 Sprint Tahmini Story Point
+
 - Toplam: **50 SP**
 
 ### ✅ Sprint Tamamlama Mantığı
+
 Sprint 2, planlanan 50 SP’nin %90’ından fazlası başarıyla tamamlanarak sonlandırılmıştır.  
 Tamamlanamayan işler (hata ve edge case yönetimi) bir sonraki sprint’e devredilmiştir.  
 Tamamlama ölçütü; önceden belirlenen fonksiyonların çalışır ve test edilebilir olmasıdır.
 
 ### ✅ Çıktılar
-- Roadmap oluşturma algoritması teknik altyapısı kuruldu  
-- Kullanıcı bazlı roadmap detay ekranları oluşturuldu  
-- Chat ekranına roadmap side panel entegrasyonu başarıyla yapıldı  
-- API çağrılarının tamamlanması ve testlerinin yazılması  
-- Backend fonksiyonları için kapsamlı test dosyaları hazırlandı  
+
+- Roadmap oluşturma algoritması teknik altyapısı kuruldu
+- Kullanıcı bazlı roadmap detay ekranları oluşturuldu
+- Chat ekranına roadmap side panel entegrasyonu başarıyla yapıldı
+- API çağrılarının tamamlanması ve testlerinin yazılması
+- Backend fonksiyonları için kapsamlı test dosyaları hazırlandı
 
 ### 🤝🏻 Daily Scrum
+
 Daily Scrum toplantıları **Google Meet** üzerinden yapılmaktadır.  
 Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.google.com/drive/folders/13dtKtvmZWRzEGQWnk_iphIlVbCHLM7zB?usp=sharing) üzerinde saklanmaktadır.
 
@@ -271,12 +286,14 @@ Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.goog
 ---
 
 ### 🧐 Sprint Review
+
 Sprint Review toplantısına Mustafa Tamer Akdeniz, Yusuf Cemal Karataş, Öyküm İlayda Demir, İkra Selma Kenesarı katılmıştır.  
 Toplantıda sprint çıktıları ve uygulamanın geldiği nokta değerlendirilmiştir.  
 Tasarım, kullanıcı akışı ve teknik ilerleme ekip ve paydaşlar tarafından olumlu karşılanmıştır.  
-Tamamlanamayan görevler üçüncü sprint’e taşınmış, ek ihtiyaçlara yönelik yeni task'lar tanımlanmıştır.  
+Tamamlanamayan görevler üçüncü sprint’e taşınmış, ek ihtiyaçlara yönelik yeni task'lar tanımlanmıştır.
 
 ### 🔄 Sprint Retrospective
+
 Sprint Retrospective oturumunda; test senaryoları, roadmap algoritması ve UI entegrasyonlarının ekip verimliliğine katkısı vurgulanmıştır.  
 İletişim ve görev yönetimi konusunda olumlu geri bildirimler alınmıştır.  
 Üçüncü sprint’te hata yönetimi, performans optimizasyonu ve kullanıcı deneyimini artıracak mikro animasyonlara odaklanılması planlanmıştır.  
@@ -298,18 +315,19 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 
 </details>
 
-
 ---
 
 <details>
 <summary><strong>⚡️ SPRINT 3 - Final Dokunuşlar & Yayına Hazırlık (30 SP)</strong></summary>
 
 ### Sprint Amacı
+
 - Uygulamayı yayına hazırlamak
 - UI/UX iyileştirmeleri
 - Performans ve güvenlik geliştirmeleri
 
 ### Ana Görevler
+
 - Genel UI optimizasyonları ve mikro animasyonlar
 - Son entegrasyon testleri ve hata düzeltmeleri
 - Erişilebilirlik (a11y) geliştirmeleri
@@ -340,6 +358,7 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 </p>
 
 ---
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/cfc603e9-348c-4468-a7a8-7d0a976e57c7">
 </p>
@@ -361,6 +380,7 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 </p>
 
 ---
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/d326fd99-dd34-4f86-9ed6-0714596c63ed">
 </p>
@@ -370,6 +390,7 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 </p>
 
 ---
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/7cf4e55d-af3f-4d25-8515-c8eb5f9700f8">
 </p>
@@ -379,6 +400,7 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 </p>
 
 ---
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/b5f3ca51-7850-4e86-bbba-a93d63a3a89f">
 </p>
