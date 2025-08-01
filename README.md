@@ -61,14 +61,14 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 
 ## 👨‍💻 Teknolojik Altyapı
 
-| Katman                     | Teknoloji / Araç                                             |
-| -------------------------- | ------------------------------------------------------------ |
-| **LLM**                    | Gemini API, LangChain                                        |
-| **Backend**                | FastAPI / Node.js                                            |
-| **Frontend**               | React (TypeScript & JSX), TailwindCSS                        |
-| **Veritabanı**             | SQLite / Firebase                                            |
-| **Analitik**               | Python (Pandas, Scikit-learn), Google Charts                 |
-| **Containerization & Deployment** | Docker, Docker Compose                                |
+| Katman                            | Teknoloji / Araç                             |
+| --------------------------------- | -------------------------------------------- |
+| **LLM**                           | Gemini API, LangChain                        |
+| **Backend**                       | FastAPI / Node.js                            |
+| **Frontend**                      | React (TypeScript & JSX), TailwindCSS        |
+| **Veritabanı**                    | SQLite / Firebase                            |
+| **Analitik**                      | Python (Pandas, Scikit-learn), Google Charts |
+| **Containerization & Deployment** | Docker, Docker Compose                       |
 
 ---
 
