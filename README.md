@@ -434,9 +434,82 @@ Ekipteki motivasyon yüksek kalmış, iş birliği güçlü şekilde korunmuştu
 
 ---
 
-## 🖼 Uygulama Görselleri
+## 📚 Dokümantasyon
 
-> Görseller ilerleyen sürümlerde güncellenebilir.
+Projenin detaylı dokümantasyonu için aşağıdaki bağlantıları kullanabilirsiniz:
+
+- **[Kurulum Rehberi](docs/installation.md)** - Projeyi yerel geliştirme ortamında kurma adımları
+- **[Mimari Dokümantasyonu](docs/architecture.md)** - Sistem mimarisi, bileşenler ve teknik altyapı detayları
+- **[API Dokümantasyonu](docs/api_documentation.md)** - Backend API endpoint'leri ve kullanım örnekleri
+- **[Güvenlik Yönergeleri](docs/security_guidelines.md)** - Güvenlik best practice'leri ve öneriler
+- **[Prompt Örnekleri](docs/prompt_examples.md)** - AI sisteminde kullanılan prompt şablonları ve örnekler
+- **[Deployment Rehberi](docs/deployment.md)** - Geliştirme ve test ortamı deployment kılavuzu
+- **[Prodüksiyon Deployment](docs/production_deployment.md)** - Prodüksiyon ortamı için deployment ve konfigürasyon
+
+---
+
+## 🔄 Uygulama Akış Şeması
+
+Aşağıdaki akış şeması, Pathyvo platformundaki kullanıcı yolculuğunu ve sistem bileşenleri arasındaki etkileşimleri detaylı şekilde göstermektedir:
+
+### 🎯 Ana Kullanıcı Akışı
+
+1. **🚀 Giriş ve Kayıt**: Kullanıcılar landing page üzerinden platforma kayıt olur veya giriş yapar
+2. **🏠 Dashboard**: Ana kontrol panelinde roadmap'ler, profil ve analitik erişimi sağlanır
+3. **🛣️ Roadmap Oluşturma**: AI destekli kişiselleştirilmiş kariyer yol haritası oluşturma
+4. **💬 AI Mentörlük**: Chatbot ile sürekli rehberlik ve destek alma
+5. **📈 İlerleme Takibi**: Milestone'lar ve başarımlar ile gelişimi izleme
+6. **📊 Analitik**: Detaylı performans analizi ve gelişim raporları
+
+### 🔄 Sistem Etkileşim Akışı
+
+```mermaid
+graph TD
+    A["🚀 Landing Page<br/>Ana Sayfa"] --> B{"👤 Kullanıcı<br/>Kayıtlı mı?"}
+
+    B -->|"Hayır"| C["📝 Sign Up<br/>Kayıt Ol"]
+    B -->|"Evet"| D["🔑 Sign In<br/>Giriş Yap"]
+
+    C --> E["✅ Kayıt Başarılı"]
+    D --> F["✅ Giriş Başarılı"]
+    E --> F
+
+    F --> G["🏠 Dashboard<br/>Ana Panel"]
+
+    G --> H{"🛣️ Roadmap<br/>Var mı?"}
+
+    H -->|"Hayır"| I["➕ Yeni Roadmap<br/>Oluştur"]
+    H -->|"Evet"| J["📋 Mevcut Roadmapleri<br/>Görüntüle"]
+
+    I --> K["🎯 İlgi Alanı<br/>Seçimi"]
+    K --> L["🤖 AI ile Roadmap<br/>Oluşturma"]
+    L --> M["📊 Kişiselleştirilmiş<br/>Roadmap"]
+
+    M --> N["💬 AI Chat<br/>Mentörlük"]
+    J --> N
+
+    N --> O["📈 İlerleme<br/>Takibi"]
+    O --> P["🏆 Başarımlar<br/>Kazanma"]
+
+    G --> Q["👤 Profil<br/>Yönetimi"]
+    G --> R["📊 Analytics<br/>Analitik"]
+    G --> S["⚙️ Ayarlar<br/>Settings"]
+
+    P --> T["🎖️ Achievement<br/>Görüntüleme"]
+    R --> U["📈 Milestone<br/>Grafikleri"]
+
+    N --> V{"💡 Yeni Soru<br/>veya Rehberlik?"}
+    V -->|"Evet"| N
+    V -->|"Hayır"| W["✨ Devam Eden<br/>Gelişim"]
+
+    style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style G fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style N fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    style M fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style P fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+```
+
+Bu akış şeması, kullanıcının platformdaki tam yolculuğunu ve her adımda nasıl bir deneyim yaşayacağını göstermektedir.
 
 ---
 
@@ -537,4 +610,4 @@ Ekipteki motivasyon yüksek kalmış, iş birliği güçlü şekilde korunmuştu
 
 ## 📄 Lisans
 
-MIT License. Ayrıntılar için `LICENSE` dosyasına bakabilirsiniz.
+MIT License. Ayrıntılar için [LICENSE](LICENSE) dosyasına bakabilirsiniz.
