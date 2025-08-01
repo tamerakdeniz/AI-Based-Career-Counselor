@@ -467,14 +467,14 @@ Aşağıdaki akış şeması, Pathyvo platformundaki kullanıcı yolculuğunu ve
 graph TD
     A["🚀 Landing Page<br/>Ana Sayfa"] --> B{"👤 Kullanıcı<br/>Kayıtlı mı?"}
 
-    B -->|"Hayır"| C["📝 Sign Up<br/>Kayıt Ol"]
-    B -->|"Evet"| D["🔑 Sign In<br/>Giriş Yap"]
+    B -->|"Hayır"| C["📝 Sign Up"]
+    B -->|"Evet"| D["🔑 Sign In"]
 
     C --> E["✅ Kayıt Başarılı"]
     D --> F["✅ Giriş Başarılı"]
     E --> F
 
-    F --> G["🏠 Dashboard<br/>Ana Panel"]
+    F --> G["🏠 Dashboard"]
 
     G --> H{"🛣️ Roadmap<br/>Var mı?"}
 
@@ -491,9 +491,9 @@ graph TD
     N --> O["📈 İlerleme<br/>Takibi"]
     O --> P["🏆 Başarımlar<br/>Kazanma"]
 
-    G --> Q["👤 Profil<br/>Yönetimi"]
-    G --> R["📊 Analytics<br/>Analitik"]
-    G --> S["⚙️ Ayarlar<br/>Settings"]
+    G --> Q["👤 Profile"]
+    G --> R["📊 Analytics"]
+    G --> S["⚙️ Settings"]
 
     P --> T["🎖️ Achievement<br/>Görüntüleme"]
     R --> U["📈 Milestone<br/>Grafikleri"]
@@ -502,11 +502,6 @@ graph TD
     V -->|"Evet"| N
     V -->|"Hayır"| W["✨ Devam Eden<br/>Gelişim"]
 
-    style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    style G fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    style N fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    style M fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style P fill:#fce4ec,stroke:#880e4f,stroke-width:2px
 ```
 
 Bu akış şeması, kullanıcının platformdaki tam yolculuğunu ve her adımda nasıl bir deneyim yaşayacağını göstermektedir.
