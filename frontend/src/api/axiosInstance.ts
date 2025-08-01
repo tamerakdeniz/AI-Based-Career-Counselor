@@ -1,12 +1,13 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'https://pathyvo.app/api';
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 // Request interceptor to add auth token
@@ -34,7 +35,7 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('userEmail');
       localStorage.removeItem('userName');
       localStorage.removeItem('userId');
-      
+
       // Redirect to login if not already there
       if (window.location.pathname !== '/signin') {
         window.location.href = '/signin';
@@ -44,4 +45,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance; 
+export default axiosInstance;

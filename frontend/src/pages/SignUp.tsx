@@ -1,7 +1,7 @@
+import axios from 'axios';
 import { ArrowLeft, Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -43,18 +43,22 @@ const SignUp: React.FC = () => {
     }
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/auth/register', {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
-      });
+      const response = await axios.post(
+        `${
+          import.meta.env.VITE_API_BASE_URL || 'https://pathyvo.app/api'
+        }/auth/register`,
+        {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        }
+      );
 
       const data = response.data;
 
       localStorage.setItem('userEmail', data.email);
       localStorage.setItem('userName', data.name);
       navigate('/dashboard');
-
     } catch (error: any) {
       if (error.response?.data?.detail) {
         if (Array.isArray(error.response.data.detail)) {
