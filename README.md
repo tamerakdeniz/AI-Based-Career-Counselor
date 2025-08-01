@@ -61,13 +61,14 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 
 ## 👨‍💻 Teknolojik Altyapı
 
-| Katman         | Teknoloji / Araç                             |
-| -------------- | -------------------------------------------- |
-| **LLM**        | Gemini API, LangChain                        |
-| **Backend**    | FastAPI / Node.js                            |
-| **Frontend**   | React (TypeScript & JSX), TailwindCSS        |
-| **Veritabanı** | SQLite / Firebase                            |
-| **Analitik**   | Python (Pandas, Scikit-learn), Google Charts |
+| Katman                     | Teknoloji / Araç                                             |
+| -------------------------- | ------------------------------------------------------------ |
+| **LLM**                    | Gemini API, LangChain                                        |
+| **Backend**                | FastAPI / Node.js                                            |
+| **Frontend**               | React (TypeScript & JSX), TailwindCSS                        |
+| **Veritabanı**             | SQLite / Firebase                                            |
+| **Analitik**               | Python (Pandas, Scikit-learn), Google Charts                 |
+| **Containerization & Deployment** | Docker, Docker Compose                                |
 
 ---
 
@@ -84,8 +85,8 @@ Proje backlog'u ve sprint planlaması **[Miro](https://miro.com/app/live-embed/u
 
 - **Sprint 1:** 45 SP
 - **Sprint 2:** 50 SP
-- **Sprint 3:** 30 SP
-- **Toplam:** 110 SP
+- **Sprint 3:** 50 SP
+- **Toplam:** 145 SP
 
 ---
 
@@ -318,7 +319,7 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 ---
 
 <details>
-<summary><strong>⚡️ SPRINT 3 - Yayına Hazırlık & Son Testler (65 SP)</strong></summary>
+<summary><strong>⚡️ SPRINT 3 - Yayına Hazırlık & Son Testler (50 SP)</strong></summary>
 
 ### 🎯 Sprint Amacı
 
@@ -356,7 +357,7 @@ Görev dağılımı büyük oranda korunmuş, motivasyon yüksek şekilde yeni s
 
 ### 🎯 Sprint Tahmini Story Point
 
-- Toplam: **65 SP**
+- Toplam: **50 SP**
 
 ### ✅ Sprint Tamamlama Mantığı
 
