@@ -98,8 +98,8 @@ def validate_roadmap_field(field: str) -> str:
             detail="Career field is required"
         )
     
-    # Allow only alphanumeric characters, spaces, hyphens, and underscores
-    if not re.match(r'^[a-zA-Z0-9\s\-_]+$', field):
+    # Allow only alphanumeric characters, spaces, hyphens, underscores, and forward slashes
+    if not re.match(r'^[a-zA-Z0-9\s\-_/]+$', field):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid career field format"
