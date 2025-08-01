@@ -670,7 +670,25 @@ const MemoizedRoadmapCard = React.memo(RoadmapCard);
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+
+### License Summary
+
+The MIT License is a permissive open source license that allows you to:
+
+- ✅ **Use** the software for any purpose, including commercial applications
+- ✅ **Modify** the source code to suit your needs
+- ✅ **Distribute** copies of the original or modified software
+- ✅ **Sublicense** and sell copies of the software
+- ✅ **Include** in proprietary software
+
+**Requirements:**
+- Include the original copyright notice and license text in all copies
+- Provide attribution to the original author (Tamer Akdeniz)
+
+**Disclaimer:** The software is provided "as is" without warranty of any kind. The author is not liable for any damages arising from the use of this software.
+
+For the complete license terms, see the [LICENSE](../LICENSE) file in the project root.
 
 ---
 
