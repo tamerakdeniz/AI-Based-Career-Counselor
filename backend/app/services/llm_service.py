@@ -823,9 +823,10 @@ class LLMService:
                 temperature=settings.gemini_temperature,
             )
             
-            # Only set JSON output for roadmap generation
-            if json_output:
-                generation_config.response_mime_type = "application/json"
+            # Don't force JSON MIME type as it can cause parsing issues
+            # Our prompts are explicit enough about JSON format
+            # if json_output:
+            #     generation_config.response_mime_type = "application/json"
             
             logger.info(f"Calling Gemini API with prompt length: {len(prompt)}")
             logger.info(f"Max tokens: {settings.gemini_max_tokens}, Temperature: {settings.gemini_temperature}")
