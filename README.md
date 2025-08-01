@@ -10,6 +10,14 @@
 
 ---
 
+## 🌐 Canlı Demo
+
+> **🚀 Ürünü Şimdi Test Edin!**  
+> **[Live Demo - Pathyvo Platform](http://207.154.224.101/)**  
+> _Pathyvo'yu denemek için yukarıdaki bağlantıya tıklayın ve AI tabanlı kariyer mentörünüzü keşfedin._
+
+---
+
 ## 🧑‍🤝‍🧑 Takım Üyeleri
 
 | İsim                    | Rol                                                 | Socials                                                                                                                                                          |
