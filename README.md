@@ -386,14 +386,14 @@ Günlük yazışmalar ve toplantı kayıtları [Google Drive](https://drive.goog
 ### 🖼️ Sprint Board Görselleri
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3rd-sprint-start-board.png" alt="Sprint-3 Start Board"/><br>
+  <img src="https://github.com/user-attachments/assets/9d18127d-4dbb-41a5-bf3c-2840e73be505" alt="Sprint-3 Start Board"/><br>
   <sub>🔎 Sprint-3 başlarken görev planlaması</sub>
 </p>
 
 ---
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3rd-sprint-done-board.png" alt="Sprint-3 Done Board"/><br>
+  <img src="https://github.com/user-attachments/assets/98ad5a09-44d2-4279-af7f-fcaa64e91c9f" alt="Sprint-3 Done Board"/><br>
   <sub>✅ Sprint-3 tamamlandıktan sonraki görev durumu</sub>
 </p>
 
