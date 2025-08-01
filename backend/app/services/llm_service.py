@@ -110,7 +110,7 @@ FIELD_CONFIG = {
             {"key": "budget_experience", "text": "Have you ever managed a marketing budget?"},
         ],
         "prompt_template": """
-        You are a digital marketing director creating a growth plan for a team member. Create a roadmap based on their profile.
+        You are a digital marketing director creating a comprehensive growth plan for a team member. Create a detailed roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -119,7 +119,29 @@ FIELD_CONFIG = {
         - Creative or Analytical: {creative_or_analytical}
         - Budget Experience: {budget_experience}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this digital marketing roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Digital Marketing",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for digital marketing skills, including strategy development, campaign management, analytics, and specialization areas.
         """
     },
     "product_management": {
@@ -131,7 +153,7 @@ FIELD_CONFIG = {
             {"key": "technical_skills", "text": "How comfortable are you with technical discussions?"},
         ],
         "prompt_template": """
-        You are a seasoned Head of Product advising a new Product Manager. Create a roadmap based on their profile.
+        You are a seasoned Head of Product advising a new Product Manager. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -140,7 +162,29 @@ FIELD_CONFIG = {
         - Leadership Style: {leadership_style}
         - Technical Skills: {technical_skills}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this product management roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Product Management",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for product management skills, including user research, roadmap planning, stakeholder management, and product strategy.
         """
     },
     "ux_ui_design": {
@@ -152,7 +196,7 @@ FIELD_CONFIG = {
             {"key": "collaboration_style", "text": "How do you like to collaborate with developers and product managers?"},
         ],
         "prompt_template": """
-        You are a Design Lead mentoring a junior designer. Create a roadmap based on their profile.
+        You are a Design Lead mentoring a junior designer. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -161,7 +205,29 @@ FIELD_CONFIG = {
         - Tools: {tools}
         - Collaboration Style: {collaboration_style}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this UX/UI design roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "UX UI Design",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for UX/UI design skills, including practical projects, tool mastery, and portfolio development.
         """
     },
     "business_analysis": {
@@ -173,7 +239,7 @@ FIELD_CONFIG = {
             {"key": "documentation_style", "text": "Do you have a preferred method for documenting requirements?"},
         ],
         "prompt_template": """
-        You are a senior Business Analyst guiding a new team member. Create a roadmap based on their profile.
+        You are a senior Business Analyst guiding a new team member. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -182,7 +248,29 @@ FIELD_CONFIG = {
         - Stakeholder Management: {stakeholder_management}
         - Documentation Style: {documentation_style}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this business analysis roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Business Analysis",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for business analysis skills, including requirements gathering, process modeling, stakeholder communication, and business solution design.
         """
     },
     "project_management": {
@@ -237,7 +325,7 @@ FIELD_CONFIG = {
             {"key": "rejection_handling", "text": "How do you handle rejection and stay motivated?"},
         ],
         "prompt_template": """
-        You are a Sales Director coaching a sales representative. Create a roadmap based on their profile.
+        You are a Sales Director coaching a sales representative. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -246,7 +334,29 @@ FIELD_CONFIG = {
         - Sales Style: {sales_style}
         - Rejection Handling: {rejection_handling}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this sales roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Sales",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for sales skills, including prospecting, relationship building, closing techniques, and sales management.
         """
     },
     "content_creation": {
@@ -258,7 +368,7 @@ FIELD_CONFIG = {
             {"key": "monetization_strategy", "text": "Have you thought about how you might monetize your content?"},
         ],
         "prompt_template": """
-        You are a media strategist advising a content creator. Create a roadmap based on their profile.
+        You are a media strategist advising a content creator. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -267,7 +377,29 @@ FIELD_CONFIG = {
         - Platform: {platform}
         - Monetization Strategy: {monetization_strategy}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this content creation roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Content Creation",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for content creation skills, including content strategy, production techniques, audience building, and monetization methods.
         """
     },
     "entrepreneurship": {
@@ -279,7 +411,7 @@ FIELD_CONFIG = {
             {"key": "funding_strategy", "text": "Have you thought about how you would fund your business idea?"},
         ],
         "prompt_template": """
-        You are a venture capitalist mentoring an aspiring entrepreneur. Create a roadmap based on their profile.
+        You are a venture capitalist mentoring an aspiring entrepreneur. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -288,7 +420,29 @@ FIELD_CONFIG = {
         - Risk Tolerance: {risk_tolerance}
         - Funding Strategy: {funding_strategy}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this entrepreneurship roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Entrepreneurship",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for entrepreneurship skills, including idea validation, business planning, funding acquisition, and scaling strategies.
         """
     },
     "finance": {
@@ -300,7 +454,7 @@ FIELD_CONFIG = {
             {"key": "certifications", "text": "Are you interested in pursuing certifications like the CFA or CPA?"},
         ],
         "prompt_template": """
-        You are a CFO mentoring a junior financial analyst. Create a roadmap based on their profile.
+        You are a CFO mentoring a junior financial analyst. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -309,7 +463,29 @@ FIELD_CONFIG = {
         - Quantitative Skills: {quantitative_skills}
         - Certifications: {certifications}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this finance roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Finance",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for finance skills, including financial analysis, valuation techniques, risk management, and professional certifications.
         """
     },
     "healthcare": {
@@ -321,7 +497,7 @@ FIELD_CONFIG = {
             {"key": "education_commitment", "text": "Are you prepared for the educational and training commitments required in healthcare?"},
         ],
         "prompt_template": """
-        You are a healthcare administrator advising someone on their career path. Create a roadmap based on their profile.
+        You are a healthcare administrator advising someone on their career path. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -330,7 +506,29 @@ FIELD_CONFIG = {
         - Patient Interaction: {patient_interaction}
         - Education Commitment: {education_commitment}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this healthcare roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Healthcare",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for healthcare skills, including clinical knowledge, patient care principles, healthcare technology, and professional development.
         """
     },
     "education": {
@@ -342,7 +540,7 @@ FIELD_CONFIG = {
             {"key": "classroom_management", "text": "How would you approach classroom management and student engagement?"},
         ],
         "prompt_template": """
-        You are a school principal mentoring a new teacher. Create a roadmap based on their profile.
+        You are a school principal mentoring a new teacher. Create a comprehensive roadmap based on their profile.
 
         User Profile:
         - Experience: {experience}
@@ -351,7 +549,29 @@ FIELD_CONFIG = {
         - Teaching Philosophy: {teaching_philosophy}
         - Classroom Management: {classroom_management}
 
-        Generate a JSON roadmap with 'title', 'description', 'field', and 'milestones'. Milestones need 'title', 'description', 'estimated_duration', 'skills', and 'resources'.
+        CRITICAL: You must return ONLY valid JSON in the exact format below. Do not include any markdown formatting, code blocks, or additional text.
+
+        {{
+            "title": "Specific title for this education roadmap",
+            "description": "Detailed description of the learning path",
+            "field": "Education",
+            "milestones": [
+                {{
+                    "title": "Milestone title",
+                    "description": "Detailed description of what will be learned and accomplished",
+                    "estimated_duration": "Time estimate (e.g., '2-3 months')",
+                    "skills": ["skill1", "skill2", "skill3"],
+                    "resources": [
+                        {{
+                            "title": "Resource name",
+                            "url": "https://example.com or empty string if no URL"
+                        }}
+                    ]
+                }}
+            ]
+        }}
+
+        Create 4-6 progressive milestones that build upon each other for education skills, including curriculum design, classroom management, assessment methods, and professional development.
         """
     },
     "recreational_diving": {

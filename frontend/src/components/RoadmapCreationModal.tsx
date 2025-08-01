@@ -39,7 +39,7 @@ const RoadmapCreationModal: React.FC<RoadmapCreationModalProps> = ({
     'Data Science',
     'Digital Marketing',
     'Product Management',
-    'UX/UI Design',
+    'UX UI Design',
     'Business Analysis',
     'Project Management',
     'Sales',
