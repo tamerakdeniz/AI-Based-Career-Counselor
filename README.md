@@ -71,11 +71,11 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 
 | Katman                            | Teknoloji / Araç                             |
 | --------------------------------- | -------------------------------------------- |
-| **LLM**                           | Gemini API, LangChain                        |
-| **Backend**                       | FastAPI / Node.js                            |
-| **Frontend**                      | React (TypeScript & JSX), TailwindCSS        |
-| **Veritabanı**                    | SQLite / Firebase                            |
-| **Analitik**                      | Python (Pandas, Scikit-learn), Google Charts |
+| **LLM**                           | Gemini API                                   |
+| **Backend**                       | Python (Uvicorn) / FastAPI / Node.js         |
+| **Frontend**                      | React (TypeScript & JSX & Lucide), TailwindCSS        |
+| **Veritabanı**                    | SQLite                                       |
+| **Analitik**                      | Python                                       |
 | **Containerization & Deployment** | Docker, Docker Compose                       |
 
 ---
