@@ -12,8 +12,8 @@
 
 ## 🌐 Canlı Demo
 
-> **🚀 Ürünü Şimdi Test Edin!**  
-> **[Live Demo - Pathyvo Platform](https://pathyvo.app/)**  
+> **🚀 Ürünün Test Videosunu İnceleyin!**  
+> **[Live Demo - Pathyvo Platform](https://youtu.be/0DFEdhseVNE?si=zUVOEouuToJKJ8IT)**  
 > _Pathyvo'yu denemek için yukarıdaki bağlantıya tıklayın ve AI tabanlı kariyer mentörünüzü keşfedin._
 
 ---
