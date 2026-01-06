@@ -3,10 +3,11 @@
 </p>
 
 ---
-
+<!--
 # 🏆 Takım İsmi
 
 **Pathyvist**
+
 
 ---
 
@@ -29,7 +30,7 @@
 | _İrem KILIÇ_            | ---                                                 | [![linkedin](https://github.com/user-attachments/assets/3baa645a-33bc-4786-8327-cb0f92356f0a)](https://www.linkedin.com/in/irem-k%C4%B1l%C4%B1%C3%A7-18757a256/) |
 
 ---
-
+-->
 # 🚀 Ürün İsmi
 
 **Pathyvo - AI Tabanlı Kişisel Kariyer Mentörü**
@@ -60,13 +61,13 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 - Kendi yol haritasını oluşturmak isteyen bireyler
 
 ---
-
+<!--
 ## 🗺️ Product Backlog
 
 🔗 **[Product Backlog (Miro Board)](https://miro.com/app/live-embed/uXjVIkGKydQ=/?embedMode=view_only_without_ui&moveToViewport=-3790%2C-427%2C7123%2C3550&embedId=848849262162)**
 
 ---
-
+-->
 ## 👨‍💻 Teknolojik Altyapı
 
 | Katman                            | Teknoloji / Araç                             |
@@ -79,7 +80,7 @@ Platform; kullanıcının notları, ilgi alanları ve hedeflerine göre özelle�
 | **Containerization & Deployment** | Docker, Docker Compose                       |
 
 ---
-
+<!--
 ## 💼 Scrum Süreci ve Sprint Planlaması
 
 Proje geliştirme süreci Scrum metodolojisine uygun şekilde 3 sprint olarak planlanmıştır.  
@@ -441,7 +442,7 @@ Ekipteki motivasyon yüksek kalmış, iş birliği güçlü şekilde korunmuştu
 </details>
 
 ---
-
+-->
 ## 📚 Dokümantasyon
 
 Projenin detaylı dokümantasyonu için aşağıdaki bağlantıları kullanabilirsiniz:
