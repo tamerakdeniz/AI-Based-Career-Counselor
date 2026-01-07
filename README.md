@@ -1,6 +1,21 @@
+## 🎥 Demo Video
+
 <p align="center">
-     <img src="https://github.com/user-attachments/assets/90ead193-6d6d-4333-8237-4d10f5de5440" alt="logo" width="400"/>
+  <a href="https://youtu.be/0DFEdhseVNE" target="_blank">
+    <img 
+      src="https://github.com/user-attachments/assets/90ead193-6d6d-4333-8237-4d10f5de5440" 
+      alt="Watch Demo Video" 
+      width="400"
+    />
+  </a>
 </p>
+
+<p align="center">
+  <a href="https://youtu.be/0DFEdhseVNE" target="_blank">
+    ▶ Click the photo to watch the demo
+  </a>
+</p>
+
 
 ---
 <!--
